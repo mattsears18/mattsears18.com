@@ -119,3 +119,14 @@
     flex-direction: column;
   }
 }
+
+.linkedInIcon {
+  margin-top: 100px;
+  height: 100px;
+  width: 100px;
+}
+
+.homeHeaderImage {
+  width: 8rem;
+  height: 8rem;
+}
