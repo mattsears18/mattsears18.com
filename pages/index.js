@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import linkedInIcon from '../public/images/linkedInIcon80.png';
+import githubIcon from '../public/images/githubIcon80.png';
 import researchGateIcon from '../public/images/researchGateIcon80.png';
 import profilePic from '../public/images/profile.png';
 import styles from '../styles/Home.module.css';
@@ -30,6 +31,10 @@ export default function Home() {
         <p
         // className={styles.linkedInIcon}
         >
+          <a href="https://github.com/mattsears18/">
+            <Image src={githubIcon} alt="Github Profile" />
+          </a>
+          &nbsp; &nbsp;
           <a href="https://www.researchgate.net/profile/Matt-Sears/research">
             <Image src={researchGateIcon} alt="ResearchGate Profile" />
           </a>
