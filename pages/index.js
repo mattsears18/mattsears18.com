@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import linkedInIcon from '../public/images/linkedInIcon.png';
+import linkedInIcon from '../public/images/linkedInIcon80.png';
+import researchGateIcon from '../public/images/researchGateIcon80.png';
 import profilePic from '../public/images/profile.png';
 import styles from '../styles/Home.module.css';
 import utilStyles from '../styles/utils.module.css';
@@ -26,7 +27,13 @@ export default function Home() {
         <p className={styles.description}>
           <code>Personal portfolio coming soon...</code>
         </p>
-        <p className={styles.linkedInIcon}>
+        <p
+        // className={styles.linkedInIcon}
+        >
+          <a href="https://www.researchgate.net/profile/Matt-Sears/research">
+            <Image src={researchGateIcon} alt="ResearchGate Profile" />
+          </a>
+          &nbsp; &nbsp;
           <a href="https://linkedin.com/in/mattsears18/">
             <Image src={linkedInIcon} alt="LinkedIn Profile" />
           </a>
