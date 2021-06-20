@@ -43,7 +43,8 @@ export default function Home() {
           >
             <Image src={githubIcon} alt="Github Profile" />
           </a>
-          &nbsp; &nbsp;
+        </p>
+        <p>
           <a
             href="https://www.researchgate.net/profile/Matt-Sears/research"
             target="_blank"
