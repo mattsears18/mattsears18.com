@@ -32,7 +32,7 @@ export default function Home() {
         <p
         // className={styles.linkedInIcon}
         >
-          <a href="/Matt Sears - Resume 2021-06-20.pdf" target="_blank">
+          <a href="/Matt Sears - Resume.pdf" target="_blank">
             <Image src={resumeIcon} alt="Download Resume" />
           </a>
           &nbsp;&nbsp;
