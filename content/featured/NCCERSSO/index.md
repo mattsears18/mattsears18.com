@@ -1,6 +1,6 @@
 ---
 date: '1'
-title: 'NCCER Single SignOn'
+title: 'NCCER Single Sign-On'
 cover: './nccer-sso-demo.png'
 external: 'https://web.account.nccer.org'
 cta: ''
