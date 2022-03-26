@@ -1,14 +1,16 @@
 {
   "name": "v4",
-  "description": "Personal Website V4",
+  "description": "Personal Site",
   "version": "1.0.0",
-  "author": "Brittany Chiang <brittany.chiang@gmail.com>",
+  "author": "Matt Sears <mattsears18@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bchiang7/v4"
+    "url": "https://github.com/mattsears18/mattsears18.com"
   },
   "keywords": [
-    "gatsby"
+    "gatsby",
+    "software engineer",
+    "matt sears"
   ],
   "license": "MIT",
   "browserslist": "> 0.25%, not dead",

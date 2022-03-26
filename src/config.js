@@ -1,26 +1,26 @@
 module.exports = {
-  email: 'brittany.chiang@gmail.com',
+  email: 'mattsears18@gmail.com',
 
   socialMedia: [
     {
       name: 'GitHub',
-      url: 'https://github.com/bchiang7',
-    },
-    {
-      name: 'Instagram',
-      url: 'https://www.instagram.com/bchiang7',
-    },
-    {
-      name: 'Twitter',
-      url: 'https://twitter.com/bchiang7',
+      url: 'https://github.com/mattsears18',
     },
     {
       name: 'Linkedin',
-      url: 'https://www.linkedin.com/in/bchiang7',
+      url: 'https://www.linkedin.com/in/mattsears18',
     },
     {
-      name: 'Codepen',
-      url: 'https://codepen.io/bchiang7',
+      name: 'ResearchGate',
+      url: 'https://www.researchgate.net/profile/Matt-Sears',
+    },
+    {
+      name: 'Instagram',
+      url: 'https://www.instagram.com/mattsears18',
+    },
+    {
+      name: 'Twitter',
+      url: 'https://twitter.com/mattsears18',
     },
   ],
 
