@@ -60,12 +60,12 @@ const Hero = () => {
 
   const one = <h1>Hi, I'm</h1>;
   const two = <h2 className="big-heading">Matt Sears, PhD.</h2>;
-  const three = <h3 className="big-heading">I build things for the web.</h3>;
+  const three = <h3 className="big-heading">I build efficient, automated things.</h3>;
   const four = (
     <>
       <p>
-        I’m a full stack software engineer and data scientist focused on Developer Experience and
-        DevOps. Currently, I'm building a lead generation platform with the team at{' '}
+        I'm a full stack software engineer and data scientist focused on Developer Experience and
+        DevOps. Currently, I'm building lead generation products with the team at{' '}
         <a href="https://leadrilla.com/team" target="_blank" rel="noreferrer">
           Leadrilla
         </a>
