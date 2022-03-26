@@ -171,7 +171,7 @@ const About = () => {
               construction professionals. I automated a ton of my design work as a civil engineer,
               and I spent four years building CLI apps and web apps for conducting construction
               productivity research to get my PhD.
-              {/* Fast-forward to today, and I’ve had the privilege of
+              {/* Fast-forward to today, and I've had the privilege of
               working at <a href="https://us.mullenlowe.com/">an advertising agency</a>,{' '}
               <a href="https://starry.com/">a start-up</a>,{' '}
               <a href="https://www.apple.com/">a huge corporation</a>, and{' '}

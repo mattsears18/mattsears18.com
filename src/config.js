@@ -14,6 +14,10 @@ module.exports = {
       name: 'ResearchGate',
       url: 'https://www.researchgate.net/profile/Matt-Sears',
     },
+    // {
+    //   name: 'YouTube',
+    //   url: 'https://www.youtube.com/c/MattSears18/videos',
+    // },
     {
       name: 'Instagram',
       url: 'https://www.instagram.com/mattsears18',
