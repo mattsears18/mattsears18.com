@@ -1,7 +1,7 @@
 ---
 date: '1'
 title: 'VisualEyes'
-cover: './demo.png'
+cover: './visual-eyes-demo.png'
 github: 'https://github.com/mattsears18/visual-eyes'
 external: 'https://www.youtube.com/watch?v=Ed6oByh5tJw'
 tech:

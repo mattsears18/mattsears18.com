@@ -65,7 +65,7 @@ const Hero = () => {
     <>
       <p>
         I'm a full stack software engineer and data scientist focused on Developer Experience and
-        DevOps. Currently, I'm building lead generation products with the team at{' '}
+        DevOps. Currently, I'm building lead generation products with the rest of the team at{' '}
         <a href="https://leadrilla.com/team" target="_blank" rel="noreferrer">
           Leadrilla
         </a>
