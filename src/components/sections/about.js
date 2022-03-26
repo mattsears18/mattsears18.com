@@ -126,7 +126,20 @@ const About = () => {
     sr.reveal(revealContainer.current, srConfig());
   }, []);
 
-  const skills = ['JavaScript (ES6+)', 'TypeScript', 'React', 'Eleventy', 'Node.js', 'WordPress'];
+  const skills = [
+    'JavaScript (ES 2021+)',
+    'TypeScript ❤️',
+    'React',
+    'Node.js',
+    'Jest',
+    'Terraform',
+    'Docker',
+    'AWS Lambda',
+    'AWS ECS',
+    'Hasura',
+    'GraphQL',
+    'Redwood.js',
+  ];
 
   return (
     <StyledAboutSection id="about" ref={revealContainer}>
@@ -136,33 +149,52 @@ const About = () => {
         <StyledText>
           <div>
             <p>
-              Hello! My name is Matt and I enjoy creating things that live on the internet. My
-              interest in web development started back in 2012 when I decided to try editing custom
-              Tumblr themes — turns out hacking together a custom reblog button taught me a lot
-              about HTML &amp; CSS!
+              Hello! My name is Matt and I enjoy creating efficient, automated things, both online
+              and offline. Back in 2011, I was a construction project manager searching for an
+              affordable document transmittal system (think Dropbox on steroids, but before file
+              sharing services became popular). The existing solutions were incredibly expensive at
+              that time, so I decided to figure out how to build my own! I had tinkered with
+              computers since I was a kid, but I didn't know the first thing about software
+              development.
             </p>
 
             <p>
-              Fast-forward to today, and I’ve had the privilege of working at{' '}
-              <a href="https://us.mullenlowe.com/">an advertising agency</a>,{' '}
+              I vividly remember googling {`"`}how do I save something to the internet.
+              {`"`} 😆
+            </p>
+
+            <p>
+              Over the years, I kept finding ways to weave more and more software development into
+              my work. I turned that document transmittal system into a full-blown social network
+              and
+              <a href="https://github.com/mattsears18/dirtplan">project management platform</a> for
+              construction professionals. I automated a ton of my design work as a civil engineer,
+              and I spent four years building CLI apps and web apps for conducting construction
+              productivity research to get my PhD.
+              {/* Fast-forward to today, and I’ve had the privilege of
+              working at <a href="https://us.mullenlowe.com/">an advertising agency</a>,{' '}
               <a href="https://starry.com/">a start-up</a>,{' '}
               <a href="https://www.apple.com/">a huge corporation</a>, and{' '}
               <a href="https://scout.camd.northeastern.edu/">a student-led design studio</a>. My
               main focus these days is building accessible, inclusive products and digital
               experiences at <a href="https://upstatement.com/">Upstatement</a> for a variety of
-              clients.
+              clients. */}
             </p>
 
-            <p>
+            {/* <p>
               I also recently{' '}
               <a href="https://www.newline.co/courses/build-a-spotify-connected-app">
                 launched a course
               </a>{' '}
               that covers everything you need to build a web app with the Spotify API using Node
               &amp; React.
-            </p>
+            </p> */}
 
-            <p>Here are a few technologies I’ve been working with recently:</p>
+            <p>
+              Here are a few technologies that I've been working with lately (see{' '}
+              <a href="/resume.pdf">my resume</a> for a more complete list of skills and expertise)
+              :
+            </p>
           </div>
 
           <ul className="skills-list">
