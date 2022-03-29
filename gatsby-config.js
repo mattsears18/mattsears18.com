@@ -2,7 +2,7 @@ const config = require('./src/config');
 
 module.exports = {
   siteMetadata: {
-    title: 'Matt Sears, PhD',
+    title: 'Dr. Matt Sears - Personal Site',
     description:
       'Matt Sears is a software engineer who specializes in building (and occasionally designing) exceptional digital experiences.',
     siteUrl: 'https://mattsears18.com', // No trailing slash allowed!
