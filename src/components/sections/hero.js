@@ -64,7 +64,7 @@ const Hero = () => {
   const four = (
     <>
       <p>
-        I'm a full stack software engineer and data scientist with an affinity for GitOps and Developer Experience. Currently, I'm building lead generation products with the rest of the team at{' '}
+        I'm a full stack software engineer and data scientist with an affinity for DevOps, GitOps, and Developer Experience. Currently, I'm building lead generation products with the rest of the team at{' '}
         <a href="https://leadrilla.com/team" target="_blank" rel="noreferrer">
           Leadrilla
         </a>
