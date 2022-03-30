@@ -1,5 +1,5 @@
 ---
-date: '2'
+date: '1'
 title: 'Express Delphi'
 cover: './express-delphi-demo.png'
 github: 'https://github.com/mattsears18/express-delphi-meteor'
