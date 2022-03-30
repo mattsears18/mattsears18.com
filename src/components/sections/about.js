@@ -137,13 +137,13 @@ const About = () => {
     'TypeScript ❤️',
     'React',
     'Node.js',
+    'GraphQL',
     'Jest',
     'Terraform',
     'Docker',
     'AWS Lambda',
     'AWS ECS',
     'Hasura',
-    'GraphQL',
     'Redwood.js',
   ];
 
@@ -172,7 +172,7 @@ const About = () => {
             </p>
 
             <p>
-              Learning new things in depth is <strong>by far</strong> my greatest strength.{' '}
+              Learning new things - in depth - is <strong>by far</strong> my greatest strength.{' '}
               <span role="img" aria-label="Flexed Biceps Emoji">
                 💪
               </span>
