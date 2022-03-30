@@ -143,7 +143,7 @@ const About = () => {
 
   return (
     <StyledAboutSection id="about" ref={revealContainer}>
-      <h2 className="numbered-heading">About Me</h2>
+      <h2 className="numbered-heading">About me</h2>
 
       <div className="inner">
         <StyledText>
@@ -153,24 +153,37 @@ const About = () => {
               and offline. Back in 2011, I was a construction project manager searching for an
               affordable document transmittal system (think Dropbox on steroids, but before file
               sharing services became popular). The existing solutions were incredibly expensive at
-              that time, so I decided to figure out how to build my own! I had tinkered with
-              computers since I was a kid, but I didn't know the first thing about software
-              development.
+              the time, so I decided to build my own! I didn't know the first thing about software
+              development, but I resolved to just figure it out. I vividly remember googling{' '}
+              <i>
+                {`"`}
+                how do I save something to the internet.
+                {`"`}
+              </i>{' '}
+              <span role="img" aria-label="Grinning Squinting Face Emoji">
+                😆
+              </span>
             </p>
 
             <p>
-              I vividly remember googling {`"`}how do I save something to the internet.
-              {`"`} 😆
+              Learning new things in depth is <strong>by far</strong> my greatest strength.{' '}
+              <span role="img" aria-label="Flexed Biceps Emoji">
+                💪
+              </span>
             </p>
 
             <p>
-              Over the years, I kept finding ways to weave more and more software development into
-              my work. I turned that document transmittal system into a full-blown social network
-              and
+              I built that document transmittal system and absolutely fell in{' '}
+              <span role="img" aria-label="Red Heart Emoji">
+                ❤️
+              </span>{' '}
+              with software development in the process. The app became my pet project for a few
+              years, and I expanded it into a full-blown social network and{' '}
               <a href="https://github.com/mattsears18/dirtplan">project management platform</a> for
-              construction professionals. I automated a ton of my design work as a civil engineer,
-              and I spent four years building CLI apps and web apps for conducting construction
-              productivity research to get my PhD.
+              construction professionals. Over the years, I kept finding ways to weave more and more
+              software development into my work. I automated a ton of my design work as a civil
+              engineer, and I spent four years building CLI apps and web apps to conduct
+              construction productivity research and earn a PhD in civil engineering.
             </p>
 
             <p>
