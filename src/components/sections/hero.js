@@ -68,7 +68,7 @@ const Hero = () => {
         <span role="img" aria-label="Red Heart Emoji">
           ❤️
         </span>{' '}
-        for Clean Code, DevOps / GitOps, and Developer Experience. Currently, I'm building lead generation
+        for clean code, DevOps, GitOps, and Developer Experience. Currently, I'm building lead generation
         products with the rest of the team at{' '}
         <a href="https://leadrilla.com/team" target="_blank" rel="noreferrer">
           Leadrilla
