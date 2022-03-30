@@ -17,6 +17,12 @@ const StyledAboutSection = styled.section`
       display: block;
     }
   }
+
+  .email-link {
+    ${({ theme }) => theme.mixins.bigButton};
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
 `;
 const StyledText = styled.div`
   ul.skills-list {
@@ -187,8 +193,18 @@ const About = () => {
             </p>
 
             <p>
+              <a
+                className="email-link"
+                href="https://www.researchgate.net/profile/Matt-Sears"
+                target="_blank"
+                rel="noreferrer">
+                Check out my research!
+              </a>
+            </p>
+
+            <p>
               Here are a few technologies that I've been working with lately (see{' '}
-              <a href="/resume.pdf">my resume</a> for a more complete list of skills and expertise)
+              <a href="/resume.pdf">my résumé</a> for a more complete list of skills and expertise)
               :
             </p>
           </div>

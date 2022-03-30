@@ -3,7 +3,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import styled from 'styled-components';
 import { navDelay, loaderDelay } from '@utils';
 import { usePrefersReducedMotion } from '@hooks';
-// import { email } from '@config';
+import { email } from '@config';
 
 const StyledHeroSection = styled.section`
   ${({ theme }) => theme.mixins.flexCenter};
@@ -80,10 +80,10 @@ const Hero = () => {
   const five = (
     <a
       className="email-link"
-      href="https://www.researchgate.net/profile/Matt-Sears"
+      href={`mailto:${email}?subject=Hello from mattsears18.com&body=Hi, Matt!`}
       target="_blank"
       rel="noreferrer">
-      Check out my research!
+      Say Hello!
     </a>
   );
 

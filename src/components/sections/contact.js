@@ -64,8 +64,12 @@ const Contact = () => {
         best to get back to you!
       </p>
 
-      <a className="email-link" href={`mailto:${email}`}>
-        Say Hello
+      <a
+        className="email-link"
+        href={`mailto:${email}?subject=Hello from mattsears18.com&body=Hi, Matt!`}
+        target="_blank"
+        rel="noreferrer">
+        Say Hello!
       </a>
     </StyledContactSection>
   );
