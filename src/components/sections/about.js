@@ -188,7 +188,7 @@ const About = () => {
               <a href="https://github.com/mattsears18/dirtplan">project management platform</a> for
               construction professionals. Over the years, I kept finding ways to weave more and more
               software development into my work. I automated a ton of my design work as a civil
-              engineer, and I spent four years building CLI apps and web apps to conduct
+              engineer, and then I spent four years building CLI apps and web apps to conduct
               construction productivity research and earn a PhD in civil engineering.
             </p>
 
