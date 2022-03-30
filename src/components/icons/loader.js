@@ -1,6 +1,12 @@
 import React from 'react';
 
 const IconLoader = () => (
+  // Create SVG from fonts here
+  // https://danmarshall.github.io/google-font-to-svg-path/
+
+  // Discussion
+  // https://github.com/bchiang7/v4/issues/54
+
   <svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
     <title>Loader Logo</title>
     <g>
