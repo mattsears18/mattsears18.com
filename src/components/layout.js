@@ -19,7 +19,10 @@ const Layout = ({ children, location }) => {
     const allLinks = Array.from(document.querySelectorAll('a'));
     if (allLinks.length > 0) {
       allLinks.forEach(link => {
-        if (link.host !== window.location.host || link.pathname === '/resume.pdf') {
+        if (
+          link.host !== window.location.host ||
+          link.pathname === '/MattSears_Resume_2022-04-02.pdf'
+        ) {
           link.setAttribute('rel', 'noopener noreferrer');
           link.setAttribute('target', '_blank');
         }

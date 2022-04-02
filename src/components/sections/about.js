@@ -204,8 +204,8 @@ const About = () => {
 
             <p>
               Here are a few technologies that I've been working with lately (see{' '}
-              <a href="/resume.pdf">my résumé</a> for a more complete list of skills and expertise)
-              :
+              <a href="/MattSears_Resume_2022-04-02.pdf">my résumé</a> for a more complete list of
+              skills and expertise) :
             </p>
           </div>
 
