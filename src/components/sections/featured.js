@@ -358,8 +358,10 @@ const Featured = () => {
             const { external, title, tech, github, cover, cta } = frontmatter;
             const image = getImage(cover);
 
+            const slug = title.toLowerCase().replace(/\s+/g, '-');
+
             return (
-              <StyledProject key={i} ref={el => (revealProjects.current[i] = el)}>
+              <StyledProject id={slug} key={slug} ref={el => (revealProjects.current[i] = el)}>
                 <div className="project-content">
                   <div>
                     <p className="project-overline">Featured Project</p>
