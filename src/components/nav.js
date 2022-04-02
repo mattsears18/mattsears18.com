@@ -178,7 +178,7 @@ const Nav = ({ isHome }) => {
       href="/MattSears_Resume_2022-04-02.pdf"
       target="_blank"
       rel="noopener noreferrer">
-      Résumé
+      Resume
     </a>
   );
 

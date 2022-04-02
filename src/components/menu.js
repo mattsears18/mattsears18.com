@@ -267,7 +267,7 @@ const Menu = () => {
             )}
 
             <a href="/MattSears_Resume_2022-04-02.pdf" className="resume-link">
-              Résumé
+              Resume
             </a>
           </nav>
         </StyledSidebar>
