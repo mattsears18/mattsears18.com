@@ -143,7 +143,7 @@ const About = () => {
     'Docker',
     'AWS Lambda',
     'AWS ECS',
-    'Hasura',
+    'Hasura ❤️',
     'Redwood.js ❤️',
   ];
 
