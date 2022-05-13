@@ -144,6 +144,7 @@ const About = () => {
     'AWS Lambda',
     'AWS ECS',
     'Hasura ❤️',
+    'Remix ❤️',
     'Redwood.js ❤️',
   ];
 
