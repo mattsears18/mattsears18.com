@@ -175,7 +175,7 @@ const Nav = ({ isHome }) => {
   const ResumeLink = (
     <a
       className="resume-button"
-      href="/MattSears_Resume_2022-04-02.pdf"
+      href="/MattSears_Resume_2022-08-21.pdf"
       target="_blank"
       rel="noopener noreferrer">
       Resume
