@@ -181,10 +181,7 @@ const About = () => {
             </p>
 
             <p>
-              I built that document transmittal system and absolutely fell in{' '}
-              <span role="img" aria-label="Red Heart Emoji">
-                ❤️
-              </span>{' '}
+              I built that document transmittal system and absolutely fell in love
               with software development in the process. The app became my pet project for a few
               years, and I expanded it into a full-blown social network and{' '}
               <a href="https://github.com/mattsears18/dirtplan">project management platform</a> for
