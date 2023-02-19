@@ -181,9 +181,9 @@ const About = () => {
             </p>
 
             <p>
-              I built that document transmittal system and absolutely fell in love
-              with software development in the process. The app became my pet project for a few
-              years, and I expanded it into a full-blown social network and{' '}
+              I built that document transmittal system and absolutely fell in love with software
+              development in the process. The app became my pet project for a few years, and I
+              expanded it into a full-blown social network and{' '}
               <a href="https://github.com/mattsears18/dirtplan">project management platform</a> for
               construction professionals. Over the years, I kept finding ways to weave more and more
               software development into my work. I automated a ton of my design work as a civil
@@ -203,7 +203,7 @@ const About = () => {
 
             <p>
               Here are a few technologies that I've been working with lately (see{' '}
-              <a href="/MattSears_Resume_2022-09-10.pdf">my resume</a> for a more complete list of
+              <a href="/MattSears_Resume_2023-02-19.pdf">my resume</a> for a more complete list of
               skills and expertise) :
             </p>
           </div>
