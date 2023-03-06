@@ -157,12 +157,13 @@ const About = () => {
         <StyledText>
           <div>
             <p>
-              Hello! My name is Matt and I enjoy creating efficient, automated things, both online
-              and offline. Back in 2011, I was a construction project manager searching for an
-              affordable document transmittal system (think Dropbox on steroids, but before file
-              sharing services became popular). The existing solutions were incredibly expensive at
-              the time, so I decided to build my own! I didn't know the first thing about software
-              development, but I resolved to just figure it out. I vividly remember googling{' '}
+              Hello! My name is Matt and I enjoy creating efficient, automated things. Back in 2011,
+              I was a construction project manager searching for an affordable document transmittal
+              system (think Dropbox on steroids, but before file sharing services became popular).
+              The existing solutions were incredibly expensive at the time, but they seemed so
+              simple. How hard could it possibly be to just build one myself?! I had to find out. I
+              didn't know the first thing about software development back then, and I vividly
+              remember googling{' '}
               <i>
                 {`"`}
                 how do I save something to the internet.
@@ -181,14 +182,26 @@ const About = () => {
             </p>
 
             <p>
-              I built that document transmittal system and absolutely fell in love with software
+              I built that document transmittal system and I absolutely fell in love with software
               development in the process. The app became my pet project for a few years, and I
               expanded it into a full-blown social network and{' '}
               <a href="https://github.com/mattsears18/dirtplan">project management platform</a> for
-              construction professionals. Over the years, I kept finding ways to weave more and more
-              software development into my work. I automated a ton of my design work as a civil
-              engineer, and then I spent four years building web apps and CLI apps to conduct
-              construction productivity research and earn a PhD in Civil Engineering.
+              construction professionals. Then, for several years, I worked two full-time jobs. I
+              worked my {`"`}real{`"`} job that paid the bills, and then I spent every single night
+              and weekend at <a href="https://g.co/kgs/sepgCy">my favorite coffee shop</a>, learning
+              how to build software.
+            </p>
+
+            <p>
+              In 2016, I started my PhD in Civil Engineering, studying construction productivity. I
+              learned a ton about statistics and data science during grad school, but I also
+              convinced my advisor to allow me to spend the vast majority of my time building
+              software to support our academic research. Software engineering was still a full-time
+              job for me then. When I started my PhD, I thought that I wanted to be a professor. I
+              was excited about studying construction productivity and teaching the concepts to
+              students. However, by the time I finished my PhD, I realized that I was actually much
+              more interested in software engineering, so I finally dove all-in on software. I have
+              zero regrets.
             </p>
 
             <p>

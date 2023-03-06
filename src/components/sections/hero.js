@@ -64,11 +64,11 @@ const Hero = () => {
   const four = (
     <>
       <p>
-        I'm a full stack software engineer and university-trained data scientist with a{' '}
+        I'm a full stack software engineer and university-trained data scientist with{' '}
         <span role="img" aria-label="Red Heart Emoji">
           ❤️
         </span>{' '}
-        for Clean Code and Developer Experience. Currently, I'm building lead generation SaaS
+        for Clean Code, Developer Experience, and TypeScript. I'm currently building insurtech SaaS
         products with the rest of the team at{' '}
         <a href="https://leadrilla.com/team" target="_blank" rel="noreferrer">
           Leadrilla
