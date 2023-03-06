@@ -70,8 +70,8 @@ const Hero = () => {
         </span>{' '}
         for Clean Code, Developer Experience, and TypeScript. I'm currently leading a team of
         engineers, building insurtech SaaS products at{' '}
-        <a href="https://leadrilla.com/team" target="_blank" rel="noreferrer">
-          Leadrilla
+        <a href="https://salesriver.com" target="_blank" rel="noreferrer">
+          SalesRiver
         </a>
         .
       </p>
