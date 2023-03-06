@@ -193,14 +193,14 @@ const About = () => {
 
             <p>
               In 2016, I started my PhD in Civil Engineering, studying construction productivity. I
-              learned a ton about statistics and data science during grad school, but I also
-              convinced my advisor to allow me to spend the vast majority of my time building
-              software to support our research. Software engineering was still a full-time job for
-              me then. When I started my PhD, I thought that I wanted to be a professor. I was
-              excited about studying construction productivity and teaching the concepts to
-              students. However, by the time I finished my PhD, I realized that I was actually much
-              more interested in software engineering, so I finally dove all-in on software. That
-              was one of the best decisions that I've ever made.
+              learned a ton about statistics, data science, and artificial intelligence during grad
+              school, but I also convinced my advisor to allow me to spend the vast majority of my
+              time building software to support our research. Software engineering was still a
+              full-time job for me then. When I started my PhD, I thought that I wanted to be a
+              professor. I was excited about studying construction productivity and teaching the
+              concepts to students. However, by the time I finished my PhD, I realized that I was
+              actually much more interested in software engineering, so I finally dove all-in on
+              software. That was one of the best decisions that I've ever made.
             </p>
 
             <p>
