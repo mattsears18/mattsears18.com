@@ -186,9 +186,9 @@ const About = () => {
               development in the process. The app became my pet project for a few years and I
               expanded it into a full-blown social network and project management platform for
               construction professionals. For several years, I worked two full-time jobs. I worked
-              my {`"`}real{`"`} job that paid the bills, and then I spent every single night and
-              weekend at <a href="https://g.co/kgs/sepgCy">my favorite coffee shop</a>, teaching
-              myself how to build software.
+              my {`"`}real{`"`} job that paid the bills, and then I spent every night and weekend at{' '}
+              <a href="https://g.co/kgs/sepgCy">my favorite coffee shop</a>, teaching myself how to
+              build software.
             </p>
 
             <p>
