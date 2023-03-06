@@ -199,8 +199,8 @@ const About = () => {
               me then. When I started my PhD, I thought that I wanted to be a professor. I was
               excited about studying construction productivity and teaching the concepts to
               students. However, by the time I finished my PhD, I realized that I was actually much
-              more interested in software engineering, so I finally dove all-in on software. I have
-              zero regrets.
+              more interested in software engineering, so I finally dove all-in on software. That
+              was one of the best decisions that I've ever made.
             </p>
 
             <p>
