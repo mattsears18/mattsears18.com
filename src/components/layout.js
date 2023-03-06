@@ -21,7 +21,7 @@ const Layout = ({ children, location }) => {
       allLinks.forEach(link => {
         if (
           link.host !== window.location.host ||
-          link.pathname === '/MattSears_Resume_2023-02-19.pdf'
+          link.pathname === '/MattSears_Resume_2023-03-04.pdf'
         ) {
           link.setAttribute('rel', 'noopener noreferrer');
           link.setAttribute('target', '_blank');
