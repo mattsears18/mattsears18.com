@@ -184,8 +184,7 @@ const About = () => {
             <p>
               I built that document transmittal system and I absolutely fell in love with software
               development in the process. The app became my pet project for a few years and I
-              expanded it into a full-blown social network and{' '}
-              <a href="https://github.com/mattsears18/dirtplan">project management platform</a> for
+              expanded it into a full-blown social network and project management platform for
               construction professionals. Then, for several years, I worked two full-time jobs. I
               worked my {`"`}real{`"`} job that paid the bills, and then I spent every single night
               and weekend at <a href="https://g.co/kgs/sepgCy">my favorite coffee shop</a>, learning
