@@ -133,8 +133,8 @@ const About = () => {
   }, []);
 
   const skills = [
-    'JavaScript (ES 2021+)',
     'TypeScript ❤️',
+    'JavaScript (ES 2021+)',
     'React',
     'Node.js',
     'GraphQL',
@@ -145,8 +145,9 @@ const About = () => {
     'AWS ECS',
     'Hasura ❤️',
     'Next.js ❤️',
-    'Remix',
+    'Remix ❤️',
     'Redwood.js',
+    'C++',
   ];
 
   return (
