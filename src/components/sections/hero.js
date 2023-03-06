@@ -68,8 +68,8 @@ const Hero = () => {
         <span role="img" aria-label="Red Heart Emoji">
           ❤️
         </span>{' '}
-        for Clean Code, Developer Experience, and TypeScript. I'm currently building insurtech SaaS
-        products with the rest of the team at{' '}
+        for Clean Code, Developer Experience, and TypeScript. I'm currently leading a team of
+        engineers, building insurtech SaaS products at{' '}
         <a href="https://leadrilla.com/team" target="_blank" rel="noreferrer">
           Leadrilla
         </a>
