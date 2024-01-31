@@ -135,6 +135,9 @@ const About = () => {
   const skills = [
     'TypeScript ❤️',
     'JavaScript (ES 2021+)',
+    'Remix ❤️',
+    'Next.js ❤️',
+    'Hasura ❤️',
     'React',
     'Node.js',
     'GraphQL',
@@ -143,9 +146,6 @@ const About = () => {
     'Docker',
     'AWS Lambda',
     'AWS ECS',
-    'Hasura ❤️',
-    'Next.js ❤️',
-    'Remix ❤️',
     'Redwood.js',
     'C++',
   ];
@@ -160,11 +160,11 @@ const About = () => {
             <p>
               Hello! My name is Matt and I enjoy creating efficient, automated things. Back in 2011,
               I was a construction project manager searching for an affordable document transmittal
-              system (think Dropbox on steroids, but before file sharing services became popular).
+              system (think Dropbox on steroids, but before file sharing-services became popular).
               The existing solutions were incredibly expensive at the time, but they seemed so
               simple. How hard could it possibly be to just build one myself?! I had to find out. I
-              didn't know the first thing about software development back then, and I vividly
-              remember googling{' '}
+              didn't know the first thing about building software back then, and I vividly remember
+              googling{' '}
               <i>
                 {`"`}
                 how do I save something to the internet.
@@ -177,17 +177,15 @@ const About = () => {
 
             <p>
               Learning new things - in depth - is <strong>by far</strong> my greatest strength.{' '}
-              <span role="img" aria-label="Flexed Biceps Emoji">
-                💪
-              </span>
             </p>
 
             <p>
-              I built that document transmittal system and I absolutely fell in love with software
+              I built that document transmittal system and absolutely fell in love with software
               development in the process. The app became my pet project for a few years and I
               expanded it into a full-blown social network and project management platform for
-              construction professionals. For several years, I worked two full-time jobs. I worked
-              my {`"`}real{`"`} job that paid the bills, and then I spent every night and weekend at{' '}
+              construction professionals before it was acquired. For several years, I worked two
+              full-time jobs. I worked my {`"`}real{`"`} job that paid the bills, and then I spent
+              every night and weekend at{' '}
               <a href="https://g.co/kgs/sepgCy">my favorite coffee shop</a>, teaching myself how to
               build software.
             </p>
@@ -196,12 +194,25 @@ const About = () => {
               In 2016, I started my PhD in Civil Engineering, studying construction productivity. I
               learned a ton about statistics, data science, and artificial intelligence during grad
               school, but I also convinced my advisor to allow me to spend the vast majority of my
-              time building software to support our research. Software engineering was still a
-              full-time job for me then. When I started my PhD, I thought that I wanted to be a
-              professor. I was excited about studying construction productivity and teaching the
-              concepts to students. However, by the time I finished my PhD, I realized that I was
-              actually much more interested in software engineering, so I finally dove all-in on
-              software. That was one of the best decisions that I've ever made.
+              time building software to support our research (way more than 40hr/week!). Software
+              engineering was still a full-time job for me during my four years in grad school.
+            </p>
+
+            <p>
+              When I started my PhD, I thought that I wanted to be a professor. I was excited about
+              conducting construction productivity research and teaching the concepts to students.
+              However, by the time I finished my PhD, I realized that I was actually much more
+              interested in software engineering, so I finally dove all-in on software.
+            </p>
+
+            <p>
+              In hindsight, it seems so obvious that I would end up in software. I was part of my
+              middle school Website Club and I remember taking apart our family computer when I was
+              8 years old. I took a circuitious path to get to where I am today, but my previous
+              experience in construction management, civil engineering, real estate investing, and
+              academic research has given me a unique perspective and a diverse set of skills that
+              continuously prove to be invaluable in my career as a software engineer. I wouldn't
+              change a thing.
             </p>
 
             <p>
@@ -216,7 +227,7 @@ const About = () => {
 
             <p>
               Here are a few technologies that I've been working with lately (see{' '}
-              <a href="/MattSears_Resume_2023-04-03.pdf">my resume</a> for a more complete list of
+              <a href="/MattSears_Resume_2024-01-23.pdf">my resume</a> for a more complete list of
               skills and expertise) :
             </p>
           </div>

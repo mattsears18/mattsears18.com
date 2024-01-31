@@ -68,8 +68,8 @@ const Hero = () => {
         <span role="img" aria-label="Red Heart Emoji">
           ❤️
         </span>{' '}
-        for Clean Code, Developer Experience, and TypeScript. I'm currently leading a team of
-        engineers, building insurtech SaaS products at{' '}
+        for Clean Code, DevOps, Developer Experience, and TypeScript. I'm currently leading a team
+        of engineers, building insurtech SaaS products at{' '}
         <a href="https://salesriver.com" target="_blank" rel="noreferrer">
           SalesRiver
         </a>
