@@ -1,0 +1,40 @@
+---
+title: Hello from the new site
+date: '2026-05-24'
+excerpt: A short note on what this site is for, the stack behind it, and what I plan to write about next.
+tags:
+  - meta
+---
+
+This is the first post on the rebuilt site. It exists mostly to prove the
+plumbing works — but since you're here, a quick note on what to expect.
+
+The plan is to use this space for writing about engineering practice:
+systems that hold up under load, the operational habits that keep them
+running, and the work of leading the teams that build them. Less framework
+news, more "here's what broke and what we learned." Topics I expect to come
+back to: testing strategies, observability, on-call rotations, and the
+quiet decisions that compound over the life of a codebase.
+
+The site is built on Next.js with the App Router, styled with Tailwind,
+posts authored as MDX in this repo. The whole thing is deliberately
+boring — fewer moving parts means fewer late-night surprises, and the
+content is what matters anyway. If you want a sense of the shape:
+
+```ts
+export async function getAllPosts(): Promise<Post[]> {
+  const entries = await fs.readdir(POSTS_DIR);
+  const posts = await Promise.all(entries.map(readPostFile));
+  return posts
+    .filter((p): p is Post => p !== null)
+    .filter((p) => !p.frontmatter.draft)
+    .sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
+}
+```
+
+A flat directory of MDX files, sorted by date, drafts hidden. That's the
+content model. No CMS, no database, no scheduled publishing — `git push`
+is the publish button.
+
+If you'd like to follow along, the [RSS feed](/rss.xml) is the durable
+way to subscribe. More writing soon.
