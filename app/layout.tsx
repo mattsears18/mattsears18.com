@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono, Source_Serif_4 } from 'next/font/google';
 import { GeistSans } from 'geist/font/sans';
+import { VercelToolbar } from '@vercel/toolbar/next';
 
 import './globals.css';
 import { ThemeScript } from './components/theme-script';
@@ -88,6 +89,11 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Toolbar is gated on VERCEL_ENV: shows on preview + development, hidden on
+  // production. Visitors never saw it anyway (auth-gated), but this kills the
+  // overlay for signed-in team members on the production deploy too.
+  const showVercelToolbar = process.env.VERCEL_ENV !== 'production';
+
   return (
     <html
       lang="en"
@@ -104,6 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <main className="mx-auto max-w-container px-6 sm:px-12">{children}</main>
         <SiteFooter />
+        {showVercelToolbar ? <VercelToolbar /> : null}
       </body>
     </html>
   );
