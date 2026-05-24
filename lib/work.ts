@@ -140,6 +140,7 @@ export function formatLinkLabel(key: string): string {
     github: 'GitHub',
     paper: 'Paper',
     video: 'Video',
+    youtube: 'YouTube',
     demo: 'Demo',
   };
   if (known[key]) return known[key];
