@@ -1,6 +1,31 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
+import { SITE_TAGLINE, SITE_TITLE } from '@/lib/site';
+
+/*
+ * Landing page metadata. Uses `title.absolute` to override the layout's
+ * `%s — Matt Sears` template (would otherwise produce "Matt Sears — Matt
+ * Sears" since the layout default is the bare site title). Description is
+ * the hero tagline — more concrete than the layout-level fallback.
+ */
+export const metadata: Metadata = {
+  title: { absolute: SITE_TITLE },
+  description: SITE_TAGLINE,
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_TAGLINE,
+    url: '/',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SITE_TAGLINE,
+  },
+};
 
 /**
  * Landing page — hero + brief about. Build slice #8.

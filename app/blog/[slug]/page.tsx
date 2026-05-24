@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { formatPostDate, getAllPosts, getPostBySlug } from '@/lib/posts';
+import { SITE_TITLE } from '@/lib/site';
 
 type Params = { slug: string };
 
@@ -19,14 +20,25 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
+  const canonical = `/blog/${slug}`;
   return {
     title: post.frontmatter.title,
     description: post.frontmatter.excerpt,
+    authors: [{ name: SITE_TITLE }],
+    alternates: { canonical },
     openGraph: {
       title: post.frontmatter.title,
       description: post.frontmatter.excerpt,
       type: 'article',
+      url: canonical,
       publishedTime: post.frontmatter.date,
+      authors: [SITE_TITLE],
+      tags: post.frontmatter.tags,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.frontmatter.title,
+      description: post.frontmatter.excerpt,
     },
   };
 }
