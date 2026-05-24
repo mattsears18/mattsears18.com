@@ -1,4 +1,5 @@
 const createMDX = require('@next/mdx');
+const createWithVercelToolbar = require('@vercel/toolbar/plugins/next');
 
 const rehypePrettyCodeOptions = {
   theme: {
@@ -27,4 +28,6 @@ const withMDX = createMDX({
   },
 });
 
-module.exports = withMDX(nextConfig);
+const withVercelToolbar = createWithVercelToolbar();
+
+module.exports = withVercelToolbar(withMDX(nextConfig));
