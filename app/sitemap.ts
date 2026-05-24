@@ -2,22 +2,27 @@ import type { MetadataRoute } from 'next';
 
 import { getAllPosts } from '@/lib/posts';
 import { SITE_URL } from '@/lib/site';
+import { getAllProjects } from '@/lib/work';
 
 /*
  * `/sitemap.xml` — emitted by Next from this file at build time.
  *
  * Includes:
- *   - `/`        landing page                     (changeFrequency: monthly)
- *   - `/blog`    blog index                       (changeFrequency: weekly)
- *   - `/blog/:slug` every published post          (lastModified = frontmatter date)
+ *   - `/`             landing page              (changeFrequency: monthly)
+ *   - `/blog`         blog index                (changeFrequency: weekly)
+ *   - `/blog/:slug`   every published post      (lastModified = frontmatter date)
+ *   - `/work`         portfolio index           (changeFrequency: monthly)
+ *   - `/work/:slug`   every project detail page (changeFrequency: yearly)
  *
- * `/work` is intentionally absent — the route doesn't exist yet (issue #9).
- * Add it here when that slice ships.
+ * Project frontmatter has no `date` field — projects are evergreen — so we
+ * use `now` for project lastModified. Acceptable: search engines mostly use
+ * this for crawl scheduling, not freshness ranking, and the project pages
+ * change infrequently.
  */
 export const dynamic = 'force-static';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getAllPosts();
+  const [posts, projects] = await Promise.all([getAllPosts(), getAllProjects()]);
   const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -33,6 +38,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}/work`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
   ];
 
   const postRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
@@ -42,5 +53,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticRoutes, ...postRoutes];
+  const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
+    url: `${SITE_URL}/work/${project.slug}`,
+    lastModified: now,
+    changeFrequency: 'yearly',
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...postRoutes, ...projectRoutes];
 }
