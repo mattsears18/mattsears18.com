@@ -23,7 +23,10 @@ const nextConfig = {
 const withMDX = createMDX({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [],
+    remarkPlugins: [
+      'remark-frontmatter',
+      require.resolve('./lib/remark-strip-frontmatter'),
+    ],
     rehypePlugins: [['rehype-pretty-code', rehypePrettyCodeOptions]],
   },
 });
