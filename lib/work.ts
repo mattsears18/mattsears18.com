@@ -7,11 +7,18 @@ import matter from 'gray-matter';
  * Frontmatter shape for `content/work/*.mdx` projects.
  *
  * Required: title, role, year, summary, tech.
- * Optional: links (external/repo/paper/video — open set), featured (boolean).
+ * Optional: links (external/repo/paper/video — open set), featured (boolean),
+ * image + imageAlt (thumbnail / hero — see `image` rules below).
  *
  * `links` is intentionally a loose record so MDX authors can add new keys
  * (paper / video / case-study) without re-touching this type — the index +
  * detail pages render whatever keys are present using `formatLinkLabel`.
+ *
+ * `image` is a public-root path like `/work/lightwork.png`. If the file is
+ * missing from `public/`, `getAllProjects` strips the field at read time so
+ * the UI falls back to the generated initial-card instead of rendering a
+ * broken <Image>. This lets MDX authors set the convention path eagerly and
+ * drop in the real PNG later without a page-render regression.
  */
 export type ProjectLinks = Record<string, string>;
 
@@ -23,6 +30,8 @@ export type ProjectFrontmatter = {
   tech: string[];
   links?: ProjectLinks;
   featured?: boolean;
+  image?: string;
+  imageAlt?: string;
 };
 
 export type Project = {
@@ -32,6 +41,16 @@ export type Project = {
 };
 
 const WORK_DIR = path.join(process.cwd(), 'content', 'work');
+const PUBLIC_DIR = path.join(process.cwd(), 'public');
+
+async function fileExists(absPath: string): Promise<boolean> {
+  try {
+    await fs.access(absPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 async function readProjectFile(filename: string): Promise<Project | null> {
   if (!filename.endsWith('.mdx')) return null;
@@ -50,6 +69,17 @@ async function readProjectFile(filename: string): Promise<Project | null> {
     throw new Error(
       `Project ${slug} is missing required frontmatter (title, role, year, summary, tech[])`,
     );
+  }
+  if (frontmatter.image) {
+    // public-root paths only; strip the field if the asset isn't on disk so
+    // the UI renders the initial-card fallback instead of a broken <Image>.
+    const onDisk = frontmatter.image.startsWith('/')
+      ? path.join(PUBLIC_DIR, frontmatter.image)
+      : null;
+    if (!onDisk || !(await fileExists(onDisk))) {
+      delete frontmatter.image;
+      delete frontmatter.imageAlt;
+    }
   }
   return { slug, frontmatter, content };
 }
