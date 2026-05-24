@@ -4,9 +4,10 @@ import { ThemeToggle } from './theme-toggle';
 
 /**
  * Top-of-page header. Minimal by design: name on the left as a home link,
- * theme toggle on the right. Nav links land in #10 / #9 when the /blog and
- * /work routes exist — adding them here while they 404 would be a worse
- * signal than omitting them.
+ * primary nav (Work, Blog) in the middle/right, theme toggle on the far
+ * right. Nav was held back until both routes existed (#10 added /blog,
+ * #9 added /work) — adding them earlier would have been a worse signal
+ * than omitting them.
  */
 export function SiteHeader() {
   return (
@@ -18,7 +19,21 @@ export function SiteHeader() {
         >
           Matt Sears
         </Link>
-        <ThemeToggle />
+        <nav aria-label="Primary" className="flex items-center gap-1 sm:gap-2">
+          <Link
+            href="/work"
+            className="rounded-md px-3 py-2 font-mono text-xs uppercase tracking-widest text-fg-muted hover:text-accent"
+          >
+            Work
+          </Link>
+          <Link
+            href="/blog"
+            className="rounded-md px-3 py-2 font-mono text-xs uppercase tracking-widest text-fg-muted hover:text-accent"
+          >
+            Blog
+          </Link>
+          <ThemeToggle />
+        </nav>
       </div>
     </header>
   );
