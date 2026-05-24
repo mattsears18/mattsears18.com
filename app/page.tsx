@@ -4,12 +4,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { SITE_TAGLINE, SITE_TITLE } from '@/lib/site';
 
-/*
- * Landing page metadata. Uses `title.absolute` to override the layout's
- * `%s — Matt Sears` template (would otherwise produce "Matt Sears — Matt
- * Sears" since the layout default is the bare site title). Description is
- * the hero tagline — more concrete than the layout-level fallback.
- */
 export const metadata: Metadata = {
   title: { absolute: SITE_TITLE },
   description: SITE_TAGLINE,
@@ -27,13 +21,6 @@ export const metadata: Metadata = {
   },
 };
 
-/**
- * Landing page — hero + brief about. Build slice #8.
- *
- * Copy is intentionally generic-but-credible: it's true for any senior eng
- * with a few years of shipping experience. Replace the TODO-marked spans
- * with personal specifics (location, years, specialty stack) post-merge.
- */
 export default function Home() {
   return (
     <>
@@ -49,13 +36,14 @@ export default function Home() {
           id="hero-heading"
           className="max-w-3xl font-display text-display-sm font-medium tracking-tight text-fg sm:text-display-md lg:text-display-lg"
         >
-          Senior software engineer who ships reliable systems
+          Software engineer with a civil engineering PhD
           <span className="text-accent">.</span>
         </h1>
 
         <p className="mt-8 max-w-2xl text-lg leading-relaxed text-fg-muted sm:text-xl">
-          I build dependable backends, sharp interfaces, and the teams that keep
-          them shipping. {/* TODO(matt): personalize — e.g. "Based in <city>." or "Currently leading platform at <company>." */}
+          I lead engineering at SalesRiver, sit on the board of a Kentucky
+          social enterprise, and build Shipyard and Lightwork on nights and
+          weekends.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -63,7 +51,6 @@ export default function Home() {
             <a href="mailto:matt@mksolutionsky.com">Get in touch</a>
           </Button>
           <Button asChild size="lg" variant="ghost">
-            {/* /work doesn't exist yet — ships in #9. Will 404 until then. */}
             <Link href="/work">See my work</Link>
           </Button>
         </div>
@@ -82,19 +69,40 @@ export default function Home() {
           </p>
           <div className="max-w-reading space-y-6 text-base leading-relaxed text-fg sm:text-lg">
             <p>
-              I&apos;ve spent the last several years writing code, reviewing
-              other people&apos;s code, and figuring out why production stopped
-              working at 2am. The throughline: small, debuggable systems beat
-              clever ones, and a team that can read each other&apos;s diffs out-ships
-              a team that can&apos;t.
+              I came up through civil engineering — undergrad at Eastern
+              Kentucky, a few years on $40M–$200M industrial site designs, then
+              a PhD at CU Boulder on how construction craft workers read 2D
+              drawings. Seven peer-reviewed papers came out of it, an
+              artificial neural network now used statewide by the Colorado DOT,
+              and an open-source eye-tracking app that&apos;s still cited.
             </p>
             <p>
-              I write about engineering practice — testing, architecture
-              decisions, the bits of build tooling that nobody else wants to
-              own. Occasional notes on the side projects too.
+              I left academia for software in 2019. At NCCER I owned Single
+              Sign-On across the entire customer-facing surface. At SalesRiver
+              I lead a team of six and took the platform from Seed through
+              Series A — including a consolidation of ten single-tenant apps
+              into one multi-tenant SaaS in a single hour of scheduled
+              downtime, a 60% cut in AWS infrastructure costs via Terraform,
+              and a white-label transformation that drove $800K+ in new ARR.
+            </p>
+            <p>
+              Off-hours I serve on the board of{' '}
+              <a
+                href="https://www.enrichky.com/"
+                target="_blank"
+                rel="noreferrer"
+                className="text-accent underline-offset-4 hover:underline"
+              >
+                Enrich
+              </a>
+              , a Madison County, KY social enterprise that employs people with
+              alternative resumes — recovery, homelessness, reentry. I&apos;m
+              also building Shipyard (a Claude Code plugin that autonomously
+              works a GitHub issue backlog) and Lightwork (a
+              volunteer-coordination app for community organizations). Most of
+              this portfolio site was built by Shipyard, not by me.
             </p>
             <p className="flex flex-wrap gap-x-6 gap-y-2 pt-2">
-              {/* /blog doesn't exist yet — ships in #10. Will 404 until then. */}
               <Link
                 href="/blog"
                 className="text-accent underline-offset-4 hover:underline"
@@ -108,6 +116,14 @@ export default function Home() {
                 className="text-accent underline-offset-4 hover:underline"
               >
                 View on GitHub →
+              </a>
+              <a
+                href="https://www.linkedin.com/in/mattsears18/"
+                target="_blank"
+                rel="noreferrer"
+                className="text-accent underline-offset-4 hover:underline"
+              >
+                LinkedIn →
               </a>
             </p>
           </div>
