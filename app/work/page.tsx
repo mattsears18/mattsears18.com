@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { ProjectImage } from '@/app/components/project-image';
 import { formatLinkLabel, getAllProjects } from '@/lib/work';
 
 const WORK_DESCRIPTION =
@@ -71,7 +72,14 @@ export default async function WorkIndexPage() {
             return (
               <li key={slug} className="py-10 sm:py-12">
                 <article className="grid gap-6 sm:grid-cols-[1fr_2fr] sm:gap-10">
-                  <div className="space-y-2">
+                  <div className="space-y-4">
+                    <Link
+                      href={`/work/${slug}`}
+                      aria-label={`Open ${frontmatter.title}`}
+                      className="block transition-opacity hover:opacity-90"
+                    >
+                      <ProjectImage project={project} variant="card" />
+                    </Link>
                     <p className="font-mono text-xs uppercase tracking-widest text-fg-muted">
                       <span>{frontmatter.role}</span>
                       <span aria-hidden="true"> · </span>
