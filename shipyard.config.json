@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "auto_merge": {
+    "policy": "trusted-only"
+  },
+  "trust": {
+    "authors": [
+      "mattsears18"
+    ]
+  },
+  "cost_tracking": {
+    "enabled": true
+  },
+  "repo": {
+    "owner": "mattsears18",
+    "name": "mattsears18.com"
+  }
+}
