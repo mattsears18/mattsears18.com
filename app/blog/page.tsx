@@ -3,9 +3,24 @@ import Link from 'next/link';
 
 import { formatPostDate, getAllPosts } from '@/lib/posts';
 
+const BLOG_DESCRIPTION =
+  'Writing on software engineering — systems, ops, and the work of leading teams that ship.';
+
 export const metadata: Metadata = {
   title: 'Blog',
-  description: 'Writing on software engineering — systems, ops, and leadership.',
+  description: BLOG_DESCRIPTION,
+  alternates: { canonical: '/blog' },
+  openGraph: {
+    title: 'Blog — Matt Sears',
+    description: BLOG_DESCRIPTION,
+    url: '/blog',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog — Matt Sears',
+    description: BLOG_DESCRIPTION,
+  },
 };
 
 export default async function BlogIndexPage() {

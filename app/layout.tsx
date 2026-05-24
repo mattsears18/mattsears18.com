@@ -6,6 +6,7 @@ import './globals.css';
 import { ThemeScript } from './components/theme-script';
 import { SiteHeader } from './components/site-header';
 import { SiteFooter } from './components/site-footer';
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '@/lib/site';
 
 /*
  * Font setup — see docs/design.md for the role table.
@@ -34,13 +35,56 @@ const mono = JetBrains_Mono({
   variable: '--font-mono',
 });
 
+/*
+ * Site-wide metadata. Per-route files override the title/description and
+ * provide route-specific openGraph/twitter overrides; everything else
+ * (metadataBase, siteName, default OG image via convention) is inherited.
+ *
+ * The OG/Twitter images are picked up by Next.js automatically from the
+ * `app/opengraph-image.tsx` / `app/twitter-image.tsx` route files (and any
+ * matching files in nested route segments). We do NOT enumerate them here.
+ */
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Matt Sears',
-    template: '%s — Matt Sears',
+    default: SITE_TITLE,
+    template: `%s — ${SITE_TITLE}`,
   },
-  description:
-    'Matt Sears — senior software engineer. Personal site, work, and writing.',
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_TITLE,
+  authors: [{ name: SITE_TITLE, url: SITE_URL }],
+  creator: SITE_TITLE,
+  publisher: SITE_TITLE,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  alternates: {
+    canonical: '/',
+    types: {
+      'application/rss+xml': [{ url: '/rss.xml', title: `${SITE_TITLE} — RSS` }],
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: SITE_URL,
+    siteName: SITE_TITLE,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
