@@ -4,15 +4,15 @@ Drop project screenshots into this directory using the slug from `content/work/<
 
 ```
 public/work/
-├── cdot-duration-predictor.png
-├── express-delphi.png
-├── lightwork.png
-├── nccer-sso.png
+├── cdot-duration-predictor.jpg
+├── express-delphi.jpg
+├── lightwork.jpg
+├── nccer-sso.jpg
 ├── shipyard.png
-└── visual-eyes.png
+└── visual-eyes.jpg
 ```
 
-The path in each project's frontmatter (`image: /work/<slug>.png`) is already wired up. When the file lands in this directory, `lib/work.ts` picks it up and the index card + detail page hero render it instead of the fallback initial-card.
+The path in each project's frontmatter (`image: /work/<slug>.{png,jpg}`) is already wired up — pick the extension that matches the file you commit. When the file lands in this directory, `lib/work.ts` picks it up and the index card + detail page hero render it instead of the fallback initial-card.
 
 ## Recommended specs
 
