@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-import { getAllPosts, getPostBySlug } from '@/lib/posts';
+import { getPostBySlug } from '@/lib/posts';
 import { SITE_TITLE, SITE_URL } from '@/lib/site';
 
 /*
@@ -8,22 +8,35 @@ import { SITE_TITLE, SITE_URL } from '@/lib/site';
  * frontmatter so each post page gets a card with its actual title rather
  * than the generic site card. Falls back to the site card layout if the
  * slug doesn't resolve (shouldn't happen — generateStaticParams gates it).
+ *
+ * `generateImageMetadata` is called per route invocation with the
+ * matched `params`; we return exactly one entry keyed on the slug
+ * so the route emits one og:image tag per page instead of N (one
+ * per post — `generateImageMetadata` is NOT auto-filtered by the
+ * runtime). `generateStaticParams` on the page handles enumerating
+ * all slugs at build time. Mirrors the per-project pattern in
+ * `app/work/[slug]/opengraph-image.tsx` (see issue #91).
+ *
+ * Next 16 gotcha: in `generateImageMetadata`, `params` is a plain
+ * object — but in the default export below, `params` is a Promise.
+ * Mixing them silently breaks `id` resolution at build time.
  */
 export const alt = `${SITE_TITLE} — Blog`;
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-// Pre-render one image per published post at build time. Without this,
-// Next.js would try to render the OG image on-demand at request time,
-// which is fine but means a cold-start latency on first social-card scrape.
-export async function generateImageMetadata() {
-  const posts = await getAllPosts();
-  return posts.map((post) => ({
-    id: post.slug,
-    alt: `${post.frontmatter.title} — ${SITE_TITLE}`,
-    size,
-    contentType,
-  }));
+export async function generateImageMetadata({ params }: { params?: { slug?: string } }) {
+  const slug = params?.slug ?? 'blog';
+  const post = slug !== 'blog' ? await getPostBySlug(slug) : null;
+  const altText = post ? `${post.frontmatter.title} — ${SITE_TITLE}` : alt;
+  return [
+    {
+      id: slug,
+      alt: altText,
+      size,
+      contentType,
+    },
+  ];
 }
 
 export default async function PostOpengraphImage({
