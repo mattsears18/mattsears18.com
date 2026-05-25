@@ -30,6 +30,30 @@ const securityHeaders = [
   },
 ];
 
+/*
+ * CORS posture — see #40.
+ *
+ * HTML routes get NO Access-Control-Allow-Origin header. Browsers don't
+ * enforce CORS on top-level HTML navigation anyway, so a wildcard ACAO on
+ * HTML is at best meaningless and at worst a smell — it lets any origin
+ * `fetch('/blog', { credentials: 'omit' })` and read the body cross-origin.
+ * The site is fully public today, so the practical exploit surface is zero,
+ * but locking it down now keeps the door closed when a future route gains
+ * auth or returns anything user-specific.
+ *
+ * The truly-public asset surface (RSS feed, sitemap, robots, llms.txt) still
+ * needs `Access-Control-Allow-Origin: *` because feed readers and AI agents
+ * fetch them cross-origin from arbitrary domains. We make that explicit here
+ * rather than relying on Vercel's per-route defaults so the behavior is
+ * stable across platform changes.
+ *
+ * Static chunks under /_next/static/* keep ACAO too — the <link rel=preload
+ * as=font crossorigin> tags Next.js emits in <head> trigger CORS-mode font
+ * fetches that fail without it.
+ */
+const publicCorsHeader = { key: 'Access-Control-Allow-Origin', value: '*' };
+const publicCorsRoutes = ['/rss.xml', '/sitemap.xml', '/robots.txt', '/llms.txt'];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
@@ -44,6 +68,18 @@ const nextConfig = {
       {
         source: '/:path*',
         headers: securityHeaders,
+      },
+      // Truly-public asset routes that legitimate cross-origin clients (feed
+      // readers, AI agents, search crawlers) need to fetch directly.
+      ...publicCorsRoutes.map((source) => ({
+        source,
+        headers: [publicCorsHeader],
+      })),
+      // Static chunks — fonts preloaded with `crossorigin=""` in <head> need
+      // this for the CORS-mode fetch to succeed.
+      {
+        source: '/_next/static/:path*',
+        headers: [publicCorsHeader],
       },
     ];
   },
