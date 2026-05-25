@@ -1,5 +1,6 @@
 const createMDX = require('@next/mdx');
 const createWithVercelToolbar = require('@vercel/toolbar/plugins/next');
+const { withSentryConfig } = require('@sentry/nextjs');
 
 const rehypePrettyCodeOptions = {
   theme: {
@@ -61,4 +62,24 @@ const withMDX = createMDX({
 
 const withVercelToolbar = createWithVercelToolbar();
 
-module.exports = withVercelToolbar(withMDX(nextConfig));
+/*
+ * Sentry wrapping — see #43.
+ *
+ * `withSentryConfig` wires the SDK's webpack plugin in so source maps
+ * upload at build time (requires SENTRY_AUTH_TOKEN — set in Vercel env)
+ * and instruments route handlers / Server Components automatically. It
+ * MUST be the outermost wrapper so the plugin sees the final config.
+ *
+ * Options kept minimal: `silent` mutes the plugin's build-log noise
+ * locally (CI still gets full output). Auth token and org/project
+ * come from env so a fork-clone build doesn't try to push source
+ * maps to a Sentry project it can't auth against.
+ */
+const sentryOptions = {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+};
+
+module.exports = withSentryConfig(withVercelToolbar(withMDX(nextConfig)), sentryOptions);
