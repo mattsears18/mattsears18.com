@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
-import { SITE_TAGLINE, SITE_TITLE } from '@/lib/site';
+import { defaultOpenGraph, SITE_TAGLINE, SITE_TITLE } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: { absolute: SITE_TITLE },
   description: SITE_TAGLINE,
   alternates: { canonical: '/' },
   openGraph: {
+    ...defaultOpenGraph,
     title: SITE_TITLE,
     description: SITE_TAGLINE,
     url: '/',

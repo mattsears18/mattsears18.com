@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { JsonLd } from '@/app/components/json-ld';
 import { breadcrumbListSchema } from '@/lib/json-ld';
 import { formatPostDate, getAllPosts } from '@/lib/posts';
+import { defaultOpenGraph } from '@/lib/site';
 
 const BLOG_DESCRIPTION =
   'Writing on software engineering — systems, ops, and the work of leading teams that ship.';
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   description: BLOG_DESCRIPTION,
   alternates: { canonical: '/blog' },
   openGraph: {
+    ...defaultOpenGraph,
     title: 'Blog — Matt Sears',
     description: BLOG_DESCRIPTION,
     url: '/blog',

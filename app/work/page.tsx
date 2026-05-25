@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { JsonLd } from '@/app/components/json-ld';
 import { ProjectImage } from '@/app/components/project-image';
 import { breadcrumbListSchema } from '@/lib/json-ld';
+import { defaultOpenGraph } from '@/lib/site';
 import { formatLinkLabel, getAllProjects } from '@/lib/work';
 
 const WORK_DESCRIPTION =
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   description: WORK_DESCRIPTION,
   alternates: { canonical: '/work' },
   openGraph: {
+    ...defaultOpenGraph,
     title: 'Work — Matt Sears',
     description: WORK_DESCRIPTION,
     url: '/work',

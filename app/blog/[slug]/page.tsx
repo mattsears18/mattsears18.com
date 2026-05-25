@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { JsonLd } from '@/app/components/json-ld';
 import { breadcrumbListSchema } from '@/lib/json-ld';
 import { formatPostDate, getAllPosts, getPostBySlug } from '@/lib/posts';
-import { SITE_TITLE } from '@/lib/site';
+import { defaultOpenGraph, SITE_TITLE } from '@/lib/site';
 
 type Params = { slug: string };
 
@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     authors: [{ name: SITE_TITLE }],
     alternates: { canonical },
     openGraph: {
+      ...defaultOpenGraph,
       title: post.frontmatter.title,
       description: post.frontmatter.excerpt,
       type: 'article',
