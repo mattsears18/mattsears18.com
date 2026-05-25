@@ -10,6 +10,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky"
@@ -45,9 +48,11 @@
   },
   "devDependencies": {
     "@vercel/toolbar": "^0.2.6",
+    "@vitest/coverage-v8": "^4.1.7",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",
     "prettier": "^3.8.3",
-    "prettier-plugin-tailwindcss": "^0.8.0"
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "vitest": "^4.1.7"
   }
 }
