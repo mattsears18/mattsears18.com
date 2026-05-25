@@ -13,6 +13,7 @@ import { getAllProjects } from '@/lib/work';
  *   - `/blog/:slug`   every published post      (lastModified = frontmatter date)
  *   - `/work`         portfolio index           (changeFrequency: monthly)
  *   - `/work/:slug`   every project detail page (changeFrequency: yearly)
+ *   - `/privacy`      privacy notice            (changeFrequency: yearly)
  *
  * Project frontmatter has no `date` field — projects are evergreen — so we
  * use `now` for project lastModified. Acceptable: search engines mostly use
@@ -48,6 +49,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/privacy`,
+      lastModified: now,
+      changeFrequency: 'yearly',
+      priority: 0.3,
     },
   ];
 
