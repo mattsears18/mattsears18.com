@@ -34,7 +34,8 @@ const THEME_SCRIPT = `(function () {
   }
 })();`;
 
-export function ThemeScript() {
-  // eslint-disable-next-line react/no-danger -- payload is a hard-coded constant, see file header.
-  return <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />;
+export function ThemeScript({ nonce }: { nonce?: string }) {
+  const innerHTML = { __html: THEME_SCRIPT };
+  // eslint-disable-next-line react/no-danger -- THEME_SCRIPT is a hard-coded constant, see file header.
+  return <script nonce={nonce} dangerouslySetInnerHTML={innerHTML} />;
 }
