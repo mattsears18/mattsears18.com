@@ -1,6 +1,6 @@
 # mattsears18.com
 
-Personal site for Matt Sears. Next.js 14 (App Router) + Tailwind + MDX, deployed on Vercel.
+Personal site for Matt Sears. Next.js 16 (App Router) + React 19 + Tailwind + MDX, deployed on Vercel.
 
 See [`docs/architecture.md`](./docs/architecture.md) for the locked tech stack and content model, and [`docs/design.md`](./docs/design.md) for typography, palette, and layout tokens.
 
