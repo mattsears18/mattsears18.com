@@ -1,7 +1,14 @@
+import Link from 'next/link';
+
 /**
- * Page footer. Single line of attribution + source link, fg-muted.
- * Kept intentionally bare — no nav repetition, no social row, no copyright
- * year ceremony. Matches the editorial restraint called out in design.md.
+ * Page footer. Single line of attribution + source link + privacy link,
+ * fg-muted. Kept intentionally bare — no nav repetition, no social row, no
+ * copyright year ceremony. Matches the editorial restraint called out in
+ * design.md.
+ *
+ * The Privacy link is the visible disclosure required by the privacy notice
+ * (see #44). Internal `next/link` because /privacy is a same-origin route;
+ * the GitHub link stays external (target="_blank") because it points off-site.
  */
 export function SiteFooter() {
   return (
@@ -17,6 +24,13 @@ export function SiteFooter() {
           >
             GitHub
           </a>
+          .{' '}
+          <Link
+            href="/privacy"
+            className="text-fg-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent"
+          >
+            Privacy
+          </Link>
           .
         </p>
       </div>
