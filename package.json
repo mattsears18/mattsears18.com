@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
@@ -41,6 +42,8 @@
   },
   "devDependencies": {
     "@vercel/toolbar": "^0.2.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.5",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0"
   }
