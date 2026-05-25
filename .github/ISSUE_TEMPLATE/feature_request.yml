@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest an enhancement, new content, or a content correction.
+title: "feat: <short description>"
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What's missing or could be better? Skip if this is purely a "nice to have."
+      placeholder: The blog index doesn't show post dates, so I can't tell which posts are recent.
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: What should change? Be specific where you can.
+      placeholder: Add a published date next to each post title on /blog.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you thought about and why you'd skip them.
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Mockups, links, references.

@@ -1,0 +1,49 @@
+name: Bug report
+description: Something on the site is broken or behaves unexpectedly.
+title: "bug: <short description>"
+labels: ["bug", "needs-triage"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear, concise description of the bug.
+      placeholder: When I clicked the RSS link in the footer, the page 404'd.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps so the bug can be reproduced reliably.
+      placeholder: |
+        1. Visit https://mattsears18.com/blog
+        2. Click the first post
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: The page should render with code blocks styled by .prose-post.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      placeholder: Code blocks appear unstyled (default browser monospace, no background).
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser / device
+      description: Browser + version, OS, mobile vs desktop. Skip if not relevant.
+      placeholder: Safari 17.4 on macOS 14, desktop
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Screenshots, console errors, links to related issues.
