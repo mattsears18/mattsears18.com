@@ -21,12 +21,7 @@ jobs:
         run: npm ci
 
       - name: Lint
-        # `next lint` was removed in Next.js 16 and the current `lint` script
-        # fails until it's swapped for a direct ESLint invocation. Tracked in
-        # https://github.com/mattsears18/mattsears18.com/issues/80 — remove
-        # continue-on-error once #80 lands.
-        run: npm run lint --if-present
-        continue-on-error: true
+        run: npm run lint
 
       - name: Type check
         run: npx tsc --noEmit
