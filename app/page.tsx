@@ -28,8 +28,6 @@ export default function Home() {
         aria-labelledby="hero-heading"
         className="flex min-h-[70vh] flex-col justify-center py-16 sm:py-24 lg:min-h-[78vh]"
       >
-        <p className="mb-6 font-mono text-sm uppercase tracking-widest text-fg-muted">Matt Sears</p>
-
         <h1
           id="hero-heading"
           className="max-w-3xl font-display text-display-sm font-medium tracking-tight text-fg sm:text-display-md lg:text-display-lg"
