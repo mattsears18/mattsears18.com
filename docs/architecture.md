@@ -4,9 +4,9 @@ This document locks the tech stack and content model for `mattsears18.com`. Deci
 
 Resolves the decisions in [#5](https://github.com/mattsears18/mattsears18.com/issues/5).
 
-## Framework — Next.js 14 (App Router)
+## Framework — Next.js 16 (App Router)
 
-The repo was scaffolded with `create-next-app` on Next.js 14 using the App Router. We're staying put. The App Router is the supported path forward for new Next.js work, server components map cleanly to a content-heavy personal site, and there's no concrete pain point that would justify the cost of porting to Astro / SvelteKit / 11ty. Reach for an alternative only if a specific requirement (e.g., a non-React framework, an islands-architecture mandate) shows up — not preemptively.
+The repo was scaffolded with `create-next-app` on Next 14 using the App Router, then upgraded to Next.js 16 + React 19 in [#15](https://github.com/mattsears18/mattsears18.com/pull/15). We're staying on Next + App Router. The App Router is the supported path forward for new Next.js work, server components map cleanly to a content-heavy personal site, and there's no concrete pain point that would justify the cost of porting to Astro / SvelteKit / 11ty. Reach for an alternative only if a specific requirement (e.g., a non-React framework, an islands-architecture mandate) shows up — not preemptively.
 
 ## Styling — Tailwind + shadcn/ui
 
