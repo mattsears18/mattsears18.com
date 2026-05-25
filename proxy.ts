@@ -48,7 +48,12 @@ export function proxy(request: NextRequest) {
     `style-src-attr 'unsafe-inline'`,
     `img-src 'self' data: blob:${isProduction ? '' : ' https://vercel.live https://vercel.com'}`,
     `font-src 'self' data:${isProduction ? '' : ' https://vercel.live'}`,
-    `connect-src 'self'${isProduction ? '' : ' https://vercel.live wss://ws-us3.pusher.com https://sockjs-us3.pusher.com'}`,
+    // Sentry ingestion endpoint — see #43. The browser SDK POSTs events to
+    // {DSN-host}/api/{project}/envelope/. Allowlisting *.sentry.io and
+    // *.ingest.sentry.io covers both legacy and per-org ingest hostnames
+    // without enumerating the specific subdomain (which would couple the
+    // CSP to whichever Sentry account owns the DSN).
+    `connect-src 'self' https://*.sentry.io https://*.ingest.sentry.io${isProduction ? '' : ' https://vercel.live wss://ws-us3.pusher.com https://sockjs-us3.pusher.com'}`,
     `frame-src 'self'${isProduction ? '' : ' https://vercel.live'}`,
     `frame-ancestors 'none'`,
     `base-uri 'self'`,
