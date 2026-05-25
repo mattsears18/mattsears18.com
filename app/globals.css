@@ -31,7 +31,7 @@
   }
 
   body {
-    @apply bg-bg text-fg font-sans antialiased;
+    @apply bg-bg font-sans text-fg antialiased;
     font-size: 17px;
     line-height: 1.6;
     text-rendering: optimizeLegibility;

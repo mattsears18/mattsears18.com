@@ -51,9 +51,8 @@ export default async function WorkIndexPage() {
           Work
         </h1>
         <p className="mt-4 text-base leading-relaxed text-fg-muted">
-          A shortlist of projects from research, industry, and the side-project
-          shelf — chosen for breadth of stack and depth of outcome, not for
-          completeness.
+          A shortlist of projects from research, industry, and the side-project shelf — chosen for
+          breadth of stack and depth of outcome, not for completeness.
         </p>
       </header>
 
@@ -107,10 +106,7 @@ export default async function WorkIndexPage() {
                       {frontmatter.summary}
                     </p>
 
-                    <ul
-                      aria-label="Technology stack"
-                      className="mt-5 flex flex-wrap gap-2"
-                    >
+                    <ul aria-label="Technology stack" className="mt-5 flex flex-wrap gap-2">
                       {frontmatter.tech.map((tech) => (
                         <li
                           key={tech}

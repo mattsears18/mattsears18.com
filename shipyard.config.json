@@ -4,9 +4,7 @@
     "policy": "trusted-only"
   },
   "trust": {
-    "authors": [
-      "mattsears18"
-    ]
+    "authors": ["mattsears18"]
   },
   "cost_tracking": {
     "enabled": true

@@ -13,11 +13,7 @@ export async function generateStaticParams(): Promise<Params[]> {
   return projects.map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Params>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
   if (!project) return {};
@@ -54,11 +50,7 @@ export async function generateMetadata({
  * `generateStaticParams` enumeration ensures every slug renders at build
  * time, which keeps the import path statically analyzable.
  */
-export default async function ProjectPage({
-  params,
-}: {
-  params: Promise<Params>;
-}) {
+export default async function ProjectPage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
   if (!project) notFound();
@@ -86,14 +78,9 @@ export default async function ProjectPage({
         <h1 className="font-display text-4xl font-medium tracking-tight text-fg sm:text-5xl lg:text-display-sm">
           {project.frontmatter.title}
         </h1>
-        <p className="mt-5 text-lg leading-relaxed text-fg-muted">
-          {project.frontmatter.summary}
-        </p>
+        <p className="mt-5 text-lg leading-relaxed text-fg-muted">{project.frontmatter.summary}</p>
 
-        <ul
-          aria-label="Technology stack"
-          className="mt-6 flex flex-wrap gap-2"
-        >
+        <ul aria-label="Technology stack" className="mt-6 flex flex-wrap gap-2">
           {project.frontmatter.tech.map((tech) => (
             <li
               key={tech}

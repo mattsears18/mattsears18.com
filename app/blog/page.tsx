@@ -29,15 +29,12 @@ export default async function BlogIndexPage() {
   return (
     <div className="mx-auto max-w-reading py-16 sm:py-20">
       <header className="mb-12 sm:mb-16">
-        <p className="mb-4 font-mono text-xs uppercase tracking-widest text-fg-muted">
-          Writing
-        </p>
+        <p className="mb-4 font-mono text-xs uppercase tracking-widest text-fg-muted">Writing</p>
         <h1 className="font-display text-4xl font-medium tracking-tight text-fg sm:text-5xl">
           Blog
         </h1>
         <p className="mt-4 max-w-xl text-base leading-relaxed text-fg-muted">
-          Notes on engineering practice — systems, operations, the work of
-          leading teams that ship.
+          Notes on engineering practice — systems, operations, the work of leading teams that ship.
         </p>
       </header>
 
@@ -53,10 +50,7 @@ export default async function BlogIndexPage() {
           {posts.map((post) => (
             <li key={post.slug} className="py-8 sm:py-10">
               <article>
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="group block"
-                >
+                <Link href={`/blog/${post.slug}`} className="group block">
                   <h2 className="font-display text-2xl font-medium tracking-tight text-fg group-hover:text-accent sm:text-3xl">
                     {post.frontmatter.title}
                   </h2>

@@ -12,11 +12,7 @@ export async function generateStaticParams(): Promise<Params[]> {
   return posts.map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Params>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
@@ -43,11 +39,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: Promise<Params>;
-}) {
+export default async function PostPage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();
@@ -70,9 +62,7 @@ export default async function PostPage({
           {post.frontmatter.title}
         </h1>
         <p className="mt-4 font-mono text-xs uppercase tracking-widest text-fg-muted">
-          <time dateTime={post.frontmatter.date}>
-            {formatPostDate(post.frontmatter.date)}
-          </time>
+          <time dateTime={post.frontmatter.date}>{formatPostDate(post.frontmatter.date)}</time>
         </p>
       </header>
 

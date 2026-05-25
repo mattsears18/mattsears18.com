@@ -19,12 +19,12 @@ Strongest references, descending priority: [brittanychiang.com](https://brittany
 
 ## Typography
 
-| Role | Choice | Notes |
-|---|---|---|
-| Display (hero, section headings) | **Geist Sans** | Modern, technical. Self-hosted via `next/font`. |
-| Body / UI | **Inter** | Workhorse. Cohesive with Geist. |
-| Long-form (blog post body) | **Source Serif 4** | Transitional serif. Default for posts; sans for everything else. |
-| Mono (code, dates, kbd) | **JetBrains Mono** | Self-hosted via `next/font`. |
+| Role                             | Choice             | Notes                                                            |
+| -------------------------------- | ------------------ | ---------------------------------------------------------------- |
+| Display (hero, section headings) | **Geist Sans**     | Modern, technical. Self-hosted via `next/font`.                  |
+| Body / UI                        | **Inter**          | Workhorse. Cohesive with Geist.                                  |
+| Long-form (blog post body)       | **Source Serif 4** | Transitional serif. Default for posts; sans for everything else. |
+| Mono (code, dates, kbd)          | **JetBrains Mono** | Self-hosted via `next/font`.                                     |
 
 All fonts self-hosted (no FOIT, no Google CDN call at runtime).
 
@@ -46,14 +46,14 @@ CSS variable bindings (set in `app/layout.tsx` via `next/font` and consumed by `
 
 Restrained, two-mode. Tokens are declared as CSS custom properties on `:root` (light) and `.dark` (dark) and surfaced as Tailwind theme colors.
 
-| Token | Light | Dark | Use |
-|---|---|---|---|
-| `bg` | `#FAFAF9` | `#0A0A0A` | Page background. Dark is near-black, NOT pure `#000`. |
-| `bg-elevated` | `#FFFFFF` | `#171717` | Cards, code blocks. |
-| `fg` | `#171717` | `#FAFAF9` | Body text. |
-| `fg-muted` | `#525252` | `#A3A3A3` | Secondary text, dates. |
-| `border` | `#E5E5E5` | `#262626` | Hairlines. |
-| `accent` | `#C2410C` | `#FB923C` | Links, CTAs, current-section indicators. |
+| Token         | Light     | Dark      | Use                                                   |
+| ------------- | --------- | --------- | ----------------------------------------------------- |
+| `bg`          | `#FAFAF9` | `#0A0A0A` | Page background. Dark is near-black, NOT pure `#000`. |
+| `bg-elevated` | `#FFFFFF` | `#171717` | Cards, code blocks.                                   |
+| `fg`          | `#171717` | `#FAFAF9` | Body text.                                            |
+| `fg-muted`    | `#525252` | `#A3A3A3` | Secondary text, dates.                                |
+| `border`      | `#E5E5E5` | `#262626` | Hairlines.                                            |
+| `accent`      | `#C2410C` | `#FB923C` | Links, CTAs, current-section indicators.              |
 
 **Accent rationale**: skip default-blue. A warm orange reads as a thoughtful color choice and pairs cleanly with both modes. Contrast meets WCAG AA for body-size text in both themes.
 

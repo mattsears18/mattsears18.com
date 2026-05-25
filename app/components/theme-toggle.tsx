@@ -18,9 +18,7 @@ export function ThemeToggle() {
 
   // Read the post-ThemeScript state on mount so SSR markup and client agree.
   useEffect(() => {
-    const current: Theme = document.documentElement.classList.contains('dark')
-      ? 'dark'
-      : 'light';
+    const current: Theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     setTheme(current);
   }, []);
 
@@ -60,7 +58,7 @@ export function ThemeToggle() {
       onClick={() => apply(isDark ? 'light' : 'dark')}
       aria-pressed={isDark}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-bg-elevated text-fg-muted transition-colors hover:text-fg hover:border-accent focus-visible:text-fg"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-bg-elevated text-fg-muted transition-colors hover:border-accent hover:text-fg focus-visible:text-fg"
     >
       {/* Sun (shown in dark mode — click to go light) */}
       <svg

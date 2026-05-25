@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
@@ -38,6 +40,8 @@
     "typescript": "5.4.5"
   },
   "devDependencies": {
-    "@vercel/toolbar": "^0.2.6"
+    "@vercel/toolbar": "^0.2.6",
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.8.0"
   }
 }
