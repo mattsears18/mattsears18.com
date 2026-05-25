@@ -1,0 +1,19 @@
+# Dependencies
+node_modules
+
+# Build output
+.next
+build
+out
+
+# Generated / lockfiles
+package-lock.json
+next-env.d.ts
+*.tsbuildinfo
+
+# Local tooling
+.shipyard
+.claude/worktrees
+
+# Vercel
+.vercel
