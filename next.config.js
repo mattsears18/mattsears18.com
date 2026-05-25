@@ -52,10 +52,7 @@ const nextConfig = {
 const withMDX = createMDX({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [
-      'remark-frontmatter',
-      require.resolve('./lib/remark-strip-frontmatter'),
-    ],
+    remarkPlugins: ['remark-frontmatter', require.resolve('./lib/remark-strip-frontmatter')],
     rehypePlugins: [['rehype-pretty-code', rehypePrettyCodeOptions]],
   },
 });

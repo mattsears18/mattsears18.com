@@ -38,81 +38,79 @@ export default async function PostOpengraphImage({
   const date = post?.frontmatter.date ?? '';
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: '80px 96px',
+        background: '#0a0a0a',
+        color: '#f5f5f5',
+        fontFamily: 'sans-serif',
+      }}
+    >
       <div
         style={{
-          width: '100%',
-          height: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontSize: 22,
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: '#a3a3a3',
+          fontFamily: 'monospace',
+        }}
+      >
+        <span>{SITE_URL.replace(/^https?:\/\//, '')}/blog</span>
+        {date ? <span>{date}</span> : null}
+      </div>
+
+      <div
+        style={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '80px 96px',
-          background: '#0a0a0a',
-          color: '#f5f5f5',
-          fontFamily: 'sans-serif',
+          gap: 32,
         }}
       >
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            fontSize: 22,
+            fontSize: 28,
             letterSpacing: '0.18em',
             textTransform: 'uppercase',
-            color: '#a3a3a3',
+            color: '#f97316',
             fontFamily: 'monospace',
+            display: 'flex',
           }}
         >
-          <span>{SITE_URL.replace(/^https?:\/\//, '')}/blog</span>
-          {date ? <span>{date}</span> : null}
+          Writing
         </div>
-
         <div
           style={{
+            fontSize: title.length > 60 ? 60 : 72,
+            fontWeight: 600,
+            letterSpacing: '-0.025em',
+            lineHeight: 1.05,
+            maxWidth: 1000,
             display: 'flex',
-            flexDirection: 'column',
-            gap: 32,
           }}
         >
-          <div
-            style={{
-              fontSize: 28,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: '#f97316',
-              fontFamily: 'monospace',
-              display: 'flex',
-            }}
-          >
-            Writing
-          </div>
-          <div
-            style={{
-              fontSize: title.length > 60 ? 60 : 72,
-              fontWeight: 600,
-              letterSpacing: '-0.025em',
-              lineHeight: 1.05,
-              maxWidth: 1000,
-              display: 'flex',
-            }}
-          >
-            {title}
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            fontSize: 28,
-            color: '#d4d4d4',
-            fontFamily: 'sans-serif',
-          }}
-        >
-          {SITE_TITLE}
-          <span style={{ color: '#f97316' }}>.</span>
+          {title}
         </div>
       </div>
-    ),
+
+      <div
+        style={{
+          display: 'flex',
+          fontSize: 28,
+          color: '#d4d4d4',
+          fontFamily: 'sans-serif',
+        }}
+      >
+        {SITE_TITLE}
+        <span style={{ color: '#f97316' }}>.</span>
+      </div>
+    </div>,
     size,
   );
 }

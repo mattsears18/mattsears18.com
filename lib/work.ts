@@ -111,7 +111,8 @@ export async function getAllProjects(): Promise<Project[]> {
     .filter((p): p is Project => p !== null)
     .sort((a, b) => {
       // Featured first, then most-recent end-year, then title.
-      const featDelta = Number(b.frontmatter.featured ?? false) - Number(a.frontmatter.featured ?? false);
+      const featDelta =
+        Number(b.frontmatter.featured ?? false) - Number(a.frontmatter.featured ?? false);
       if (featDelta !== 0) return featDelta;
       const yearDelta = yearSortKey(b.frontmatter.year) - yearSortKey(a.frontmatter.year);
       if (yearDelta !== 0) return yearDelta;
@@ -144,7 +145,5 @@ export function formatLinkLabel(key: string): string {
     demo: 'Demo',
   };
   if (known[key]) return known[key];
-  return key
-    .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return key.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }

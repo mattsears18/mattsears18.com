@@ -15,12 +15,12 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 
-| Command | What it does |
-|---|---|
-| `npm run dev` | Start the dev server on port 3000 |
+| Command         | What it does                          |
+| --------------- | ------------------------------------- |
+| `npm run dev`   | Start the dev server on port 3000     |
 | `npm run build` | Production build (run before pushing) |
-| `npm start` | Serve the production build locally |
-| `npm run lint` | ESLint via `next lint` |
+| `npm start`     | Serve the production build locally    |
+| `npm run lint`  | ESLint via `next lint`                |
 
 ## Deployment
 

@@ -19,66 +19,64 @@ export const contentType = 'image/png';
 
 export default async function OpengraphImage() {
   return new ImageResponse(
-    (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: '80px 96px',
+        background: '#0a0a0a',
+        color: '#f5f5f5',
+        fontFamily: 'sans-serif',
+      }}
+    >
       <div
         style={{
-          width: '100%',
-          height: '100%',
+          display: 'flex',
+          fontSize: 22,
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: '#a3a3a3',
+          fontFamily: 'monospace',
+        }}
+      >
+        {SITE_URL.replace(/^https?:\/\//, '')}
+      </div>
+
+      <div
+        style={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '80px 96px',
-          background: '#0a0a0a',
-          color: '#f5f5f5',
-          fontFamily: 'sans-serif',
+          gap: 24,
         }}
       >
         <div
           style={{
+            fontSize: 84,
+            fontWeight: 600,
+            letterSpacing: '-0.03em',
+            lineHeight: 1,
             display: 'flex',
-            fontSize: 22,
-            letterSpacing: '0.18em',
-            textTransform: 'uppercase',
-            color: '#a3a3a3',
-            fontFamily: 'monospace',
           }}
         >
-          {SITE_URL.replace(/^https?:\/\//, '')}
+          {SITE_TITLE}
+          <span style={{ color: '#f97316' }}>.</span>
         </div>
-
         <div
           style={{
+            fontSize: 36,
+            color: '#d4d4d4',
+            lineHeight: 1.25,
+            maxWidth: 880,
             display: 'flex',
-            flexDirection: 'column',
-            gap: 24,
           }}
         >
-          <div
-            style={{
-              fontSize: 84,
-              fontWeight: 600,
-              letterSpacing: '-0.03em',
-              lineHeight: 1,
-              display: 'flex',
-            }}
-          >
-            {SITE_TITLE}
-            <span style={{ color: '#f97316' }}>.</span>
-          </div>
-          <div
-            style={{
-              fontSize: 36,
-              color: '#d4d4d4',
-              lineHeight: 1.25,
-              maxWidth: 880,
-              display: 'flex',
-            }}
-          >
-            {SITE_TAGLINE}
-          </div>
+          {SITE_TAGLINE}
         </div>
       </div>
-    ),
+    </div>,
     size,
   );
 }
