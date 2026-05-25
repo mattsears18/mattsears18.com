@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono, Source_Serif_4 } from 'next/font/google';
 import { GeistSans } from 'geist/font/sans';
+import { headers } from 'next/headers';
 import { VercelToolbar } from '@vercel/toolbar/next';
 
 import './globals.css';
@@ -88,11 +89,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Toolbar is gated on VERCEL_ENV: shows on preview + development, hidden on
   // production. Visitors never saw it anyway (auth-gated), but this kills the
   // overlay for signed-in team members on the production deploy too.
   const showVercelToolbar = process.env.VERCEL_ENV !== 'production';
+
+  // CSP nonce — see proxy.ts. Stamped onto the one inline <script> we
+  // emit (theme pre-paint); Next.js auto-stamps it onto its own framework
+  // scripts and the next/font-generated <style> blocks during SSR.
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
 
   return (
     <html
@@ -104,7 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <head>
-        <ThemeScript />
+        <ThemeScript nonce={nonce} />
       </head>
       <body className="min-h-screen bg-bg text-fg">
         <SiteHeader />

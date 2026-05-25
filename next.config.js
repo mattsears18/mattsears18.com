@@ -9,6 +9,26 @@ const rehypePrettyCodeOptions = {
   keepBackground: false,
 };
 
+/*
+ * Static defense-in-depth headers — see #38.
+ *
+ * The Content-Security-Policy header is NOT in this list: it carries a
+ * per-request nonce and is set by `proxy.ts` instead. The four headers
+ * below are static strings with no request-dependent data, so applying them
+ * here keeps them off the proxy hot path (and lets them apply to routes
+ * excluded from the proxy matcher — robots.txt, sitemap.xml, /_next/static,
+ * etc.).
+ */
+const securityHeaders = [
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+  },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
@@ -17,6 +37,14 @@ const nextConfig = {
   // under a home directory that has its own yarn.lock / package-lock.json).
   turbopack: {
     root: __dirname,
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+    ];
   },
 };
 
