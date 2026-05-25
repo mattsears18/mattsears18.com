@@ -6,7 +6,7 @@ import { JsonLd } from '@/app/components/json-ld';
 import { ProjectImage } from '@/app/components/project-image';
 import { breadcrumbListSchema } from '@/lib/json-ld';
 import { formatLinkLabel, getAllProjects, getProjectBySlug } from '@/lib/work';
-import { SITE_TITLE } from '@/lib/site';
+import { defaultOpenGraph, SITE_TITLE } from '@/lib/site';
 
 type Params = { slug: string };
 
@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     authors: [{ name: SITE_TITLE }],
     alternates: { canonical },
     openGraph: {
+      ...defaultOpenGraph,
       title: project.frontmatter.title,
       description: project.frontmatter.summary,
       type: 'article',
