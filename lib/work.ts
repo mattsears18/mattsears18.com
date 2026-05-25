@@ -14,7 +14,7 @@ import matter from 'gray-matter';
  * (paper / video / case-study) without re-touching this type — the index +
  * detail pages render whatever keys are present using `formatLinkLabel`.
  *
- * `image` is a public-root path like `/work/lightwork.png`. If the file is
+ * `image` is a public-root path like `/work/lightwork.jpg`. If the file is
  * missing from `public/`, `getAllProjects` strips the field at read time so
  * the UI falls back to the generated initial-card instead of rendering a
  * broken <Image>. This lets MDX authors set the convention path eagerly and
