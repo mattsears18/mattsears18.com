@@ -80,7 +80,7 @@ export default function Home() {
                 href="https://www.enrichky.com/"
                 target="_blank"
                 rel="noreferrer"
-                className="text-accent underline-offset-4 hover:underline"
+                className="text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
               >
                 Enrich
               </a>
