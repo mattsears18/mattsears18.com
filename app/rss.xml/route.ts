@@ -4,7 +4,7 @@ import { getAllPosts } from '@/lib/posts';
 
 const SITE_URL = 'https://mattsears18.com';
 const SITE_TITLE = 'Matt Sears';
-const SITE_DESCRIPTION = 'Notes from a senior software engineer.';
+const SITE_DESCRIPTION = 'Building software, writing about it, occasionally arguing with it.';
 
 export const dynamic = 'force-static';
 
