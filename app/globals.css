@@ -48,3 +48,94 @@
     @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg;
   }
 }
+
+@layer components {
+  /*
+   * Long-form prose styles for blog posts + work case studies. Applied to
+   * the wrapper div around `<MDXContent />` in both /blog/[slug] and
+   * /work/[slug]. Don't use the Tailwind typography plugin — keeps the
+   * stylesheet narrow and on-theme.
+   */
+  .prose-post {
+    @apply text-base leading-relaxed text-fg sm:text-lg;
+  }
+
+  .prose-post > * + * {
+    @apply mt-6;
+  }
+
+  .prose-post h2 {
+    @apply mt-12 font-display text-2xl font-medium tracking-tight text-fg sm:text-3xl;
+  }
+  .prose-post h3 {
+    @apply mt-10 font-display text-xl font-medium tracking-tight text-fg sm:text-2xl;
+  }
+  .prose-post h2 + p,
+  .prose-post h3 + p {
+    @apply mt-4;
+  }
+
+  .prose-post a {
+    @apply text-accent underline-offset-4;
+  }
+  .prose-post a:hover {
+    @apply underline;
+  }
+
+  .prose-post ul {
+    @apply ml-6 list-disc;
+  }
+  .prose-post ol {
+    @apply ml-6 list-decimal;
+  }
+  .prose-post li + li {
+    @apply mt-2;
+  }
+
+  .prose-post blockquote {
+    @apply border-l-2 border-accent pl-4 italic text-fg-muted;
+  }
+
+  .prose-post hr {
+    @apply my-10 border-border;
+  }
+
+  /*
+   * Inline code (single backticks). `:not(pre) > code` excludes block code
+   * spans inside the rehype-pretty-code <pre> so token styling there isn't
+   * clobbered.
+   */
+  .prose-post :not(pre) > code {
+    @apply rounded border border-border bg-bg-elevated px-1.5 py-0.5 font-mono text-[0.875em];
+  }
+
+  /*
+   * Code blocks (rehype-pretty-code output). The plugin emits
+   * `<figure data-rehype-pretty-code-figure><pre data-language="..."><code style="display:grid">`
+   * with shiki token spans carrying `--shiki-light` / `--shiki-dark` CSS
+   * variables. `keepBackground: false` in next.config.js means the <pre>
+   * doesn't get a theme background — we apply our own from the design tokens.
+   */
+  .prose-post figure[data-rehype-pretty-code-figure] {
+    @apply my-8;
+  }
+
+  .prose-post pre {
+    @apply overflow-x-auto rounded-lg border border-border bg-bg-elevated px-5 py-4 font-mono text-sm leading-relaxed;
+  }
+
+  .prose-post pre code {
+    @apply block;
+  }
+
+  .prose-post pre code [data-line] {
+    @apply block;
+  }
+
+  .prose-post pre code span {
+    color: var(--shiki-light);
+  }
+  .dark .prose-post pre code span {
+    color: var(--shiki-dark);
+  }
+}
