@@ -5,9 +5,11 @@ import { headers } from 'next/headers';
 import { VercelToolbar } from '@vercel/toolbar/next';
 
 import './globals.css';
+import { JsonLd } from './components/json-ld';
 import { ThemeScript } from './components/theme-script';
 import { SiteHeader } from './components/site-header';
 import { SiteFooter } from './components/site-footer';
+import { personSchema, websiteSchema } from '@/lib/json-ld';
 import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '@/lib/site';
 
 /*
@@ -111,6 +113,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <head>
         <ThemeScript nonce={nonce} />
+        {/*
+         * Site-wide Person + WebSite JSON-LD — see #58. The schemas describe
+         * the site owner (Person → Knowledge Panel) and the site itself
+         * (WebSite). BreadcrumbList is per-route, rendered by individual page
+         * components against their depth in the URL hierarchy.
+         */}
+        <JsonLd schema={[personSchema(), websiteSchema()]} />
       </head>
       <body className="min-h-screen bg-bg text-fg">
         <SiteHeader />

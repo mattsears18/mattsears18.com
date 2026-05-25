@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { JsonLd } from '@/app/components/json-ld';
 import { ProjectImage } from '@/app/components/project-image';
+import { breadcrumbListSchema } from '@/lib/json-ld';
 import { formatLinkLabel, getAllProjects, getProjectBySlug } from '@/lib/work';
 import { SITE_TITLE } from '@/lib/site';
 
@@ -60,6 +62,13 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
 
   return (
     <article className="mx-auto max-w-reading py-12 sm:py-16">
+      <JsonLd
+        schema={breadcrumbListSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Work', path: '/work' },
+          { name: project.frontmatter.title, path: `/work/${slug}` },
+        ])}
+      />
       <nav className="mb-10">
         <Link
           href="/work"
