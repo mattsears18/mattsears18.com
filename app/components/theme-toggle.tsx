@@ -50,7 +50,7 @@ export function ThemeToggle() {
       <button
         type="button"
         aria-label="Toggle color theme"
-        className="h-9 w-9 rounded-md border border-border"
+        className="h-11 w-11 rounded-md border border-border"
         // The real handler is wired up on mount.
         disabled
       />
@@ -64,7 +64,7 @@ export function ThemeToggle() {
       onClick={() => apply(isDark ? 'light' : 'dark')}
       aria-pressed={isDark}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-bg-elevated text-fg-muted transition-colors hover:border-accent hover:text-fg focus-visible:text-fg"
+      className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-border bg-bg-elevated text-fg-muted transition-colors hover:border-accent hover:text-fg focus-visible:text-fg"
     >
       {/* Sun (shown in dark mode — click to go light) */}
       <svg
