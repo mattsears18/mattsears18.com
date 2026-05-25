@@ -34,3 +34,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .shipyard/
+
+# Claude Code — committed: .claude/settings.json
+# Ignored: per-user override + orchestrator worktrees
+.claude/settings.local.json
+.claude/worktrees/
