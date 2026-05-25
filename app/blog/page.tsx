@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { JsonLd } from '@/app/components/json-ld';
+import { breadcrumbListSchema } from '@/lib/json-ld';
 import { formatPostDate, getAllPosts } from '@/lib/posts';
 
 const BLOG_DESCRIPTION =
@@ -28,6 +30,12 @@ export default async function BlogIndexPage() {
 
   return (
     <div className="mx-auto max-w-reading py-16 sm:py-20">
+      <JsonLd
+        schema={breadcrumbListSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Blog', path: '/blog' },
+        ])}
+      />
       <header className="mb-12 sm:mb-16">
         <p className="mb-4 font-mono text-xs uppercase tracking-widest text-fg-muted">Writing</p>
         <h1 className="font-display text-4xl font-medium tracking-tight text-fg sm:text-5xl">

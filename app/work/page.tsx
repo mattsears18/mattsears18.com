@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { JsonLd } from '@/app/components/json-ld';
 import { ProjectImage } from '@/app/components/project-image';
+import { breadcrumbListSchema } from '@/lib/json-ld';
 import { formatLinkLabel, getAllProjects } from '@/lib/work';
 
 const WORK_DESCRIPTION =
@@ -43,6 +45,12 @@ export default async function WorkIndexPage() {
 
   return (
     <div className="py-16 sm:py-20">
+      <JsonLd
+        schema={breadcrumbListSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Work', path: '/work' },
+        ])}
+      />
       <header className="mb-12 max-w-reading sm:mb-16">
         <p className="mb-4 font-mono text-xs uppercase tracking-widest text-fg-muted">
           Selected work

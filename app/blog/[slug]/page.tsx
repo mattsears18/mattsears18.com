@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { JsonLd } from '@/app/components/json-ld';
+import { breadcrumbListSchema } from '@/lib/json-ld';
 import { formatPostDate, getAllPosts, getPostBySlug } from '@/lib/posts';
 import { SITE_TITLE } from '@/lib/site';
 
@@ -48,6 +50,13 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
   return (
     <article className="mx-auto max-w-reading py-12 sm:py-16">
+      <JsonLd
+        schema={breadcrumbListSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Blog', path: '/blog' },
+          { name: post.frontmatter.title, path: `/blog/${slug}` },
+        ])}
+      />
       <nav className="mb-10">
         <Link
           href="/blog"
