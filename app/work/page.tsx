@@ -78,15 +78,23 @@ export default async function WorkIndexPage() {
             const links = frontmatter.links ?? {};
             return (
               <li key={slug} className="py-10 sm:py-12">
-                <article className="grid gap-6 sm:grid-cols-[1fr_2fr] sm:gap-10">
+                {/*
+                 * Single-link card pattern (a11y, issue #74): only the title
+                 * `<Link>` is in the accessibility tree / Tab order. It covers
+                 * the entire card via a `::before` overlay (`before:absolute
+                 * before:inset-0`), so sighted mouse users can still click the
+                 * image to navigate, but screen-reader and keyboard users get
+                 * exactly one stop per card. External links in the right
+                 * column carry `relative z-10` so they stay clickable above
+                 * the overlay.
+                 */}
+                <article className="group relative grid gap-6 sm:grid-cols-[1fr_2fr] sm:gap-10">
                   <div className="space-y-4">
-                    <Link
-                      href={`/work/${slug}`}
-                      aria-label={`Open ${frontmatter.title}`}
-                      className="block transition-opacity hover:opacity-90"
-                    >
-                      <ProjectImage project={project} variant="card" />
-                    </Link>
+                    <ProjectImage
+                      project={project}
+                      variant="card"
+                      className="transition-opacity group-hover:opacity-90"
+                    />
                     <p className="font-mono text-xs uppercase tracking-widest text-fg-muted">
                       <span>{frontmatter.role}</span>
                       <span aria-hidden="true"> · </span>
@@ -98,7 +106,7 @@ export default async function WorkIndexPage() {
                     <h2 className="font-display text-2xl font-medium tracking-tight text-fg sm:text-3xl">
                       <Link
                         href={`/work/${slug}`}
-                        className="group inline-flex items-baseline gap-2 hover:text-accent"
+                        className="inline-flex items-baseline gap-2 before:absolute before:inset-0 before:content-[''] hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-bg"
                       >
                         <span>{frontmatter.title}</span>
                         <span
@@ -126,7 +134,7 @@ export default async function WorkIndexPage() {
                     </ul>
 
                     {Object.keys(links).length > 0 ? (
-                      <p className="mt-5 flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs uppercase tracking-widest">
+                      <p className="relative z-10 mt-5 flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs uppercase tracking-widest">
                         {Object.entries(links).map(([key, href]) => (
                           <a
                             key={key}
