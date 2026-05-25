@@ -164,7 +164,17 @@ export default function PrivacyPage() {
             on GitHub
           </a>{' '}
           — any change to this page is in the commit history. There&apos;s no separate &quot;last
-          updated&quot; date because the git log is authoritative.
+          updated&quot; date because the git log is authoritative. The underlying processor
+          inventory (the internal record this notice is based on) lives at{' '}
+          <a
+            href="https://github.com/mattsears18/mattsears18.com/blob/main/PRIVACY_DATA_PROCESSORS.md"
+            target="_blank"
+            rel="noreferrer"
+            className="text-accent underline-offset-4 hover:underline"
+          >
+            PRIVACY_DATA_PROCESSORS.md
+          </a>
+          .
         </p>
       </div>
 
