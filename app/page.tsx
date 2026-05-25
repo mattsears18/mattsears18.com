@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { GetInTouchButton } from '@/components/get-in-touch-button';
 import { Button } from '@/components/ui/button';
 import { defaultOpenGraph, SITE_DESCRIPTION, SITE_TITLE } from '@/lib/site';
 
@@ -43,9 +44,7 @@ export default function Home() {
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-3">
-          <Button asChild size="lg">
-            <a href="mailto:matt@mksolutionsky.com">Get in touch</a>
-          </Button>
+          <GetInTouchButton />
           <Button asChild size="lg" variant="ghost">
             <Link href="/work">See my work</Link>
           </Button>
