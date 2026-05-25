@@ -2,23 +2,23 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
-import { defaultOpenGraph, SITE_TAGLINE, SITE_TITLE } from '@/lib/site';
+import { defaultOpenGraph, SITE_DESCRIPTION, SITE_TITLE } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: { absolute: SITE_TITLE },
-  description: SITE_TAGLINE,
+  description: SITE_DESCRIPTION,
   alternates: { canonical: '/' },
   openGraph: {
     ...defaultOpenGraph,
     title: SITE_TITLE,
-    description: SITE_TAGLINE,
+    description: SITE_DESCRIPTION,
     url: '/',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: SITE_TITLE,
-    description: SITE_TAGLINE,
+    description: SITE_DESCRIPTION,
   },
 };
 
