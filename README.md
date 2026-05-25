@@ -40,3 +40,7 @@ A [`Makefile`](./Makefile) wraps these as one-liners for both humans and `/shipy
 ## Deployment
 
 Vercel handles deploys. Pushes to `main` trigger production; every PR gets a preview URL.
+
+## Releases
+
+Versioned by [SemVer](https://semver.org), tagged as `vX.Y.Z` against `main`. See [`RELEASING.md`](./RELEASING.md) for the full flow; the mechanics live in [`scripts/release.sh`](./scripts/release.sh) (also wrapped by `make release KIND=<patch|minor|major>`). The `CHANGELOG.md` is updated as part of the release script.
