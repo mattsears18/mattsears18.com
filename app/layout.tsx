@@ -122,8 +122,25 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <JsonLd schema={[personSchema(), websiteSchema()]} />
       </head>
       <body className="min-h-screen bg-bg text-fg">
+        {/*
+         * Skip-to-main-content link — WCAG 2.1 AA 2.4.1 (Bypass Blocks).
+         * Must be the first focusable element in the document so the very
+         * first Tab keystroke surfaces it. Visually hidden with `sr-only`
+         * until focused, then promoted to a fixed pill in the top-left.
+         * Contrast on the focused state: `bg-bg` + `text-fg` is ~17:1 in
+         * both light and dark themes (well above AA's 4.5:1). The site's
+         * global `:focus-visible` rule layers an accent ring on top.
+         */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:border focus:border-border focus:bg-bg focus:px-4 focus:py-2 focus:font-sans focus:text-sm focus:font-medium focus:text-fg"
+        >
+          Skip to main content
+        </a>
         <SiteHeader />
-        <main className="mx-auto max-w-container px-6 sm:px-12">{children}</main>
+        <main id="main" className="mx-auto max-w-container px-6 sm:px-12">
+          {children}
+        </main>
         <SiteFooter />
         {showVercelToolbar ? <VercelToolbar /> : null}
       </body>
