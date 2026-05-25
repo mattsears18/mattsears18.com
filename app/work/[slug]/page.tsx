@@ -123,7 +123,7 @@ export default async function ProjectPage({
 
       <ProjectImage project={project} variant="hero" className="mb-10 sm:mb-12" />
 
-      <div className="prose-post space-y-6 text-base leading-relaxed text-fg sm:text-lg [&_a]:text-accent [&_a]:underline-offset-4 hover:[&_a]:underline">
+      <div className="prose-post">
         <MDXContent />
       </div>
 
