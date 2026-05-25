@@ -27,7 +27,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
-      url: `${SITE_URL}/`,
+      // No trailing slash — matches the canonical tag rendered by `app/page.tsx`
+      // (Next.js resolves `alternates.canonical: '/'` against `metadataBase` and
+      // drops the slash), the convention used by every other route on the site
+      // (`/blog`, `/work`, `/blog/:slug`, `/work/:slug`), and `SITE_URL` itself.
+      // See #70.
+      url: SITE_URL,
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 1.0,
