@@ -17,8 +17,14 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme | null>(null);
 
   // Read the post-ThemeScript state on mount so SSR markup and client agree.
+  // The `setState` call inside the effect is intentional: ThemeScript writes
+  // the `.dark` class to <html> during HTML parse (before hydration), and we
+  // need to mirror that DOM state into React state exactly once on mount.
+  // Using `useSyncExternalStore` would be overkill — the DOM class only
+  // changes in response to this component's own `apply()` calls after mount.
   useEffect(() => {
     const current: Theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot init mirror; see comment above.
     setTheme(current);
   }, []);
 
