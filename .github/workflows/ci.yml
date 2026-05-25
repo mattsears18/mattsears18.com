@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        # `next lint` was removed in Next.js 16 and the current `lint` script
+        # fails until it's swapped for a direct ESLint invocation. Tracked in
+        # https://github.com/mattsears18/mattsears18.com/issues/80 — remove
+        # continue-on-error once #80 lands.
+        run: npm run lint --if-present
+        continue-on-error: true
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
