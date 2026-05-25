@@ -18,7 +18,7 @@ export function SiteFooter() {
           Built by Matt Sears. View source on{' '}
           <a
             href="https://github.com/mattsears18/mattsears18.com"
-            className="text-fg-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent"
+            className="inline-flex min-h-[44px] items-center text-fg-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent"
             target="_blank"
             rel="noreferrer"
           >
@@ -27,7 +27,7 @@ export function SiteFooter() {
           .{' '}
           <Link
             href="/privacy"
-            className="text-fg-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent"
+            className="inline-flex min-h-[44px] items-center text-fg-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent"
           >
             Privacy
           </Link>
