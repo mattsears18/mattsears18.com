@@ -85,17 +85,29 @@ async function readProjectFile(filename: string): Promise<Project | null> {
 }
 
 /**
- * Year-sort key. Frontmatter `year` is human-readable ("2024–present",
+ * Year-sort keys. Frontmatter `year` is human-readable ("2024–present",
  * "2015–2018", "2019–2020") — we sort newest-first by the trailing year of
  * the range, treating "present" as the current year so active projects
- * always lead. Ties broken by title to keep the order stable.
+ * always lead. When end-years tie (common for "*-present" projects), the
+ * later start-year wins so a newer active project leads an older active
+ * one. Final tie-break is title to keep order stable.
  */
-function yearSortKey(year: string): number {
-  const parts = year.split(/[–-]/).map((p) => p.trim().toLowerCase());
-  const tail = parts[parts.length - 1];
-  if (tail === 'present') return new Date().getUTCFullYear();
-  const n = Number.parseInt(tail, 10);
+function yearPartKey(part: string | undefined): number {
+  if (!part) return 0;
+  const p = part.trim().toLowerCase();
+  if (p === 'present') return new Date().getUTCFullYear();
+  const n = Number.parseInt(p, 10);
   return Number.isFinite(n) ? n : 0;
+}
+
+function yearSortKey(year: string): number {
+  const parts = year.split(/[–-]/);
+  return yearPartKey(parts[parts.length - 1]);
+}
+
+function yearStartSortKey(year: string): number {
+  const parts = year.split(/[–-]/);
+  return yearPartKey(parts[0]);
 }
 
 export async function getAllProjects(): Promise<Project[]> {
@@ -110,12 +122,15 @@ export async function getAllProjects(): Promise<Project[]> {
   return projects
     .filter((p): p is Project => p !== null)
     .sort((a, b) => {
-      // Featured first, then most-recent end-year, then title.
+      // Featured first, then most-recent end-year, then most-recent start-year, then title.
       const featDelta =
         Number(b.frontmatter.featured ?? false) - Number(a.frontmatter.featured ?? false);
       if (featDelta !== 0) return featDelta;
       const yearDelta = yearSortKey(b.frontmatter.year) - yearSortKey(a.frontmatter.year);
       if (yearDelta !== 0) return yearDelta;
+      const startDelta =
+        yearStartSortKey(b.frontmatter.year) - yearStartSortKey(a.frontmatter.year);
+      if (startDelta !== 0) return startDelta;
       return a.frontmatter.title.localeCompare(b.frontmatter.title);
     });
 }

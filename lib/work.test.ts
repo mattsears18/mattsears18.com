@@ -33,7 +33,7 @@ afterEach(async () => {
 });
 
 describe('getAllProjects', () => {
-  it('sorts by featured first, then by end-year desc, then by title', async () => {
+  it('sorts by featured first, then by end-year desc, then by start-year desc, then by title', async () => {
     await writeProject('beta', {
       title: 'Beta',
       role: 'Eng',
@@ -68,6 +68,29 @@ describe('getAllProjects', () => {
     const projects = await getAllProjects();
 
     expect(projects.map((p) => p.slug)).toEqual(['featured', 'alpha', 'beta', 'older']);
+  });
+
+  it('breaks end-year ties by start-year desc so newer active projects lead', async () => {
+    const currentYear = new Date().getUTCFullYear();
+    await writeProject('older-active', {
+      title: 'Older Active',
+      role: 'Eng',
+      year: `${currentYear - 4}–present`,
+      summary: 's',
+      tech: ['a'],
+    });
+    await writeProject('newer-active', {
+      title: 'Newer Active',
+      role: 'Eng',
+      year: `${currentYear}–present`,
+      summary: 's',
+      tech: ['a'],
+    });
+
+    const { getAllProjects } = await import('./work');
+    const projects = await getAllProjects();
+
+    expect(projects.map((p) => p.slug)).toEqual(['newer-active', 'older-active']);
   });
 
   it('treats "present" as the current UTC year so active projects lead', async () => {
