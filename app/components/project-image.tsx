@@ -45,7 +45,7 @@ export function ProjectImage({ project, variant, className }: Props) {
           fill
           sizes={SIZES_BY_VARIANT[variant]}
           priority={variant === 'hero'}
-          className="object-cover"
+          className={variant === 'hero' ? 'object-contain' : 'object-cover'}
         />
       </div>
     );
