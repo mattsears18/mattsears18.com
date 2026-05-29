@@ -43,7 +43,7 @@ CI ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)) runs `npm ci` → 
 
 ## Auto-merge
 
-**Always auto-merge PRs in this repo** — don't leave a PR sitting for the user to merge manually. Repo currently has `allow_auto_merge: false` at the repo settings level, so `gh pr merge <M> --auto` will error. The standing instruction therefore means: poll CI, and the moment it goes green, merge automatically without asking — `gh pr merge <M> --merge --delete-branch` is the fallback (works for trusted authors with admin perms). Don't try to flip the repo setting from inside a PR.
+**Always auto-merge PRs in this repo** — don't leave a PR sitting for the user to merge manually. Repo-level auto-merge is **enabled** (`allow_auto_merge: true`), so arm it on every PR right after creating it: `gh pr merge <M> --auto --merge --delete-branch`. GitHub then merges automatically once CI goes green (or immediately if checks already passed). No need to poll and merge by hand.
 
 ## What not to touch
 
