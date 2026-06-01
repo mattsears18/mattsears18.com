@@ -118,3 +118,44 @@ export function creativeWorkSchema(project: CreativeWorkInput) {
     ...(sameAs.length > 0 ? { sameAs } : {}),
   } as const;
 }
+
+/**
+ * Article schema — one per `/blog/<slug>` post detail page.
+ *
+ * Qualifies blog posts for Google's Article rich result (headline +
+ * datePublished + author), so SERP entries can render as enhanced cards
+ * rather than plain blue links. Every field is sourced from the post's MDX
+ * frontmatter (title/date/excerpt) or the route slug — no request-derived
+ * input, matching the safety contract documented in `<JsonLd>`.
+ *
+ * `headline` carries the post title; `datePublished` is the frontmatter
+ * `date` (kept verbatim — it's already an ISO-ish date string Google
+ * accepts). `url` is absolutized against `SITE_URL` for the same reason
+ * BreadcrumbList items and CreativeWork URLs are. Both `author` and
+ * `publisher` resolve to Matt as a single-author personal site (mirroring
+ * `creativeWorkSchema`'s `author` shape). No `image` field is emitted —
+ * post frontmatter has no image source (`PostFrontmatter` exposes only
+ * title/date/excerpt/tags/draft), and fabricating one would mislead the
+ * Rich Results validator; `image` is recommended, not required, for the
+ * Article rich result.
+ */
+export type ArticleInput = {
+  title: string;
+  excerpt: string;
+  date: string;
+  slug: string;
+};
+
+export function articleSchema(post: ArticleInput) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    url: `${SITE_URL}/blog/${post.slug}`,
+    author: { '@type': 'Person', name: SITE_TITLE, url: SITE_URL },
+    publisher: { '@type': 'Person', name: SITE_TITLE, url: SITE_URL },
+    inLanguage: 'en-US',
+  } as const;
+}
