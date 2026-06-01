@@ -4,6 +4,19 @@ Personal site for Matt Sears. Next.js 16 (App Router) + React 19 + Tailwind + MD
 
 See [`docs/architecture.md`](./docs/architecture.md) for the locked tech stack and content model, and [`docs/design.md`](./docs/design.md) for typography, palette, and layout tokens.
 
+## Quickstart
+
+**Prerequisites:** Node `>=22.0.0` (the [`.nvmrc`](./.nvmrc) pins `24.15.0` — run `nvm use` to match) and **npm** ([`package-lock.json`](./package-lock.json) is the source of truth).
+
+```bash
+git clone https://github.com/mattsears18/mattsears18.com.git
+cd mattsears18.com
+npm install
+npm run dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000).
+
 ## Local development
 
 ```bash
