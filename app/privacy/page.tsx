@@ -127,8 +127,18 @@ export default function PrivacyPage() {
             className="text-accent underline-offset-4 hover:underline"
           >
             Sentry&apos;s privacy policy
+          </a>{' '}
+          and{' '}
+          <a
+            href="https://sentry.io/legal/dpa/"
+            target="_blank"
+            rel="noreferrer"
+            className="text-accent underline-offset-4 hover:underline"
+          >
+            data processing addendum
           </a>
-          .
+          . Error events are processed on Sentry&apos;s US infrastructure; the EU&rarr;US transfer
+          relies on EU Standard Contractual Clauses (SCCs) per Sentry&apos;s DPA.
         </p>
 
         <h2>External links</h2>
