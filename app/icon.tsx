@@ -12,9 +12,11 @@ import { ImageResponse } from 'next/og';
  * icon, 512 the splash-screen / app-drawer source. They replace the legacy
  * oversized `favicon.ico` for high-DPI tabs and installs; the trimmed
  * 32×32 `favicon.ico` stays only for older browsers that don't read the
- * PNG <link> tags. The PWA web manifest that references these (for the
- * full install experience) is owned by a sibling issue (#141) and is
- * intentionally not added here.
+ * PNG <link> tags. The PWA web manifest (`app/manifest.ts`) derives its
+ * `icons` entries from this file's `generateImageMetadata`, so the manifest
+ * `src` paths always match the `/icon/<id>` routes Next serves from here
+ * (see #195 — the manifest originally hard-coded `/icon-192.png` paths that
+ * 404'd because no static assets exist).
  *
  * Design follows the same language as `app/apple-icon.tsx` and
  * `app/opengraph-image.tsx`: near-black background, sans monogram, orange
@@ -34,36 +36,34 @@ export default async function Icon({ id }: { id: Promise<string> }) {
   const edge = Number(await id);
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#0a0a0a',
+        color: '#fafaf9',
+        fontFamily: 'sans-serif',
+      }}
+    >
       <div
         style={{
-          width: '100%',
-          height: '100%',
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: '#0a0a0a',
-          color: '#fafaf9',
-          fontFamily: 'sans-serif',
+          alignItems: 'baseline',
+          // ~0.53× the edge keeps the monogram visually identical to the
+          // 96px-on-180px apple-icon ratio across both generated sizes.
+          fontSize: Math.round(edge * 0.53),
+          fontWeight: 600,
+          letterSpacing: '-0.04em',
+          lineHeight: 1,
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'baseline',
-            // ~0.53× the edge keeps the monogram visually identical to the
-            // 96px-on-180px apple-icon ratio across both generated sizes.
-            fontSize: Math.round(edge * 0.53),
-            fontWeight: 600,
-            letterSpacing: '-0.04em',
-            lineHeight: 1,
-          }}
-        >
-          MS
-          <span style={{ color: '#f97316' }}>.</span>
-        </div>
+        MS
+        <span style={{ color: '#f97316' }}>.</span>
       </div>
-    ),
+    </div>,
     { width: edge, height: edge },
   );
 }
