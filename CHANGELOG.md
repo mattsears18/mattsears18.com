@@ -6,6 +6,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- `/health` liveness endpoint for uptime monitoring ([#169](https://github.com/mattsears18/mattsears18.com/issues/169)).
+- `Article` JSON-LD schema on blog post pages ([#164](https://github.com/mattsears18/mattsears18.com/issues/164)).
+- `CreativeWork` JSON-LD on work project pages ([#167](https://github.com/mattsears18/mattsears18.com/issues/167)).
+- `manifest.webmanifest` for PWA installability ([#141](https://github.com/mattsears18/mattsears18.com/issues/141)).
+- Modern PWA icons — build-time 192×192 and 512×512 PNGs via `next/og` ([#144](https://github.com/mattsears18/mattsears18.com/issues/144)).
+- Vitest test suite — `lib` unit coverage ([#36](https://github.com/mattsears18/mattsears18.com/issues/36)) and the four public route handlers (`rss.xml`, `llms.txt`, `sitemap.xml`, `robots.txt`) ([#155](https://github.com/mattsears18/mattsears18.com/issues/155)).
+
+### Changed
+
+- Surfaced the Sentry DPA link and cross-border transfer mechanism on the privacy page ([#150](https://github.com/mattsears18/mattsears18.com/issues/150)).
+- Aligned `Cache-Control` across `sitemap.xml` and `robots.txt` ([#157](https://github.com/mattsears18/mattsears18.com/issues/157)).
+- Shrank the legacy `favicon.ico` from a multi-resolution ICO to a single 32×32 payload ([#144](https://github.com/mattsears18/mattsears18.com/issues/144)).
+- Refreshed `/work` imagery — Shipyard marketing graphic, cropped Express Delphi screenshot, and full-bleed hero images on project detail pages.
+
+### Fixed
+
+- Render the RSS autodiscovery `<link>` in `<head>` on every route ([#159](https://github.com/mattsears18/mattsears18.com/issues/159)).
+- Report malformed MDX to Sentry instead of dropping it silently ([#153](https://github.com/mattsears18/mattsears18.com/issues/153)).
+- Wire App Router error boundaries to `Sentry.captureException` ([#158](https://github.com/mattsears18/mattsears18.com/issues/158)).
+- Trim the home meta description under the 160-character snippet limit ([#161](https://github.com/mattsears18/mattsears18.com/issues/161)).
+- Raise work-page secondary link tap targets to 44px ([#173](https://github.com/mattsears18/mattsears18.com/issues/173)).
+- Scope the blog post card accessible link name to the post title ([#177](https://github.com/mattsears18/mattsears18.com/issues/177)).
+- Make the "Get in touch" button work without a default mail client.
+- Break `/work` end-year ties by start-year descending.
+- Update the NCCER SSO external link to `web.myaccount.nccer.org` ([#130](https://github.com/mattsears18/mattsears18.com/issues/130)).
+- Point the VisualEyes paper link at its Google Scholar citation ([#131](https://github.com/mattsears18/mattsears18.com/issues/131)).
+- Pin `postcss` to 8.5.15 via overrides to clear GHSA-qx2v-qp2m-jg93.
+
 ## [0.1.0] - 2026-05-25
 
 First tracked release. Captures the full rebuild on Next.js 16 + React 19 + Tailwind + MDX, the supporting content model, and the SEO / a11y / observability / DX baseline.
