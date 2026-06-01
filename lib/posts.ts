@@ -1,8 +1,9 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
-import * as Sentry from '@sentry/nextjs';
 import matter from 'gray-matter';
+
+import { reportError } from './logger';
 
 export type PostFrontmatter = {
   title: string;
@@ -50,7 +51,7 @@ export async function getAllPosts(): Promise<Post[]> {
         return await readPostFile(filename);
       } catch (err) {
         const slug = filename.replace(/\.mdx$/, '');
-        Sentry.captureException(err, { tags: { op: 'readPost', slug } });
+        reportError(err, { op: 'readPost', slug });
         return null;
       }
     }),
@@ -71,7 +72,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     // Report the parse/read failure before returning the fallback so a
     // malformed post that 404s leaves an operator breadcrumb instead of
     // vanishing silently. See #153.
-    Sentry.captureException(err, { tags: { op: 'readPost', slug } });
+    reportError(err, { op: 'readPost', slug });
     return null;
   }
 }
