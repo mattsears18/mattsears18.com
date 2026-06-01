@@ -143,7 +143,7 @@ export default async function WorkIndexPage() {
                             href={href}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-accent underline-offset-4 hover:underline"
+                            className="inline-flex min-h-[44px] items-center text-accent underline-offset-4 hover:underline"
                           >
                             {formatLinkLabel(key)} ↗
                           </a>
