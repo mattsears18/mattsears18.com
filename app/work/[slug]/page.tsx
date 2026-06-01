@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 
 import { JsonLd } from '@/app/components/json-ld';
 import { ProjectImage } from '@/app/components/project-image';
-import { breadcrumbListSchema } from '@/lib/json-ld';
+import { breadcrumbListSchema, creativeWorkSchema } from '@/lib/json-ld';
 import { formatLinkLabel, getAllProjects, getProjectBySlug } from '@/lib/work';
 import { defaultOpenGraph, SITE_TITLE } from '@/lib/site';
 
@@ -64,11 +64,21 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
   return (
     <article className="mx-auto max-w-reading py-12 sm:py-16">
       <JsonLd
-        schema={breadcrumbListSchema([
-          { name: 'Home', path: '/' },
-          { name: 'Work', path: '/work' },
-          { name: project.frontmatter.title, path: `/work/${slug}` },
-        ])}
+        schema={[
+          breadcrumbListSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Work', path: '/work' },
+            { name: project.frontmatter.title, path: `/work/${slug}` },
+          ]),
+          creativeWorkSchema({
+            title: project.frontmatter.title,
+            summary: project.frontmatter.summary,
+            slug,
+            tech: project.frontmatter.tech,
+            year: project.frontmatter.year,
+            links: Object.values(links),
+          }),
+        ]}
       />
       <nav className="mb-10">
         <Link

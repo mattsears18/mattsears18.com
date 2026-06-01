@@ -75,3 +75,46 @@ export function breadcrumbListSchema(items: BreadcrumbItem[]) {
     })),
   } as const;
 }
+
+/**
+ * CreativeWork schema — one per `/work/<slug>` project detail page.
+ *
+ * Describes the project itself as a discrete structured entity authored by
+ * Matt, so Google's Knowledge Graph treats each portfolio item as a creator's
+ * work rather than an opaque webpage. Every field is sourced from the project's
+ * MDX frontmatter (title/summary/tech/year) or the route slug — no
+ * request-derived input, matching the safety contract in `<JsonLd>`.
+ *
+ * `keywords` is the comma-joined tech stack (schema.org's documented shape for
+ * a keyword list on CreativeWork). `dateCreated` carries the project's
+ * end-year so the entity is temporally anchored; `url` is absolutized against
+ * `SITE_URL` for the same reason BreadcrumbList items are. When the project
+ * frontmatter exposes outbound links (live site / repo / paper), they're
+ * surfaced as `sameAs` to help disambiguate the entity — omitted entirely when
+ * there are none rather than emitting an empty array.
+ */
+export type CreativeWorkInput = {
+  title: string;
+  summary: string;
+  slug: string;
+  tech: string[];
+  year: string;
+  /** Outbound project URLs (live site, repo, paper, …) — used as `sameAs`. */
+  links?: string[];
+};
+
+export function creativeWorkSchema(project: CreativeWorkInput) {
+  const sameAs = (project.links ?? []).filter((url) => url.startsWith('http'));
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: project.title,
+    description: project.summary,
+    url: `${SITE_URL}/work/${project.slug}`,
+    keywords: project.tech.join(', '),
+    dateCreated: project.year,
+    author: { '@type': 'Person', name: SITE_TITLE, url: SITE_URL },
+    inLanguage: 'en-US',
+    ...(sameAs.length > 0 ? { sameAs } : {}),
+  } as const;
+}
