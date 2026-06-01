@@ -80,7 +80,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
           }),
         ]}
       />
-      <nav className="mb-10">
+      <nav aria-label="Breadcrumb" className="mb-10">
         <Link
           href="/work"
           className="font-mono text-xs uppercase tracking-widest text-fg-muted hover:text-accent"
