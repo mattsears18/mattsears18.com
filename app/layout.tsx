@@ -120,6 +120,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
          * components against their depth in the URL hierarchy.
          */}
         <JsonLd schema={[personSchema(), websiteSchema()]} />
+        {/*
+         * RSS autodiscovery — see #159. Emitted as a raw <link> here rather
+         * than via metadata `alternates.types` because Next.js App Router does
+         * NOT deep-merge `alternates` across the layout/page boundary: a
+         * page-level `alternates: { canonical }` (present on the blog/work
+         * detail routes) replaces the root layout's `alternates` entirely,
+         * dropping `types`. This mirrors the JsonLd raw-<head> pattern and the
+         * og:site_name merge-drop fix in #68, so the feed link renders on
+         * every route regardless of page-level metadata overrides.
+         */}
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title={`${SITE_TITLE} — RSS`}
+          href="/rss.xml"
+        />
       </head>
       <body className="min-h-screen bg-bg text-fg">
         {/*
