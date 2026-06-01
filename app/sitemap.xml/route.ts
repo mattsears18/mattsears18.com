@@ -1,11 +1,15 @@
-import type { MetadataRoute } from 'next';
-
 import { getAllPosts } from '@/lib/posts';
-import { SITE_URL } from '@/lib/site';
+import { SITE_URL, STATIC_FEED_CACHE_CONTROL } from '@/lib/site';
 import { getAllProjects } from '@/lib/work';
 
 /*
- * `/sitemap.xml` — emitted by Next from this file at build time.
+ * `/sitemap.xml` — emitted by Next from this route handler at build time.
+ *
+ * Hand-rolled as a `Response`-returning route handler (rather than Next's
+ * `MetadataRoute.Sitemap` convention) so it can declare the same explicit
+ * `Cache-Control` window as the other build-time, agent-facing endpoints
+ * (`/rss.xml`, `/llms.txt`). A `MetadataRoute` export can't set response
+ * headers directly — see #157.
  *
  * Includes:
  *   - `/`             landing page              (changeFrequency: monthly)
@@ -22,11 +26,31 @@ import { getAllProjects } from '@/lib/work';
  */
 export const dynamic = 'force-static';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+type ChangeFrequency = 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+
+interface SitemapEntry {
+  url: string;
+  lastModified: Date;
+  changeFrequency: ChangeFrequency;
+  priority: number;
+}
+
+function renderUrlEntry({ url, lastModified, changeFrequency, priority }: SitemapEntry): string {
+  return [
+    '  <url>',
+    `    <loc>${url}</loc>`,
+    `    <lastmod>${lastModified.toISOString()}</lastmod>`,
+    `    <changefreq>${changeFrequency}</changefreq>`,
+    `    <priority>${priority.toFixed(1)}</priority>`,
+    '  </url>',
+  ].join('\n');
+}
+
+export async function GET() {
   const [posts, projects] = await Promise.all([getAllPosts(), getAllProjects()]);
   const now = new Date();
 
-  const staticRoutes: MetadataRoute.Sitemap = [
+  const staticRoutes: SitemapEntry[] = [
     {
       // No trailing slash — matches the canonical tag rendered by `app/page.tsx`
       // (Next.js resolves `alternates.canonical: '/'` against `metadataBase` and
@@ -58,19 +82,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const postRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
+  const postRoutes: SitemapEntry[] = posts.map((post) => ({
     url: `${SITE_URL}/blog/${post.slug}`,
     lastModified: new Date(`${post.frontmatter.date}T00:00:00Z`),
     changeFrequency: 'yearly',
     priority: 0.6,
   }));
 
-  const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
+  const projectRoutes: SitemapEntry[] = projects.map((project) => ({
     url: `${SITE_URL}/work/${project.slug}`,
     lastModified: now,
     changeFrequency: 'yearly',
     priority: 0.6,
   }));
 
-  return [...staticRoutes, ...postRoutes, ...projectRoutes];
+  const entries = [...staticRoutes, ...postRoutes, ...projectRoutes];
+
+  const body = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...entries.map(renderUrlEntry),
+    '</urlset>',
+    '',
+  ].join('\n');
+
+  return new Response(body, {
+    headers: {
+      'Content-Type': 'application/xml; charset=utf-8',
+      'Cache-Control': STATIC_FEED_CACHE_CONTROL,
+    },
+  });
 }
