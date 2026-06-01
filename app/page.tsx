@@ -79,7 +79,7 @@ export default function Home() {
                 href="https://www.enrichky.com/"
                 target="_blank"
                 rel="noreferrer"
-                className="text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
+                className="inline-block py-0.5 text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
               >
                 Enrich
               </a>
@@ -89,15 +89,18 @@ export default function Home() {
               volunteer-coordination app for community organizations). Most of this portfolio site
               was built by Shipyard, not by me.
             </p>
-            <p className="flex flex-wrap gap-x-6 gap-y-2 pt-2">
-              <Link href="/blog" className="text-accent underline-offset-4 hover:underline">
+            <div className="flex flex-wrap gap-x-6 gap-y-2 pt-2">
+              <Link
+                href="/blog"
+                className="inline-flex min-h-[44px] items-center text-accent underline-offset-4 hover:underline"
+              >
                 Read the blog →
               </Link>
               <a
                 href="https://github.com/mattsears18"
                 target="_blank"
                 rel="noreferrer"
-                className="text-accent underline-offset-4 hover:underline"
+                className="inline-flex min-h-[44px] items-center text-accent underline-offset-4 hover:underline"
               >
                 View on GitHub →
               </a>
@@ -105,11 +108,11 @@ export default function Home() {
                 href="https://www.linkedin.com/in/mattsears18/"
                 target="_blank"
                 rel="noreferrer"
-                className="text-accent underline-offset-4 hover:underline"
+                className="inline-flex min-h-[44px] items-center text-accent underline-offset-4 hover:underline"
               >
                 LinkedIn →
               </a>
-            </p>
+            </div>
           </div>
         </div>
       </section>
