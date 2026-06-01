@@ -60,8 +60,15 @@ export default async function BlogIndexPage() {
           {posts.map((post) => (
             <li key={post.slug} className="py-8 sm:py-10">
               <article>
-                <Link href={`/blog/${post.slug}`} className="group block">
-                  <h2 className="font-display text-2xl font-medium tracking-tight text-fg group-hover:text-accent sm:text-3xl">
+                <Link
+                  href={`/blog/${post.slug}`}
+                  aria-labelledby={`post-title-${post.slug}`}
+                  className="group block"
+                >
+                  <h2
+                    id={`post-title-${post.slug}`}
+                    className="font-display text-2xl font-medium tracking-tight text-fg group-hover:text-accent sm:text-3xl"
+                  >
                     {post.frontmatter.title}
                   </h2>
                   <p className="mt-2 font-mono text-xs uppercase tracking-widest text-fg-muted">
