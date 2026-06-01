@@ -83,7 +83,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
       <nav aria-label="Breadcrumb" className="mb-10">
         <Link
           href="/work"
-          className="font-mono text-xs uppercase tracking-widest text-fg-muted hover:text-accent"
+          className="inline-flex min-h-[44px] items-center font-mono text-xs uppercase tracking-widest text-fg-muted hover:text-accent"
         >
           ← Back to work
         </Link>
@@ -137,7 +137,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
       <footer className="mt-20 border-t border-border pt-8">
         <Link
           href="/work"
-          className="font-mono text-xs uppercase tracking-widest text-fg-muted hover:text-accent"
+          className="inline-flex min-h-[44px] items-center font-mono text-xs uppercase tracking-widest text-fg-muted hover:text-accent"
         >
           All work →
         </Link>
