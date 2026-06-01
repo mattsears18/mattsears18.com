@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { JsonLd } from '@/app/components/json-ld';
-import { breadcrumbListSchema } from '@/lib/json-ld';
+import { articleSchema, breadcrumbListSchema } from '@/lib/json-ld';
 import { formatPostDate, getAllPosts, getPostBySlug } from '@/lib/posts';
 import { defaultOpenGraph, SITE_TITLE } from '@/lib/site';
 
@@ -52,11 +52,19 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
   return (
     <article className="mx-auto max-w-reading py-12 sm:py-16">
       <JsonLd
-        schema={breadcrumbListSchema([
-          { name: 'Home', path: '/' },
-          { name: 'Blog', path: '/blog' },
-          { name: post.frontmatter.title, path: `/blog/${slug}` },
-        ])}
+        schema={[
+          breadcrumbListSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Blog', path: '/blog' },
+            { name: post.frontmatter.title, path: `/blog/${slug}` },
+          ]),
+          articleSchema({
+            title: post.frontmatter.title,
+            excerpt: post.frontmatter.excerpt,
+            date: post.frontmatter.date,
+            slug,
+          }),
+        ]}
       />
       <nav className="mb-10">
         <Link
