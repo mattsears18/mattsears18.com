@@ -162,6 +162,65 @@ export default function PrivacyPage() {
           (typically a few weeks for routine CDN logs), so most data ages out on its own.
         </p>
 
+        <h2>Your rights</h2>
+        <p>
+          If you&apos;re in the EU/UK, the GDPR (and the equivalent UK regime) gives you rights over
+          the data Vercel and Sentry process on my behalf. Because I&apos;m the controller but hold
+          none of this data myself — it lives entirely in those processors&apos; systems — the
+          fastest route for most requests is the processor&apos;s own data-subject-request flow:
+        </p>
+        <ul>
+          <li>
+            <strong>Access</strong> — confirm whether your data is being processed and get a copy of
+            it.
+          </li>
+          <li>
+            <strong>Rectification</strong> — have inaccurate data corrected.
+          </li>
+          <li>
+            <strong>Erasure</strong> — have your data deleted (the email path above also covers
+            this).
+          </li>
+          <li>
+            <strong>Restriction</strong> — have processing limited while a dispute is resolved.
+          </li>
+          <li>
+            <strong>Portability</strong> — receive your data in a machine-readable format.
+          </li>
+          <li>
+            <strong>Objection</strong> — object to processing based on legitimate interests.
+          </li>
+        </ul>
+        <p>
+          Vercel and Sentry each run their own request mechanisms for the data they hold:{' '}
+          <a
+            href="https://vercel.com/legal/privacy-policy"
+            target="_blank"
+            rel="noreferrer"
+            className="text-accent underline-offset-4 hover:underline"
+          >
+            Vercel&apos;s privacy policy
+          </a>{' '}
+          (see its data-subject-request contact) and{' '}
+          <a
+            href="https://sentry.io/privacy/"
+            target="_blank"
+            rel="noreferrer"
+            className="text-accent underline-offset-4 hover:underline"
+          >
+            Sentry&apos;s privacy policy
+          </a>{' '}
+          cover how to reach them. For anything that needs me to forward it on your behalf — or if
+          you&apos;re not sure where to start — email me at{' '}
+          <a
+            href="mailto:matt@mksolutionsky.com"
+            className="text-accent underline-offset-4 hover:underline"
+          >
+            matt@mksolutionsky.com
+          </a>{' '}
+          and I&apos;ll route the request to the relevant processor.
+        </p>
+
         <h2>Updates to this page</h2>
         <p>
           The site&apos;s source is{' '}
