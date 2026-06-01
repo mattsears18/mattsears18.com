@@ -1,8 +1,9 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
-import * as Sentry from '@sentry/nextjs';
 import matter from 'gray-matter';
+
+import { reportError } from './logger';
 
 /**
  * Frontmatter shape for `content/work/*.mdx` projects.
@@ -129,7 +130,7 @@ export async function getAllProjects(): Promise<Project[]> {
         return await readProjectFile(filename);
       } catch (err) {
         const slug = filename.replace(/\.mdx$/, '');
-        Sentry.captureException(err, { tags: { op: 'readProject', slug } });
+        reportError(err, { op: 'readProject', slug });
         return null;
       }
     }),
@@ -158,7 +159,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     // Report the parse/read failure before returning the fallback so a
     // malformed project that 404s leaves an operator breadcrumb instead of
     // vanishing silently. See #153.
-    Sentry.captureException(err, { tags: { op: 'readProject', slug } });
+    reportError(err, { op: 'readProject', slug });
     return null;
   }
 }
