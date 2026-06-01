@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 import { contentType, generateImageMetadata } from '@/app/icon';
+import { contentType as ogContentType, size as ogSize } from '@/app/opengraph-image';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/lib/site';
 
 /*
@@ -22,8 +23,15 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '@/lib/site';
  * `public/icon-*.png` assets (none exist). We derive the manifest's `icons`
  * entries from that same `generateImageMetadata` so the `src` paths can never
  * drift from the routes Next actually serves (the original static-path
- * references 404'd — see #195). OG/Twitter image references here are owned
- * by #142.
+ * references 404'd — see #195).
+ *
+ * `screenshots` reference the site-wide Open Graph image (`app/opengraph-image
+ * .tsx`, served at `/opengraph-image`) so the PWA install prompt on Android
+ * matches the 1200×630 social-sharing preview, keeping brand consistency
+ * across app drawers and social feeds (see #142). Both `wide` and `narrow`
+ * form factors point at the same image. `sizes` / `type` are pulled from the
+ * OG route's own `size` / `contentType` exports so they can't drift from what
+ * Next actually serves — same import-driven discipline as the `icons` block.
  */
 export const dynamic = 'force-static';
 
@@ -41,5 +49,19 @@ export default function manifest(): MetadataRoute.Manifest {
       sizes: `${size.width}x${size.height}`,
       type: contentType,
     })),
+    screenshots: [
+      {
+        src: '/opengraph-image',
+        sizes: `${ogSize.width}x${ogSize.height}`,
+        type: ogContentType,
+        form_factor: 'wide',
+      },
+      {
+        src: '/opengraph-image',
+        sizes: `${ogSize.width}x${ogSize.height}`,
+        type: ogContentType,
+        form_factor: 'narrow',
+      },
+    ],
   };
 }
