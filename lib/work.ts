@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
+import * as Sentry from '@sentry/nextjs';
 import matter from 'gray-matter';
 
 /**
@@ -118,7 +119,21 @@ export async function getAllProjects(): Promise<Project[]> {
     if ((err as NodeJS.ErrnoException).code === 'ENOENT') return [];
     throw err;
   }
-  const projects = await Promise.all(entries.map(readProjectFile));
+  // Per-file isolation: a single malformed project file (bad YAML, missing
+  // required frontmatter) is reported to Sentry and skipped rather than
+  // throwing out of the map and zeroing the entire work listing / sitemap /
+  // llms.txt. See #153.
+  const projects = await Promise.all(
+    entries.map(async (filename) => {
+      try {
+        return await readProjectFile(filename);
+      } catch (err) {
+        const slug = filename.replace(/\.mdx$/, '');
+        Sentry.captureException(err, { tags: { op: 'readProject', slug } });
+        return null;
+      }
+    }),
+  );
   return projects
     .filter((p): p is Project => p !== null)
     .sort((a, b) => {
@@ -140,7 +155,11 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     return await readProjectFile(`${slug}.mdx`);
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === 'ENOENT') return null;
-    throw err;
+    // Report the parse/read failure before returning the fallback so a
+    // malformed project that 404s leaves an operator breadcrumb instead of
+    // vanishing silently. See #153.
+    Sentry.captureException(err, { tags: { op: 'readProject', slug } });
+    return null;
   }
 }
 

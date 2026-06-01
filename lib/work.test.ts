@@ -2,10 +2,22 @@ import { promises as fs } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
+import { captureException } from '@sentry/nextjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+// `@sentry/nextjs` has no DSN in the test runtime, so `captureException` is a
+// no-op at runtime — but we mock it here so we can assert the content readers
+// report parse/read failures (issue #153). The namespace export can't be spied
+// directly under ESM, so mock the module; `vi.mock` is hoisted above the import.
+vi.mock('@sentry/nextjs', () => ({ captureException: vi.fn() }));
+const captureMock = vi.mocked(captureException);
 
 let tmpDir: string;
 const realCwd = process.cwd.bind(process);
+
+async function writeRawProject(slug: string, raw: string) {
+  await fs.writeFile(path.join(tmpDir, 'content', 'work', `${slug}.mdx`), raw, 'utf8');
+}
 
 async function writeProject(slug: string, frontmatter: Record<string, unknown>, body = 'Body.') {
   const yaml = Object.entries(frontmatter)
@@ -23,6 +35,7 @@ beforeEach(async () => {
   await fs.mkdir(path.join(tmpDir, 'content', 'work'), { recursive: true });
   await fs.mkdir(path.join(tmpDir, 'public', 'work'), { recursive: true });
   vi.spyOn(process, 'cwd').mockReturnValue(tmpDir);
+  captureMock.mockClear();
   vi.resetModules();
 });
 
@@ -197,15 +210,37 @@ describe('getAllProjects', () => {
     expect(project.frontmatter.imageAlt).toBe('kept');
   });
 
-  it('throws with the slug in the error when required frontmatter is missing', async () => {
+  it('skips a project with missing required frontmatter and reports it to Sentry', async () => {
+    const capture = captureMock;
+    await writeProject('good', {
+      title: 'Good',
+      role: 'Eng',
+      year: '2020',
+      summary: 's',
+      tech: ['a'],
+    });
     await writeProject('incomplete', { title: 'Only title' });
 
     const { getAllProjects } = await import('./work');
+    const projects = await getAllProjects();
 
-    await expect(getAllProjects()).rejects.toThrow(/incomplete/);
+    // The bad file is dropped; the good one survives (no zeroing of the listing).
+    expect(projects.map((p) => p.slug)).toEqual(['good']);
+    expect(capture).toHaveBeenCalledTimes(1);
+    const [err, ctx] = capture.mock.calls[0];
+    expect((err as Error).message).toMatch(/incomplete/);
+    expect(ctx).toMatchObject({ tags: { op: 'readProject', slug: 'incomplete' } });
   });
 
-  it('throws when tech is an empty array', async () => {
+  it('skips a project with an empty tech array and reports it rather than throwing out', async () => {
+    const capture = captureMock;
+    await writeProject('good', {
+      title: 'Good',
+      role: 'Eng',
+      year: '2020',
+      summary: 's',
+      tech: ['a'],
+    });
     await writeProject('no-tech', {
       title: 'No Tech',
       role: 'Eng',
@@ -215,8 +250,34 @@ describe('getAllProjects', () => {
     });
 
     const { getAllProjects } = await import('./work');
+    const projects = await getAllProjects();
 
-    await expect(getAllProjects()).rejects.toThrow(/no-tech/);
+    expect(projects.map((p) => p.slug)).toEqual(['good']);
+    expect(capture).toHaveBeenCalledTimes(1);
+    expect(capture.mock.calls[0][1]).toMatchObject({
+      tags: { op: 'readProject', slug: 'no-tech' },
+    });
+  });
+
+  it('skips a project with broken YAML frontmatter and reports it', async () => {
+    const capture = captureMock;
+    await writeProject('good', {
+      title: 'Good',
+      role: 'Eng',
+      year: '2020',
+      summary: 's',
+      tech: ['a'],
+    });
+    await writeRawProject('broken-yaml', '---\ntitle: "unterminated\nrole: Eng\n---\nBody.\n');
+
+    const { getAllProjects } = await import('./work');
+    const projects = await getAllProjects();
+
+    expect(projects.map((p) => p.slug)).toEqual(['good']);
+    expect(capture).toHaveBeenCalledTimes(1);
+    expect(capture.mock.calls[0][1]).toMatchObject({
+      tags: { op: 'readProject', slug: 'broken-yaml' },
+    });
   });
 
   it('returns an empty array when the work directory does not exist', async () => {
@@ -226,6 +287,47 @@ describe('getAllProjects', () => {
     const projects = await getAllProjects();
 
     expect(projects).toEqual([]);
+  });
+});
+
+describe('getProjectBySlug', () => {
+  it('returns the project when the slug matches a valid file', async () => {
+    await writeProject('hello', {
+      title: 'Hello',
+      role: 'Eng',
+      year: '2020',
+      summary: 's',
+      tech: ['a'],
+    });
+
+    const { getProjectBySlug } = await import('./work');
+    const project = await getProjectBySlug('hello');
+
+    expect(project?.frontmatter.title).toBe('Hello');
+  });
+
+  it('reports a malformed project to Sentry and returns null instead of throwing', async () => {
+    const capture = captureMock;
+    await writeProject('broken', { title: 'Only title' });
+
+    const { getProjectBySlug } = await import('./work');
+    const project = await getProjectBySlug('broken');
+
+    expect(project).toBeNull();
+    expect(capture).toHaveBeenCalledTimes(1);
+    expect(capture.mock.calls[0][1]).toMatchObject({
+      tags: { op: 'readProject', slug: 'broken' },
+    });
+  });
+
+  it('does not report to Sentry for a simple not-found (ENOENT) miss', async () => {
+    const capture = captureMock;
+
+    const { getProjectBySlug } = await import('./work');
+    const project = await getProjectBySlug('never-existed');
+
+    expect(project).toBeNull();
+    expect(capture).not.toHaveBeenCalled();
   });
 });
 

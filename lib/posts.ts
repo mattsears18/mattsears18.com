@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
+import * as Sentry from '@sentry/nextjs';
 import matter from 'gray-matter';
 
 export type PostFrontmatter = {
@@ -39,7 +40,21 @@ export async function getAllPosts(): Promise<Post[]> {
     if ((err as NodeJS.ErrnoException).code === 'ENOENT') return [];
     throw err;
   }
-  const posts = await Promise.all(entries.map(readPostFile));
+  // Per-file isolation: a single malformed file (bad YAML, missing required
+  // frontmatter) is reported to Sentry and skipped rather than throwing out of
+  // the map and collapsing the entire blog index / sitemap / RSS / llms.txt to
+  // empty. See #153.
+  const posts = await Promise.all(
+    entries.map(async (filename) => {
+      try {
+        return await readPostFile(filename);
+      } catch (err) {
+        const slug = filename.replace(/\.mdx$/, '');
+        Sentry.captureException(err, { tags: { op: 'readPost', slug } });
+        return null;
+      }
+    }),
+  );
   return posts
     .filter((p): p is Post => p !== null)
     .filter((p) => !p.frontmatter.draft)
@@ -53,7 +68,11 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     return post;
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === 'ENOENT') return null;
-    throw err;
+    // Report the parse/read failure before returning the fallback so a
+    // malformed post that 404s leaves an operator breadcrumb instead of
+    // vanishing silently. See #153.
+    Sentry.captureException(err, { tags: { op: 'readPost', slug } });
+    return null;
   }
 }
 
