@@ -84,7 +84,7 @@ export const config = {
      *   - asset extensions served straight from /public
      *
      * Same exclusion list Next.js suggests in their CSP guide. The
-     * route handler files (robots.ts, sitemap.ts, rss.xml/) generate
+     * route handler files (robots.txt/, sitemap.xml/, rss.xml/) generate
      * non-HTML responses where the CSP header has no security benefit;
      * skipping them keeps the proxy off the hot path for crawler
      * traffic and feed readers.

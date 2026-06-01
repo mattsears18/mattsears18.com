@@ -10,6 +10,17 @@ export const SITE_DESCRIPTION =
 export const SITE_TAGLINE = 'Software engineer with a civil engineering PhD.';
 
 /**
+ * Shared `Cache-Control` policy for the build-time, crawler/agent-facing
+ * endpoints (`/rss.xml`, `/llms.txt`, `/sitemap.xml`, `/robots.txt`). All four
+ * are `force-static` and regenerate from the same `getAllPosts()` /
+ * `getAllProjects()` source on every build, so they should declare an
+ * identical one-hour CDN/browser freshness window rather than letting some
+ * fall back to a framework default. Declared once here so the window can't
+ * drift across siblings (see #157).
+ */
+export const STATIC_FEED_CACHE_CONTROL = 'public, max-age=3600, s-maxage=3600';
+
+/**
  * Default Open Graph fields that must appear on every route. The Next.js
  * App Router does NOT shallow-merge `openGraph` objects across the layout/
  * page boundary — a page-level `openGraph` block replaces the root layout's
