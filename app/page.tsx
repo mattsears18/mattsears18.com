@@ -84,10 +84,22 @@ export default function Home() {
                 Enrich
               </a>
               , a Madison County, KY social enterprise that employs people with alternative resumes
-              — recovery, homelessness, reentry. I&apos;m also building Shipyard (a Claude Code
-              plugin that autonomously works a GitHub issue backlog) and Lightwork (a
-              volunteer-coordination app for community organizations). Most of this portfolio site
-              was built by Shipyard, not by me.
+              — recovery, homelessness, reentry. I&apos;m also building{' '}
+              <Link
+                href="/work/shipyard"
+                className="text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
+              >
+                Shipyard
+              </Link>{' '}
+              (a Claude Code plugin that autonomously works a GitHub issue backlog) and{' '}
+              <Link
+                href="/work/lightwork"
+                className="text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
+              >
+                Lightwork
+              </Link>{' '}
+              (a volunteer-coordination app for community organizations). Most of this portfolio
+              site was built by Shipyard, not by me.
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-2 pt-2">
               <Link
