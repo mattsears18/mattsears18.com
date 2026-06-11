@@ -160,6 +160,33 @@ and thirteen merged on the spot. The other two needed more time — one merged
 two days later, the other three. The loop doesn't bat 1.000; it bats well
 enough that the stragglers are the part I notice.
 
+### Self-healing software
+
+That design bet pays off hardest with the inputs that aren't me. Lightwork's
+production errors now file their own bug reports: Sentry is integrated with
+the GitHub repo, and Crashlytics watches the mobile apps — when either one
+catches an error or a crash, it automatically opens an issue, stack trace
+and all. From there the issue rides the same loop as everything else:
+refined, investigated, dispatched, fixed, merged. An error that surfaces in
+production can be patched within hours of the first time it fires, without
+anyone triaging a dashboard first.
+
+Users feed the loop too. The app has a feedback form, and submissions flow
+straight into the issue backlog — feature requests, bug reports, all of it.
+But this lane has guardrails, because it's the one lane the public can
+write to. Shipyard only auto-works issues from **trusted authors**; anything
+from an untrusted source — the feedback form included — is held behind a
+human-review gate until I explicitly approve it. The security model in one
+sentence: anyone can ask, but only I decide what the machine builds. Once
+I've signed off, though, a user-reported bug or user-requested feature flows
+through exactly the same machinery as everything else — which means users of
+a one-person app get their bugs fixed and their feature requests shipped.
+
+The next step is closing that loop outward. The feedback form already
+captures the reporter's email address, so notifying someone when their
+report ships — "the bug you filed on Tuesday was fixed on Wednesday" — is
+one small automation away. A feedback form that answers you back.
+
 ### Where the human fits in the loop
 
 It's an autonomous loop, not an unsupervised one — the division of labor is
