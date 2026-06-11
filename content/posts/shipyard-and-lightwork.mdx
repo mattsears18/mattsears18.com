@@ -32,9 +32,9 @@ issues** — **110 of those PRs opened end-to-end by autonomous workers**,
 each in its own git worktree, each merged by green CI without a human
 touching the keyboard. The median PR merged nine minutes after it opened.
 And it wasn't toy work: it hardened security on abuse-prone endpoints,
-fixed real performance and accessibility violations, shipped offline
-support, and wrote test coverage over the social sign-in flows — the kind
-of changes that would each quietly eat an evening on their own.
+fixed performance and accessibility violations, shipped offline support,
+and wrote test coverage over the social sign-in flows — the kind of
+changes that would each quietly eat an evening on their own.
 
 After dinner I ran one more command — `/my-turn` — and got back a short,
 prioritized list of the things that actually needed a human: judgment
@@ -49,10 +49,10 @@ gotten out of a tool I built.
 
 ## Two projects, one bottleneck
 
-For the last ten weeks I've been working on two projects at once — and to
-be clear about the scale, both are **passion projects**, built in the hours
-around everything else. This is not the output of ten weeks of full-time
-work; it's what nights and weekends produced. The first project is
+For the last ten weeks I've been working on two projects at once — both
+**passion projects**, built in the hours around everything else. None of
+this is the output of full-time work; it's what nights and weekends
+produced. The first is
 [Lightwork](https://getlightwork.com), a volunteer task management app —
 Expo (React Native) + Firebase, shipping to iOS, Android, and the web. The
 second is [Shipyard](https://github.com/mattsears18/shipyard), an
@@ -128,9 +128,9 @@ App Store and Play Store launch checklists. Four months of low-code got me
 a prototype; ten weeks of spare hours with this setup got me to launch
 prep. One person, after hours.
 
-The difference was Claude Code — and, very quickly, what I learned about
-where its real constraint is. An agent session is brilliant at writing code
-and helpless at logistics. Drive one by hand and you become the conveyor
+The difference was Claude Code — and a lesson it taught me almost
+immediately: an agent session is brilliant at writing code and helpless at
+logistics. Drive one by hand and you become the conveyor
 belt: write the prompt, watch the checks, rebase when something else lands
 first, click merge, start the next one. The agent implements a
 well-specified issue faster than you can write the spec, and _much_ faster
@@ -224,7 +224,7 @@ one small automation away. A feedback form that answers you back.
 ### Shipyard builds shipyard
 
 The strangest loop points back at itself: **shipyard is built with
-shipyard.** The vast majority of its own merged PRs were opened by its own
+shipyard.** The vast majority of its merged PRs were opened by its own
 workers (the numbers are below). But the flywheel is the part I didn't
 plan: when a `/do-work` run on lightwork hits friction — a worker misreads
 an ambiguous contract, the orchestrator mishandles an edge case, a helper
@@ -297,6 +297,12 @@ redirects, URL schemes, and per-platform app registrations across three
 platforms and two environments knows exactly how much tedium is buried in
 that sentence.
 
+And one more, since you're looking at it: **shipyard built this site.**
+When I wanted somewhere to publish this post, shipyard rebuilt my personal
+site from the ground up — Next.js, the design system, RSS, the SEO and
+accessibility plumbing — and had it live in a day. Of the 135 pull requests
+merged into the site's repo, 91 were opened by shipyard workers.
+
 ## The numbers
 
 Shipyard's first commit was **May 16, 2026 — twenty-six days ago**. Here's
@@ -317,11 +323,12 @@ The totals so far:
   mostly carefully-written specifications — the prompts _are_ the program.
 
 What did it cost? Shipyard keeps a local per-session token ledger, and it
-reports **$357 estimated across 97 orchestrator sessions** (~71M tokens,
-priced at API list rates — about $213 of that on lightwork). Two caveats in
-both directions: early sessions under-recorded their token counts, so that's
-an undercount; and it excludes the interactive Claude Code sessions I drove
-myself. Even doubled, it's a striking number against 500+ merged PRs.
+reports **an estimated $357 across 97 orchestrator sessions** (~71M tokens,
+priced at API list rates — about $213 of that on lightwork). Two caveats,
+cutting in opposite directions: early sessions under-recorded their token
+counts, so that's an undercount; and it excludes the interactive Claude
+Code sessions I drove myself. Even doubled, it's a striking number set
+against everything described above.
 
 ## The honest caveats
 
