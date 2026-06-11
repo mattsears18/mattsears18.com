@@ -14,9 +14,10 @@ tags:
 For the last ten weeks I've been working on two projects at once. The first is
 [Lightwork](https://getlightwork.com), a volunteer task
 management app — Expo (React Native) + Firebase, shipping to iOS, Android, and
-the web. The second is [Shipyard](https://github.com/mattsears18/shipyard), a
-Claude Code plugin that turns a GitHub issue backlog into merged pull requests
-with as little of me in the loop as possible.
+the web. The second is [Shipyard](https://github.com/mattsears18/shipyard),
+an **autonomous engineering loop** built on Claude Code — it finds work,
+refines it into tickets, and turns the GitHub issue backlog into merged pull
+requests, with the human kept at exactly the points where judgment matters.
 
 The relationship between the two is the point of this post: **I built shipyard
 because I was the bottleneck in building lightwork.** This is the story of
@@ -85,9 +86,10 @@ wasn't the model. It was me.
 
 ## So, shipyard
 
-Shipyard is a [Claude Code](https://docs.claude.com/en/docs/claude-code)
-plugin that packages the whole find-work → do-work → merge loop so it runs
-without a human driving each step. It does three things:
+Shipyard is an engineering loop — find work → refine it → do it → merge it →
+repeat — packaged as a
+[Claude Code](https://docs.claude.com/en/docs/claude-code) plugin so the loop
+runs without a human driving each step. It does three things:
 
 ![Shipyard: audits, third-party services, user feedback, and manual entry feed an issue backlog; an orchestrator dispatches issue workers that ship the work](/blog/shipyard-lightwork/shipyard-marketing.jpg)
 
@@ -112,11 +114,31 @@ without a human driving each step. It does three things:
 
 ![Shipyard at a glance: five stages from issue sources through refinement and human review, into the orchestrator, out to parallel workers in isolated worktrees, and into the PR pipeline with auto-merge](/blog/shipyard-lightwork/shipyard-infographic.svg)
 
-The human's job collapses to two touchpoints: deciding what should be built
-(writing issues, or approving the ones shipyard wrote), and whatever PR-level
-review gate you choose to keep. Everything between those points — branching,
-implementing, fixing red checks, rebasing stale PRs, merging — is the
-machine's problem.
+### Where the human fits in the loop
+
+It's an autonomous loop, not an unsupervised one — the division of labor is
+explicit, and it cuts along what each side is actually good at.
+
+**What shipyard does that I can't:** be in eight places at once, and never
+get bored. It keeps parallel workers running around the clock, watches every
+CI run to completion, rebases stale PRs, re-fixes failing checks, applies
+every label and changelog convention without ever forgetting one, and grinds
+through the long tail of small, well-specified fixes that would never
+justify an hour of a human's day. None of that work is hard — there's just
+far more of it than one person can physically do.
+
+**What I do that shipyard can't:** decide what's worth building, and why. I
+write the issues (or approve the ones it drafts), make the product and
+design calls, sign off on anything derived from real user feedback before
+any code-modifying agent is allowed near it, review the PRs where
+correctness has real stakes, and unstick the work it hands back as
+`blocked`.
+
+And the loop closes in both directions: `/my-turn` surveys the open PRs, the
+backlog, and recent comments, and produces a prioritized list of exactly the
+items that are blocked on _me_ rather than on the machine — the read-only,
+human-facing counterpart to `/do-work`. I gate what it builds; it tells me
+where I'm the bottleneck.
 
 The design bet that makes it compose well: **everything is a GitHub issue.**
 Shipyard doesn't care where an issue came from — an audit agent, a Sentry
