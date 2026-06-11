@@ -296,8 +296,9 @@ web deploys, EAS builds for iOS and Android, and fully automated submission
 to the App Store and Google Play, store metadata included. I iterated on
 that pipeline the same way everything else here works: file an issue,
 let a worker ship the change. At this point it's genuinely polished —
-release-please cuts the versions, and the release notes are drafted
-without me writing a word of them.
+[release-please](https://github.com/googleapis/release-please) cuts the
+versions, complete with detailed changelogs, and user-friendly release
+notes are drafted automatically from those changelogs.
 
 It also wrote the safety net that makes the speed survivable: **over 3,000
 unit tests, over 300 end-to-end tests, and about 50 smoke checks** — a
