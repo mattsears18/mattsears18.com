@@ -229,9 +229,9 @@ through exactly the same machinery as everything else — which means users of
 a one-person app get their bugs fixed and their feature requests shipped.
 
 The next step is closing that loop outward. The feedback form already
-captures the reporter's email address, so notifying someone when their
-report ships — "the bug you filed on Tuesday was fixed on Wednesday" — is
-one small automation away. A feedback form that answers you back.
+captures the reporter's email address, so letting them know when their fix
+or feature lands — "the bug you filed on Tuesday was fixed on Wednesday" —
+is one small automation away. A feedback form that answers you back.
 
 ### Shipyard builds shipyard
 
@@ -270,8 +270,17 @@ back as `blocked`.
 And that hand-off has its own command — `/my-turn`, step 4 above. After a
 day of the machine working, it's how I find out what the loop actually
 needs from a human, in priority order, instead of trawling GitHub trying
-to reconstruct it myself. The division of labor in one line: I gate what
-it builds; it tells me where I'm the bottleneck.
+to reconstruct it myself. It doesn't just hand me a list, either — it
+walks me through each item, step by step, holding my hand the whole way.
+When lightwork needed Facebook login configured, it didn't say "set up
+OAuth" and wish me luck; it sat me down: open this Meta developer console
+page, create this type of app, paste exactly this redirect URI, drop these
+two values into these env vars, now run this command to confirm the wiring
+works. The machine handles everything that doesn't require me; for the few
+things that genuinely do — admin consoles, account ownership, judgment —
+it shrinks my job to following directions. The division of labor in one
+line: I gate what it builds; it tells me where I'm the bottleneck, then
+walks me through getting out of the way.
 
 ## It built the platform, not just the patches
 
@@ -287,8 +296,8 @@ web deploys, EAS builds for iOS and Android, and fully automated submission
 to the App Store and Google Play, store metadata included. I iterated on
 that pipeline the same way everything else here works: file an issue,
 let a worker ship the change. At this point it's genuinely polished —
-release-please cuts the versions, and the release notes are drafted by
-Claude without me writing a word of them.
+release-please cuts the versions, and the release notes are drafted
+without me writing a word of them.
 
 It also wrote the safety net that makes the speed survivable: **over 3,000
 unit tests, over 300 end-to-end tests, and about 50 smoke checks** — a
