@@ -11,6 +11,8 @@ tags:
   - tooling
 ---
 
+import { LightboxImage } from '@/app/components/lightbox-image';
+
 For the last ten weeks I've been working on two projects at once. The first is
 [Lightwork](https://getlightwork.com), a volunteer task
 management app — Expo (React Native) + Firebase, shipping to iOS, Android, and
@@ -32,7 +34,7 @@ data on Firestore, group search via Algolia, maps, per-task messaging,
 localization. One codebase for iOS, Android, and a PWA.
 
 <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-  <img
+  <LightboxImage
     src="/blog/shipyard-lightwork/lightwork-01-home.jpg"
     alt="Lightwork home screen showing a feed of volunteer tasks"
     style={{
@@ -44,7 +46,7 @@ localization. One codebase for iOS, Android, and a PWA.
       alignSelf: 'flex-start',
     }}
   />
-  <img
+  <LightboxImage
     src="/blog/shipyard-lightwork/lightwork-02-map.jpg"
     alt="Lightwork map view with task locations pinned"
     style={{
@@ -56,7 +58,7 @@ localization. One codebase for iOS, Android, and a PWA.
       alignSelf: 'flex-start',
     }}
   />
-  <img
+  <LightboxImage
     src="/blog/shipyard-lightwork/lightwork-04-task-detail.jpg"
     alt="Lightwork task detail screen with volunteer signup"
     style={{

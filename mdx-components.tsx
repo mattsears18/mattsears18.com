@@ -1,6 +1,8 @@
 import type { MDXComponents } from 'mdx/types';
 import type { ComponentPropsWithoutRef } from 'react';
 
+import { LightboxImage } from '@/app/components/lightbox-image';
+
 /*
  * Human-readable language labels for screen-reader announcement of code blocks.
  * `rehype-pretty-code` sets `data-language` from the fenced-code annotation
@@ -79,5 +81,10 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
     pre: CodeBlockPre,
+    /*
+     * Every MDX image — markdown `![]()` and author-written `<img>` alike —
+     * opens fullsize in a lightbox on tap/click (#231).
+     */
+    img: LightboxImage,
   };
 }
