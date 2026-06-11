@@ -45,7 +45,7 @@ the human kept at exactly the points where judgment matters.
 The relationship between the two is the point of this post: **I built
 shipyard because I was the bottleneck in building lightwork.**
 
-## The app, and the week that broke me
+## The app, and the four months that didn't ship
 
 Lightwork is the product. Users join groups (a church, a neighborhood
 association, a mutual-aid crew), post tasks that need volunteers — with
@@ -92,20 +92,29 @@ localization. One codebase for iOS, Android, and a PWA.
   />
 </div>
 
-The current rewrite started in April 2026. As of today the repo is at
-**1,671 commits**, version 2.51.0, and roughly **153,000 lines of
-TypeScript** — about 80k of app code and 73k of tests — working through the
-App Store and Play Store launch checklists. Ten weeks, one person.
+Lightwork didn't start in React Native. The first version was about four
+months of work in [FlutterFlow](https://flutterflow.io) — a low-code
+platform where you build cross-platform apps visually instead of writing
+them by hand. I built a lot of real features there, but the prototype never
+quite reached the point where I could ship it. In April 2026 I started over
+in React Native, and the first task I completed was porting that FlutterFlow
+prototype into the new codebase.
 
-That pace came from using Claude Code aggressively from day one, and it
-worked — right up until it didn't. The week of May 11 I merged **263 pull
-requests** into lightwork. Every single one needed me: prompt the session,
-watch it work, watch the checks, rebase when something landed first, click
-merge, start the next one. I spent the week as a human conveyor belt between
-an AI that writes code faster than I can review it and a CI system that
-merges anything green. By Friday the pattern was impossible to ignore: the
-agent could implement a well-specified issue faster than I could write the
-spec, and _much_ faster than I could shepherd the result home.
+Ten weeks later, the repo is at **1,671 commits**, version 2.51.0, and
+roughly **153,000 lines of TypeScript** — about 80k of app code and 73k of
+tests — working through the App Store and Play Store launch checklists. Four
+months of low-code got me a prototype; ten weeks of this got me to launch
+prep. One person.
+
+The difference was Claude Code — and, very quickly, what I learned about
+where its real constraint is. An agent session is brilliant at writing code
+and helpless at logistics. Drive one by hand and you become the conveyor
+belt: write the prompt, watch the checks, rebase when something else lands
+first, click merge, start the next one. The agent implements a
+well-specified issue faster than you can write the spec, and _much_ faster
+than you can shepherd the result home. Multiply that across a backlog of
+hundreds of issues and the math is brutal: the human in the middle is the
+slowest part of every cycle.
 
 The constraint wasn't the model. It was me.
 
@@ -180,23 +189,21 @@ where I'm the bottleneck.
 ## The numbers
 
 Shipyard's first commit was **May 16, 2026 — twenty-six days ago**. Here's
-what the lightwork repo looked like before and after, in merged PRs per week:
+the lightwork repo's merge cadence over the past six weeks:
 
-![Stacked bar chart of merged PRs per week in the lightwork repo, May 4 through June 11. Weekly totals: 17, 263, 354, 161, 175, 30. From May 18 onward most merged PRs were opened by shipyard workers](/blog/shipyard-lightwork/lightwork-prs-per-week.svg)
+![Bar chart of merged PRs per week in the lightwork repo, May 4 through June 11. Weekly totals: 17, 263, 354, 161, 175, and 30 in the partial final week](/blog/shipyard-lightwork/lightwork-prs-per-week.svg)
 
-Read that chart honestly and the story isn't raw throughput — I was already
-merging absurd numbers of Claude-assisted PRs by hand. What changed is
-**whose attention the throughput consumed**. The 263-PR week required me at
-the keyboard for all of it. In the weeks after, the orange share of each bar
-happened while I was doing something else — writing specs, reviewing the
-work that actually needed judgment, or building shipyard itself.
+One honest note on attribution: the `shipyard` label that stamps every
+orchestrator-opened PR didn't exist until May 18 — shipyard was already
+doing work before its label was — so I can't cleanly split that chart into
+"the machine's PRs" and "mine," and I won't pretend to. What the label does
+establish: since May 18, **524 merged PRs were opened end-to-end by shipyard
+workers**. Treat that number as a floor, not a census.
 
 The totals so far:
 
-- **Lightwork:** 1,016 merged PRs, 839 issues closed. Since the `shipyard`
-  label landed on May 18, **524 merged PRs were opened end-to-end by shipyard
-  workers**, and over 300 of the issues in the backlog were filed by
-  shipyard's own audit agents.
+- **Lightwork:** 1,016 merged PRs, 839 issues closed, and over 300 of the
+  backlog issues were filed by shipyard's own audit agents.
 - **Shipyard:** 282 merged PRs, 250 issues closed — and **252 of those PRs
   (89%) were opened by shipyard working on itself.** The tool is its own
   primary user, which is exactly the feedback loop you want when shaking out
