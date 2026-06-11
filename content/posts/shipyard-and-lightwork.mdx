@@ -160,8 +160,7 @@ loop runs without a human driving each step. It does three things:
    be worked — a user-feedback form submission, a feature request with open
    questions — and classifies and rewrites it into an implementation-ready
    ticket. Anything touching real user feedback is gated behind a
-   `needs-human-review` label: no code-modifying agent runs until a human
-   signs off.
+   `needs-human-review` label.
 3. **It does work.** `/do-work` is the orchestrator. It ranks the eligible
    backlog and keeps N parallel workers in flight, each in its own isolated
    git worktree on its own branch. Each worker implements the smallest change
@@ -226,10 +225,9 @@ far more of it than one person can physically do.
 
 **What I do that shipyard can't:** decide what's worth building, and why. I
 write the issues (or approve the ones it drafts), make the product and
-design calls, sign off on anything derived from real user feedback before
-any code-modifying agent is allowed near it, review the PRs where
-correctness has real stakes, and unstick the work it hands back as
-`blocked`.
+design calls, sign off on anything derived from real user feedback, review
+the PRs where correctness has real stakes, and unstick the work it hands
+back as `blocked`.
 
 And the loop closes in both directions: `/my-turn` surveys the open PRs, the
 backlog, and recent comments, and produces a prioritized list of exactly the
