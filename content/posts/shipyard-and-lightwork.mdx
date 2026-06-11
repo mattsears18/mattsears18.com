@@ -12,7 +12,7 @@ tags:
   - tooling
 ---
 
-import { LightboxImage } from '@/app/components/lightbox-image';
+import { ImageCarousel } from '@/app/components/image-carousel';
 
 On a Tuesday in May, I got up early and typed two commands into a terminal
 before leaving for work.
@@ -71,44 +71,31 @@ locations, schedules, and recurring series — and sign up to help. Real-time
 data on Firestore, group search via Algolia, maps, per-task messaging,
 localization. One codebase for iOS, Android, and a PWA.
 
-<div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-  <LightboxImage
-    src="/blog/shipyard-lightwork/lightwork-01-home.jpg"
-    alt="Lightwork store screenshot — home feed of volunteer tasks, captioned: Ask your community for help in 30 seconds"
-    style={{
-      width: '31%',
-      minWidth: '160px',
-      maxWidth: '240px',
-      borderRadius: '12px',
-      border: '1px solid rgba(128, 128, 128, 0.35)',
-      alignSelf: 'flex-start',
-    }}
-  />
-  <LightboxImage
-    src="/blog/shipyard-lightwork/lightwork-02-map.jpg"
-    alt="Lightwork store screenshot — map of nearby task locations, captioned: See who needs a hand near you"
-    style={{
-      width: '31%',
-      minWidth: '160px',
-      maxWidth: '240px',
-      borderRadius: '12px',
-      border: '1px solid rgba(128, 128, 128, 0.35)',
-      alignSelf: 'flex-start',
-    }}
-  />
-  <LightboxImage
-    src="/blog/shipyard-lightwork/lightwork-04-task-detail.jpg"
-    alt="Lightwork store screenshot — task detail with volunteer signup, captioned: Choose who sees it — public or your group only"
-    style={{
-      width: '31%',
-      minWidth: '160px',
-      maxWidth: '240px',
-      borderRadius: '12px',
-      border: '1px solid rgba(128, 128, 128, 0.35)',
-      alignSelf: 'flex-start',
-    }}
-  />
-</div>
+<ImageCarousel
+  label="Lightwork app screenshots"
+  slides={[
+    {
+      src: '/blog/shipyard-lightwork/carousel-01-home.jpg',
+      alt: 'Lightwork home feed of volunteer tasks, captioned: Help asked plainly. Help given freely.',
+    },
+    {
+      src: '/blog/shipyard-lightwork/carousel-02-map.jpg',
+      alt: 'Lightwork map of nearby task locations, captioned: See who needs a hand near you.',
+    },
+    {
+      src: '/blog/shipyard-lightwork/carousel-03-ask.jpg',
+      alt: 'Lightwork ask-for-help form, captioned: Ask your community for help in 30 seconds.',
+    },
+    {
+      src: '/blog/shipyard-lightwork/carousel-04-chat.jpg',
+      alt: 'Lightwork per-task message thread, captioned: Chat in real time on every request.',
+    },
+    {
+      src: '/blog/shipyard-lightwork/carousel-05-detail.jpg',
+      alt: 'Lightwork task detail with volunteer signup, captioned: Show up. Make it count.',
+    },
+  ]}
+/>
 
 Lightwork didn't start in React Native. The first version was about four
 months of work in [FlutterFlow](https://flutterflow.io) — a low-code
