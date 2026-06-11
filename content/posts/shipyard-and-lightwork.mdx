@@ -31,13 +31,10 @@ evening, the repo had merged **116 pull requests** and closed **121
 issues** — **110 of those PRs opened end-to-end by autonomous workers**,
 each in its own git worktree, each merged by green CI without a human
 touching the keyboard. The median PR merged nine minutes after it opened.
-And it wasn't toy work: rate limiting on the invite endpoints to stop
-email-blast abuse, size caps on user-record writes, the content-security
-policy promoted to enforcing mode, Sentry data auto-purged when an account
-is deleted, render-blocking stylesheets deferred, layout shift on the task
-feed pushed under Google's 0.1 threshold, tap targets raised to Apple's
-44-point floor, offline support for the PWA, and test coverage over the
-Google, Apple, and Facebook sign-in hooks.
+And it wasn't toy work: it hardened security on abuse-prone endpoints,
+fixed real performance and accessibility violations, shipped offline
+support, and wrote test coverage over the social sign-in flows — the kind
+of changes that would each quietly eat an evening on their own.
 
 After dinner I ran one more command — `/my-turn` — and got back a short,
 prioritized list of the things that actually needed a human: judgment
