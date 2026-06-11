@@ -77,10 +77,23 @@ function CodeBlockPre(props: ComponentPropsWithoutRef<'pre'>) {
   return <pre {...props} aria-label={existingAriaLabel ?? ariaLabel} />;
 }
 
+/*
+ * Open off-site links in a new tab, matching the convention the site
+ * chrome already follows (footer GitHub link, work-page external links).
+ * Internal/relative links keep default navigation so readers don't lose
+ * back-button behavior inside the site.
+ */
+function ContentLink(props: ComponentPropsWithoutRef<'a'>) {
+  const isExternal = typeof props.href === 'string' && /^https?:\/\//.test(props.href);
+  if (!isExternal) return <a {...props} />;
+  return <a {...props} target="_blank" rel="noopener noreferrer" />;
+}
+
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
     pre: CodeBlockPre,
+    a: ContentLink,
     /*
      * Every MDX image — markdown `![]()` and author-written `<img>` alike —
      * opens fullsize in a lightbox on tap/click (#231).
