@@ -1,5 +1,9 @@
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+
 import { ImageResponse } from 'next/og';
 
+import { reportError } from '@/lib/logger';
 import { getPostBySlug } from '@/lib/posts';
 import { SITE_TITLE, SITE_URL } from '@/lib/site';
 
@@ -46,6 +50,25 @@ export default async function PostOpengraphImage({
 }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
+
+  /*
+   * A post can supply its own social card via the `ogImage` frontmatter
+   * field (a `public/`-relative PNG, 1200×630). Serve that file directly —
+   * no point re-rasterizing a finished image through ImageResponse. A
+   * missing/unreadable file is reported and falls through to the generated
+   * title card, mirroring the work-card image fallback in `lib/work.ts`.
+   */
+  const ogImage = post?.frontmatter.ogImage;
+  if (ogImage) {
+    try {
+      const file = await fs.readFile(path.join(process.cwd(), 'public', ogImage));
+      return new Response(new Uint8Array(file), {
+        headers: { 'Content-Type': contentType },
+      });
+    } catch (err) {
+      reportError(err, { op: 'postOgImage', slug });
+    }
+  }
 
   const title = post?.frontmatter.title ?? SITE_TITLE;
   const date = post?.frontmatter.date ?? '';

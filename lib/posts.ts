@@ -11,6 +11,13 @@ export type PostFrontmatter = {
   excerpt: string;
   tags?: string[];
   draft?: boolean;
+  /**
+   * Optional custom social-card image, as a `public/`-relative path
+   * (e.g. `/blog/my-post/og.png`, ideally 1200×630). When set, the
+   * per-post opengraph-image / twitter-image routes serve this file
+   * instead of the generated title card.
+   */
+  ogImage?: string;
 };
 
 export type Post = {
