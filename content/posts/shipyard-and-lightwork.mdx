@@ -31,8 +31,10 @@ Shipyard spent the day working without me. By the time I checked back that
 evening, the repo had merged **116 pull requests** and closed **121
 issues** — **110 of those PRs opened end-to-end by autonomous workers**,
 each in its own git worktree, each merged by green CI without a human
-touching the keyboard. The median PR merged nine minutes after it opened.
-And it wasn't toy work: it hardened security on abuse-prone endpoints,
+touching the keyboard. The median PR merged nine minutes after it opened —
+CI is path-filtered, so each change only runs the suites its files can
+actually affect. And it wasn't toy work: it hardened security on
+abuse-prone endpoints,
 fixed performance and accessibility violations, shipped offline support,
 and wrote test coverage over the social sign-in flows — the kind of
 changes that would each quietly eat an evening on their own.
@@ -54,9 +56,8 @@ For the last ten weeks I've been working on two projects at once — both
 **passion projects**, built in the hours around everything else. None of
 this is the output of full-time work; it's what nights and weekends
 produced. The first is
-[Lightwork](https://getlightwork.com), an app for asking your community
-for help and volunteering to give it —
-Expo (React Native) + Firebase, shipping to iOS, Android, and the web. The
+[Lightwork](https://getlightwork.com) — Expo (React Native) + Firebase,
+shipping to iOS, Android, and the web. The
 second is [Shipyard](https://github.com/mattsears18/shipyard), an
 **autonomous engineering loop** built on Claude Code: it finds work, refines
 it into tickets, and turns the issue backlog into merged pull requests, with
@@ -265,8 +266,8 @@ far more of it than one person can physically do.
 **What I do that shipyard can't:** decide what's worth building, and why. I
 write the issues (or approve the ones it drafts), make the product and
 design calls, sign off on anything derived from real user feedback, review
-the PRs where correctness has real stakes, and unstick the work it hands
-back as `blocked`.
+the PRs where correctness has real stakes, and unstick the work it returns
+as `blocked`.
 
 And that hand-off has its own command — `/my-turn`, step 4 above. After a
 day of the machine working, it's how I find out what the loop actually
@@ -317,9 +318,14 @@ It also wrote the safety net that makes the speed survivable: **over 3,000
 unit tests, over 300 end-to-end tests, and about 50 smoke checks** — a
 post-release suite that runs against production plus Maestro flows on real
 mobile builds. That's the part people miss about merging on green CI: an
-autonomous loop is only as trustworthy as what "green" means. Shipyard
-raised the bar it has to clear, then kept clearing it — which is how the
-repo absorbs hundreds of merges a month without breaking underneath me.
+autonomous loop is only as trustworthy as what "green" means. And yes, an
+agent writing tests for its own code is the obvious worry — which is why
+one of the audit dimensions exists specifically to hunt tests that lie:
+empty, tautological, mock-only, assertion-free. The suite that gates the
+merges gets audited by a different set of eyes than the ones that wrote
+it. Shipyard raised the bar it has to clear, then kept clearing it — which
+is how the repo absorbs hundreds of merges a month without breaking
+underneath me.
 
 Two more pieces of platform work I'd have dreaded doing alone. First, fully
 isolated **test and production environments** — separate Firebase projects,
@@ -330,7 +336,8 @@ refuses to boot instead of quietly talking to the wrong database. Second,
 working across iOS, Android, and the web. Anyone who has wired OAuth
 redirects, URL schemes, and per-platform app registrations across three
 platforms and two environments knows exactly how much tedium is buried in
-that sentence.
+that sentence — the code was shipyard's; the console clicks were that
+`/my-turn` walkthrough from earlier.
 
 And one more, since you're looking at it: **shipyard built this site.**
 When I wanted somewhere to publish this post, shipyard rebuilt my personal
@@ -381,13 +388,20 @@ If that Tuesday has you tempted, you should know where it hurts first:
   `blocked` bail. The leverage shifts your effort toward writing better
   issues — which, honestly, is effort well spent anyway.
 - **Not everything is auto-fixable.** Shipyard returns `blocked` on work it
-  can't reproduce or safely scope, and parks it for a human. The win is the
-  long tail of well-specified small-to-medium changes that used to sit in
-  the backlog because no human's time ever justified them.
+  can't reproduce or safely scope, and parks it for a human. The audits
+  aren't infallible either — some findings get closed as wrong or not worth
+  fixing. That's fine: triaging a written, severity-ranked issue takes
+  seconds. The win is the long tail of well-specified small-to-medium
+  changes that used to sit in the backlog because no human's time ever
+  justified them.
 - **Review is still the gate you make it.** Auto-merge respects branch
-  protection. On lightwork I run with required CI checks; on a team repo
-  you'd keep required reviewers, and shipyard's PRs queue up for humans like
-  anyone else's.
+  protection, so the gate is whatever you require. On lightwork I should be
+  explicit about my choice: CI is the merge gate — a green autonomous PR
+  merges without me reading every diff, and I review selectively after the
+  fact, where correctness has real stakes. The test suite is what makes
+  that tenable, and it's a deliberate tradeoff for a solo, pre-launch app.
+  On a team repo you'd keep required reviewers, and shipyard's PRs queue up
+  for humans like anyone else's.
 
 ## The long tail is the point
 
