@@ -161,13 +161,19 @@ loop runs without a human driving each step. It does four things:
    questions — and classifies and rewrites it into an implementation-ready
    ticket. Anything touching real user feedback is gated behind a
    `needs-human-review` label.
-3. **It does work.** `/do-work` is the orchestrator. It ranks the eligible
-   backlog and keeps N parallel workers in flight, each in its own isolated
-   git worktree on its own branch. Each worker implements the smallest change
-   that satisfies the issue, opens a PR that closes it, and arms auto-merge.
-   Green CI means it merges itself and the next worker dispatches. When CI
-   breaks — on a PR, or on main itself — the orchestrator diverts a worker to
-   fix that first.
+3. **It does work.** `/do-work` is the orchestrator, and it plans before it
+   builds. It starts by reading the entire open backlog and working out the
+   order of attack — ranking issues by priority, and, crucially, spotting
+   the ones that will touch the same files so it can sequence those one
+   after another instead of letting parallel workers collide into merge
+   conflicts. Then it keeps N workers in flight, each in its own isolated
+   git worktree on its own branch, each implementing the smallest change
+   that satisfies its issue, opening a PR, and arming auto-merge. While the
+   workers build, the orchestrator watches the merge train: it monitors
+   every open PR continuously, and the moment one develops a failing test,
+   a conflict with freshly-landed work, or any other red check, it diverts
+   a worker to fix that PR immediately — so the train keeps moving instead
+   of backing up behind a stalled car.
 4. **It tells me when it's my turn.** `/my-turn` is the human-facing
    counterpart to `/do-work`: it surveys the open PRs, the backlog, and
    recent comments, and hands back a short, prioritized list of exactly the
