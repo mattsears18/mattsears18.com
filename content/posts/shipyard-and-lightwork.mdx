@@ -14,13 +14,18 @@ tags:
 
 import { LightboxImage } from '@/app/components/lightbox-image';
 
-On the morning of June 4th I typed one command into a terminal. It audited my
-app — accessibility, SEO, privacy, security, docs, a dozen other dimensions —
-and filed **64 GitHub issues**, each one labeled, severity-ranked, and
-written like a competent engineer's bug report. The skip-navigation link
-missing from the authenticated app shell. Tap targets two pixels under
-Apple's 44-point floor. A cookie-consent link that wasn't
-keyboard-activatable.
+On the morning of June 4th I typed one command into a terminal. It audited
+lightwork from both ends — browser-level passes over the live, deployed app
+(accessibility, SEO, privacy, performance) and code-level passes over the
+repository behind it (testing gaps, tech debt, observability, API surface,
+docs drift) — and filed **64 GitHub issues**, each one labeled,
+severity-ranked, and written like a competent engineer's bug report. From
+the live app: a skip-navigation link missing from the authenticated shell,
+tap targets two pixels under Apple's 44-point floor, a cookie-consent link
+that wasn't keyboard-activatable. From the codebase: four user-scoped
+Firestore list subscriptions with no row cap, client error handlers that
+logged failures to the console but never reported them to Sentry, a README
+stack section that had drifted out of date.
 
 That evening I typed one more command and went on with my night. Between
 9:13 and 10:33 PM, **thirteen pull requests merged** — each one written by
