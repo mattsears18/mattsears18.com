@@ -290,15 +290,27 @@ shipyard built lightwork's **infrastructure** — the unglamorous platform
 work that usually eats weeks.
 
 It built the entire CI/CD pipeline: lint, typecheck, and the unit suite on
-every PR; end-to-end shards against Firebase emulators; Lighthouse and
-bundle-size budgets; store-credential validation; and the deploy side —
-web deploys, EAS builds for iOS and Android, and fully automated submission
-to the App Store and Google Play, store metadata included. I iterated on
-that pipeline the same way everything else here works: file an issue,
-let a worker ship the change. At this point it's genuinely polished —
-[release-please](https://github.com/googleapis/release-please) cuts the
-versions, complete with detailed changelogs, and user-friendly release
-notes are drafted automatically from those changelogs.
+every PR; end-to-end tests against Firebase emulators; Lighthouse and
+bundle-size budgets; store-credential validation. The E2E suite is
+automatically split into parallel shards to keep wall-clock time down —
+and when the shards' run times drift out of balance, the pipeline notices
+and rebalances them itself.
+
+![Lightwork's CI pipeline graph: changed-path and deploy-channel detection, lint/typecheck and unit tests, parallel web E2E shards with a shard-drift check, Firestore rules and Cloud Functions deploys, then OTA update or store release plus web deploys to Vercel](/blog/shipyard-lightwork/lightwork-ci-pipeline.png)
+
+The deploy side is just as hands-off. Every commit to main deploys
+automatically to the isolated test environment. When
+[release-please](https://github.com/googleapis/release-please) cuts a
+version — complete with a detailed changelog, from which user-friendly
+release notes are drafted automatically — that release triggers the mobile
+deployments and a production web deploy together. And for mobile, the
+pipeline decides for itself what kind of release a change actually
+requires: if the native runtime changed, it builds binaries and pushes a
+store release through the App Store and Google Play; if it didn't, it
+ships the same code instantly as an over-the-air update. I never make that
+call — it just does the correct thing. I iterated on the whole pipeline
+the same way everything else here works: file an issue, let a worker ship
+the change.
 
 It also wrote the safety net that makes the speed survivable: **over 3,000
 unit tests, over 300 end-to-end tests, and about 50 smoke checks** — a
