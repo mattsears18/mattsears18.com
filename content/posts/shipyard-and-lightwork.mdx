@@ -213,6 +213,42 @@ items that are blocked on _me_ rather than on the machine — the read-only,
 human-facing counterpart to `/do-work`. I gate what it builds; it tells me
 where I'm the bottleneck.
 
+## It built the platform, not just the patches
+
+It would be easy to read all of this as "an agent that does small fixes."
+The part that changed my mind about what these loops are for is that
+shipyard built lightwork's **infrastructure** — the unglamorous platform
+work that usually eats weeks.
+
+It built the entire CI/CD pipeline: lint, typecheck, and the unit suite on
+every PR; end-to-end shards against Firebase emulators; Lighthouse and
+bundle-size budgets; store-credential validation; and the deploy side —
+web deploys, EAS builds for iOS and Android, and fully automated submission
+to the App Store and Google Play, store metadata included. I iterated on
+that pipeline the same way everything else here works: file an issue,
+let a worker ship the change. At this point it's genuinely polished —
+release-please cuts the versions, and the release notes are drafted by
+Claude without me writing a word of them.
+
+It also wrote the safety net that makes the speed survivable: **over 3,000
+unit tests, over 300 end-to-end tests, and about 50 smoke checks** — a
+post-release suite that runs against production plus Maestro flows on real
+mobile builds. That's the part people miss about merging on green CI: an
+autonomous loop is only as trustworthy as what "green" means. Shipyard
+raised the bar it has to clear, then kept clearing it — which is how the
+repo absorbs hundreds of merges a month without breaking underneath me.
+
+Two more pieces of platform work I'd have dreaded doing alone. First, fully
+isolated **test and production environments** — separate Firebase projects,
+separate bundle IDs, separate OAuth apps — enforced by an invariant table
+that's checked at build time _and_ at runtime, so a half-configured binary
+refuses to boot instead of quietly talking to the wrong database. Second,
+**authentication**: email plus Google, Apple, and Facebook social logins,
+working across iOS, Android, and the web. Anyone who has wired OAuth
+redirects, URL schemes, and per-platform app registrations across three
+platforms and two environments knows exactly how much tedium is buried in
+that sentence.
+
 ## The numbers
 
 Shipyard's first commit was **May 16, 2026 — twenty-six days ago**. Here's
