@@ -5,7 +5,7 @@ excerpt: >-
   One command in the morning filed 64 issues. One command in the evening
   merged thirteen fixes while I did something else. The story of shipyard — an
   autonomous engineering loop built on Claude Code — and lightwork, the app it
-  helped ship.
+  helped ship. Both of them nights-and-weekends side projects.
 tags:
   - ai
   - claude-code
@@ -27,20 +27,24 @@ Firestore list subscriptions with no row cap, client error handlers that
 logged failures to the console but never reported them to Sentry, a README
 stack section that had drifted out of date.
 
-That evening I typed one more command and went on with my night. Between
-9:13 and 10:33 PM, **thirteen pull requests merged** — each one written by
+That evening I typed one more command and went on with my night. Over the
+next eighty minutes, **thirteen pull requests merged** — each one written by
 an autonomous worker in its own git worktree, each one closing one of the
 morning's issues, each one merged by CI without me touching the keyboard.
 The skip-link fix merged 26 minutes after its PR opened.
 
-I didn't write a line of any of them. This post is about how an ordinary
-Thursday got to look like that — because the machinery behind it is the most
-leverage I've ever gotten out of a tool I built.
+I didn't write a line of any of them. And this isn't my job — it's a side
+project, worked on nights and weekends. This post is about how an ordinary
+Thursday evening got to look like that — because the machinery behind it is
+the most leverage I've ever gotten out of a tool I built.
 
 ## Two projects, one bottleneck
 
-For the last ten weeks I've been working on two projects at once. The first
-is [Lightwork](https://getlightwork.com), a volunteer task management app —
+For the last ten weeks I've been working on two projects at once — and to
+be clear about the scale, both are **passion projects**, built in the hours
+around everything else. This is not the output of ten weeks of full-time
+work; it's what nights and weekends produced. The first project is
+[Lightwork](https://getlightwork.com), a volunteer task management app —
 Expo (React Native) + Firebase, shipping to iOS, Android, and the web. The
 second is [Shipyard](https://github.com/mattsears18/shipyard), an
 **autonomous engineering loop** built on Claude Code: it finds work, refines
@@ -109,11 +113,11 @@ doing. The prototype never quite reached the point where I could ship it.
 In April 2026 I started over in React Native, and the first task I
 completed was porting that FlutterFlow prototype into the new codebase.
 
-Ten weeks later, the repo is at **1,671 commits**, version 2.51.0, and
-roughly **153,000 lines of TypeScript** — about 80k of app code and 73k of
-tests — working through the App Store and Play Store launch checklists. Four
-months of low-code got me a prototype; ten weeks of this got me to launch
-prep. One person.
+Ten weeks of nights and weekends later, the repo is at **1,671 commits**,
+version 2.51.0, and roughly **153,000 lines of TypeScript** — about 80k of
+app code and 73k of tests — working through the App Store and Play Store
+launch checklists. Four months of low-code got me a prototype; ten weeks of
+spare hours with this setup got me to launch prep. One person, after hours.
 
 The difference was Claude Code — and, very quickly, what I learned about
 where its real constraint is. An agent session is brilliant at writing code
@@ -182,8 +186,9 @@ anyone triaging a dashboard first.
 
 Users feed the loop too. The app has a feedback form, and submissions flow
 straight into the issue backlog — feature requests, bug reports, all of it.
-But this lane has guardrails, because it's the one lane the public can
-write to. Shipyard only auto-works issues from **trusted authors**; anything
+In effect, the public can file issues against the repo: anyone using the
+app can put a request in front of shipyard. But that lane has guardrails.
+Shipyard only auto-works issues from **trusted authors**; anything
 from an untrusted source — the feedback form included — is held behind a
 human-review gate until I explicitly approve it. The security model in one
 sentence: anyone can ask, but only I decide what the machine builds. Once
