@@ -2,9 +2,10 @@
 title: 'I built shipyard so I could build lightwork'
 date: '2026-06-11'
 excerpt: >-
-  Two repos, ten weeks: an autonomous engineering loop for Claude Code, and the
-  volunteer-coordination app it helped ship. What shipyard is, how it works,
-  what the numbers actually say, and where the rough edges still are.
+  One command in the morning filed 64 issues. One command in the evening
+  merged thirteen fixes while I did something else. The story of shipyard — an
+  autonomous engineering loop built on Claude Code — and lightwork, the app it
+  helped ship.
 tags:
   - ai
   - claude-code
@@ -13,19 +14,38 @@ tags:
 
 import { LightboxImage } from '@/app/components/lightbox-image';
 
-For the last ten weeks I've been working on two projects at once. The first is
-[Lightwork](https://getlightwork.com), a volunteer task
-management app — Expo (React Native) + Firebase, shipping to iOS, Android, and
-the web. The second is [Shipyard](https://github.com/mattsears18/shipyard),
-an **autonomous engineering loop** built on Claude Code — it finds work,
-refines it into tickets, and turns the GitHub issue backlog into merged pull
-requests, with the human kept at exactly the points where judgment matters.
+On the morning of June 4th I typed one command into a terminal. It audited my
+app — accessibility, SEO, privacy, security, docs, a dozen other dimensions —
+and filed **64 GitHub issues**, each one labeled, severity-ranked, and
+written like a competent engineer's bug report. The skip-navigation link
+missing from the authenticated app shell. Tap targets two pixels under
+Apple's 44-point floor. A cookie-consent link that wasn't
+keyboard-activatable.
 
-The relationship between the two is the point of this post: **I built shipyard
-because I was the bottleneck in building lightwork.** This is the story of
-both, with real numbers — including the unflattering ones.
+That evening I typed one more command and went on with my night. Between
+9:13 and 10:33 PM, **thirteen pull requests merged** — each one written by
+an autonomous worker in its own git worktree, each one closing one of the
+morning's issues, each one merged by CI without me touching the keyboard.
+The skip-link fix merged 26 minutes after its PR opened.
 
-## Lightwork, the app I actually wanted to build
+I didn't write a line of any of them. This post is about how an ordinary
+Thursday got to look like that — because the machinery behind it is the most
+leverage I've ever gotten out of a tool I built.
+
+## Two projects, one bottleneck
+
+For the last ten weeks I've been working on two projects at once. The first
+is [Lightwork](https://getlightwork.com), a volunteer task management app —
+Expo (React Native) + Firebase, shipping to iOS, Android, and the web. The
+second is [Shipyard](https://github.com/mattsears18/shipyard), an
+**autonomous engineering loop** built on Claude Code: it finds work, refines
+it into tickets, and turns the issue backlog into merged pull requests, with
+the human kept at exactly the points where judgment matters.
+
+The relationship between the two is the point of this post: **I built
+shipyard because I was the bottleneck in building lightwork.**
+
+## The app, and the week that broke me
 
 Lightwork is the product. Users join groups (a church, a neighborhood
 association, a mutual-aid crew), post tasks that need volunteers — with
@@ -72,26 +92,29 @@ localization. One codebase for iOS, Android, and a PWA.
   />
 </div>
 
-The current rewrite started in April 2026 (an earlier FlutterFlow prototype
-from 2024 was abandoned — it never got past a handful of commits). As of
-today the repo is at **1,671 commits**, version 2.51.0, and roughly **153,000
-lines of TypeScript** — about 80k of app code and 73k of tests — working
-through the App Store and Play Store launch checklists. Ten weeks, one person.
+The current rewrite started in April 2026. As of today the repo is at
+**1,671 commits**, version 2.51.0, and roughly **153,000 lines of
+TypeScript** — about 80k of app code and 73k of tests — working through the
+App Store and Play Store launch checklists. Ten weeks, one person.
 
-That pace was only possible because I was using Claude Code aggressively from
-day one. But by early May a pattern was obvious: the agent could implement a
-well-specified issue faster than I could write the spec, and _much_ faster
-than I could review, shepherd CI, rebase, and merge. The week of May 11 I
-merged 263 pull requests into lightwork — every single one with me personally
-driving the session, watching checks, and clicking merge. The constraint
-wasn't the model. It was me.
+That pace came from using Claude Code aggressively from day one, and it
+worked — right up until it didn't. The week of May 11 I merged **263 pull
+requests** into lightwork. Every single one needed me: prompt the session,
+watch it work, watch the checks, rebase when something landed first, click
+merge, start the next one. I spent the week as a human conveyor belt between
+an AI that writes code faster than I can review it and a CI system that
+merges anything green. By Friday the pattern was impossible to ignore: the
+agent could implement a well-specified issue faster than I could write the
+spec, and _much_ faster than I could shepherd the result home.
 
-## So, shipyard
+The constraint wasn't the model. It was me.
+
+## So I built the machine that does my old job
 
 Shipyard is an engineering loop — find work → refine it → do it → merge it →
 repeat — packaged as a
-[Claude Code](https://docs.claude.com/en/docs/claude-code) plugin so the loop
-runs without a human driving each step. It does three things:
+[Claude Code](https://docs.claude.com/en/docs/claude-code) plugin so the
+loop runs without a human driving each step. It does three things:
 
 ![Shipyard: audits, third-party services, user feedback, and manual entry feed an issue backlog; an orchestrator dispatches issue workers that ship the work](/blog/shipyard-lightwork/shipyard-marketing.jpg)
 
@@ -99,7 +122,8 @@ runs without a human driving each step. It does three things:
    dimensions — performance (Lighthouse), security, accessibility, SEO,
    privacy/GDPR, PWA readiness, release readiness, tech debt, testing gaps,
    docs rot, observability, API surface health, and more — and files a
-   labeled, severity-ranked GitHub issue for every finding.
+   labeled, severity-ranked GitHub issue for every finding. That's where
+   June 4th's 64 issues came from.
 2. **It refines work.** `/refine-issues` takes raw input that isn't ready to
    be worked — a user-feedback form submission, a feature request with open
    questions — and classifies and rewrites it into an implementation-ready
@@ -115,6 +139,17 @@ runs without a human driving each step. It does three things:
    fix that first.
 
 ![Shipyard at a glance: five stages from issue sources through refinement and human review, into the orchestrator, out to parallel workers in isolated worktrees, and into the PR pipeline with auto-merge](/blog/shipyard-lightwork/shipyard-infographic.svg)
+
+The design bet that makes it compose: **everything is a GitHub issue.**
+Shipyard doesn't care where an issue came from — an audit agent, a Sentry
+integration, Dependabot, a support tool, or a human. If a service can file a
+GitHub issue, shipyard can work it. Production error → issue → reproduced →
+fixed → PR → merged, with zero human steps if you let it.
+
+And to be honest about June 4th: fifteen PRs were dispatched that evening
+and thirteen merged on the spot. The other two needed more time — one merged
+two days later, the other three. The loop doesn't bat 1.000; it bats well
+enough that the stragglers are the part I notice.
 
 ### Where the human fits in the loop
 
@@ -142,12 +177,6 @@ items that are blocked on _me_ rather than on the machine — the read-only,
 human-facing counterpart to `/do-work`. I gate what it builds; it tells me
 where I'm the bottleneck.
 
-The design bet that makes it compose well: **everything is a GitHub issue.**
-Shipyard doesn't care where an issue came from — an audit agent, a Sentry
-integration, Dependabot, a support tool, or a human. If a service can file a
-GitHub issue, shipyard can work it. Production error → issue → reproduced →
-fixed → PR → merged, with zero human steps if you let it.
-
 ## The numbers
 
 Shipyard's first commit was **May 16, 2026 — twenty-six days ago**. Here's
@@ -155,13 +184,12 @@ what the lightwork repo looked like before and after, in merged PRs per week:
 
 ![Stacked bar chart of merged PRs per week in the lightwork repo, May 4 through June 11. Weekly totals: 17, 263, 354, 161, 175, 30. From May 18 onward most merged PRs were opened by shipyard workers](/blog/shipyard-lightwork/lightwork-prs-per-week.svg)
 
-The honest reading of that chart: shipyard didn't dramatically multiply raw
-throughput — I was already merging a lot of Claude-assisted PRs by hand. What
-changed is **whose attention the throughput consumed**. The 263-PR week
-required me at the keyboard for all of it. In the weeks after, the orange
-share of each bar happened while I was doing something else — writing specs,
-reviewing the work that actually needed judgment, or building shipyard
-itself.
+Read that chart honestly and the story isn't raw throughput — I was already
+merging absurd numbers of Claude-assisted PRs by hand. What changed is
+**whose attention the throughput consumed**. The 263-PR week required me at
+the keyboard for all of it. In the weeks after, the orange share of each bar
+happened while I was doing something else — writing specs, reviewing the
+work that actually needed judgment, or building shipyard itself.
 
 The totals so far:
 
@@ -186,8 +214,7 @@ myself. Even doubled, it's a striking number against 500+ merged PRs.
 
 ## The honest caveats
 
-If any of the above has you tempted to try it, you should know where it
-hurts first:
+If the June 4th story has you tempted, you should know where it hurts first:
 
 - **It's experimental.** The README opens with a warning box, and it's
   earned. Safety comes from prompt discipline and layered guardrails — issue
@@ -209,16 +236,23 @@ hurts first:
   you'd keep required reviewers, and shipyard's PRs queue up for humans like
   anyone else's.
 
-## Why I'm writing this up
+## The long tail is the point
 
-Because the pattern generalizes well beyond a solo project. The
-unit of coordination is just a GitHub issue — which means the intake side
-(Sentry, Dependabot, support tooling, audits, humans) and the review side
-(branch protection, CODEOWNERS, required reviews) are things every team
-already has. Shipyard slots into the middle and burns down the well-specified
-work, while the humans keep every decision that actually needs one.
+Every codebase has a backlog like my June 4th list. The missing skip link.
+The tap target two pixels short. The doc that drifted from the code months
+ago. None of it is hard; none of it is urgent; none of it will ever beat a
+feature for a human's afternoon. So it sits — not because anyone decided it
+should, but because attention is the scarcest resource in the building, and
+that work never wins the auction.
 
-If you want to poke at it, the shipyard repo is public at
+That's the work an engineering loop is for. The unit of coordination is just
+a GitHub issue, which means the intake side (Sentry, Dependabot, support
+tooling, audits, humans) and the review side (branch protection, CODEOWNERS,
+required reviews) are things every team already has. Shipyard slots into the
+middle and burns down the well-specified work, while the humans keep every
+decision that actually needs one.
+
+The shipyard repo is public at
 [mattsears18/shipyard](https://github.com/mattsears18/shipyard) — the closed
 PRs labeled `shipyard` are the living demo — and the app it helped build
 lives at [getlightwork.com](https://getlightwork.com). Installing the plugin
@@ -229,5 +263,6 @@ claude plugin marketplace add mattsears18/shipyard
 claude plugin install shipyard@shipyard
 ```
 
-Start it on a throwaway repo with `--concurrency 1` and a billing alert, per
-the README. Then write a good issue and watch the PR show up.
+Start on a throwaway repo with `--concurrency 1` and a billing alert, per
+the README. Then write one good issue, run `/do-work`, and watch a PR show
+up that you didn't have to shepherd home. That feeling is the whole pitch.
