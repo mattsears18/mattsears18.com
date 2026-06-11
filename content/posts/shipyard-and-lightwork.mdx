@@ -1,0 +1,188 @@
+---
+title: 'I built shipyard so I could build lightwork'
+date: '2026-06-11'
+excerpt: >-
+  Two repos, ten weeks: an autonomous engineering loop for Claude Code, and the
+  volunteer-coordination app it helped ship. What shipyard is, how it works,
+  what the numbers actually say, and where the rough edges still are.
+tags:
+  - ai
+  - claude-code
+  - tooling
+---
+
+For the last ten weeks I've been working on two projects at once. The first is
+[Lightwork](https://github.com/mattsears18/lightwork), a volunteer task
+management app — Expo (React Native) + Firebase, shipping to iOS, Android, and
+the web. The second is [Shipyard](https://github.com/mattsears18/shipyard), a
+Claude Code plugin that turns a GitHub issue backlog into merged pull requests
+with as little of me in the loop as possible.
+
+The relationship between the two is the point of this post: **I built shipyard
+because I was the bottleneck in building lightwork.** This is the story of
+both, with real numbers — including the unflattering ones.
+
+## Lightwork, the app I actually wanted to build
+
+Lightwork is the product. Users join groups (a church, a neighborhood
+association, a mutual-aid crew), post tasks that need volunteers — with
+locations, schedules, and recurring series — and sign up to help. Real-time
+data on Firestore, group search via Algolia, maps, per-task messaging,
+localization. One codebase for iOS, Android, and a PWA.
+
+<div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+  <img
+    src="/blog/shipyard-lightwork/lightwork-01-home.jpg"
+    alt="Lightwork home screen showing a feed of volunteer tasks"
+    style={{ width: '31%', minWidth: '180px', borderRadius: '8px' }}
+  />
+  <img
+    src="/blog/shipyard-lightwork/lightwork-02-map.jpg"
+    alt="Lightwork map view with task locations pinned"
+    style={{ width: '31%', minWidth: '180px', borderRadius: '8px' }}
+  />
+  <img
+    src="/blog/shipyard-lightwork/lightwork-04-task-detail.jpg"
+    alt="Lightwork task detail screen with volunteer signup"
+    style={{ width: '31%', minWidth: '180px', borderRadius: '8px' }}
+  />
+</div>
+
+The current rewrite started in April 2026 (an earlier FlutterFlow prototype
+from 2024 was abandoned — it never got past a handful of commits). As of
+today the repo is at **1,671 commits**, version 2.51.0, and roughly **153,000
+lines of TypeScript** — about 80k of app code and 73k of tests — working
+through the App Store and Play Store launch checklists. Ten weeks, one person.
+
+That pace was only possible because I was using Claude Code aggressively from
+day one. But by early May a pattern was obvious: the agent could implement a
+well-specified issue faster than I could write the spec, and _much_ faster
+than I could review, shepherd CI, rebase, and merge. The week of May 11 I
+merged 263 pull requests into lightwork — every single one with me personally
+driving the session, watching checks, and clicking merge. The constraint
+wasn't the model. It was me.
+
+## So, shipyard
+
+Shipyard is a [Claude Code](https://docs.claude.com/en/docs/claude-code)
+plugin that packages the whole find-work → do-work → merge loop so it runs
+without a human driving each step. It does three things:
+
+![Shipyard: audits, third-party services, user feedback, and manual entry feed an issue backlog; an orchestrator dispatches issue workers that ship the work](/blog/shipyard-lightwork/shipyard-marketing.jpg)
+
+1. **It finds work.** `/audit` runs specialized agents across seventeen
+   dimensions — performance (Lighthouse), security, accessibility, SEO,
+   privacy/GDPR, PWA readiness, release readiness, tech debt, testing gaps,
+   docs rot, observability, API surface health, and more — and files a
+   labeled, severity-ranked GitHub issue for every finding.
+2. **It refines work.** `/refine-issues` takes raw input that isn't ready to
+   be worked — a user-feedback form submission, a feature request with open
+   questions — and classifies and rewrites it into an implementation-ready
+   ticket. Anything touching real user feedback is gated behind a
+   `needs-human-review` label: no code-modifying agent runs until a human
+   signs off.
+3. **It does work.** `/do-work` is the orchestrator. It ranks the eligible
+   backlog and keeps N parallel workers in flight, each in its own isolated
+   git worktree on its own branch. Each worker implements the smallest change
+   that satisfies the issue, opens a PR that closes it, and arms auto-merge.
+   Green CI means it merges itself and the next worker dispatches. When CI
+   breaks — on a PR, or on main itself — the orchestrator diverts a worker to
+   fix that first.
+
+![Shipyard at a glance: five stages from issue sources through refinement and human review, into the orchestrator, out to parallel workers in isolated worktrees, and into the PR pipeline with auto-merge](/blog/shipyard-lightwork/shipyard-infographic.svg)
+
+The human's job collapses to two touchpoints: deciding what should be built
+(writing issues, or approving the ones shipyard wrote), and whatever PR-level
+review gate you choose to keep. Everything between those points — branching,
+implementing, fixing red checks, rebasing stale PRs, merging — is the
+machine's problem.
+
+The design bet that makes it compose well: **everything is a GitHub issue.**
+Shipyard doesn't care where an issue came from — an audit agent, a Sentry
+integration, Dependabot, a support tool, or a human. If a service can file a
+GitHub issue, shipyard can work it. Production error → issue → reproduced →
+fixed → PR → merged, with zero human steps if you let it.
+
+## The numbers
+
+Shipyard's first commit was **May 16, 2026 — twenty-six days ago**. Here's
+what the lightwork repo looked like before and after, in merged PRs per week:
+
+![Stacked bar chart of merged PRs per week in the lightwork repo, May 4 through June 11. Weekly totals: 17, 263, 354, 161, 175, 30. From May 18 onward most merged PRs were opened by shipyard workers](/blog/shipyard-lightwork/lightwork-prs-per-week.svg)
+
+The honest reading of that chart: shipyard didn't dramatically multiply raw
+throughput — I was already merging a lot of Claude-assisted PRs by hand. What
+changed is **whose attention the throughput consumed**. The 263-PR week
+required me at the keyboard for all of it. In the weeks after, the orange
+share of each bar happened while I was doing something else — writing specs,
+reviewing the work that actually needed judgment, or building shipyard
+itself.
+
+The totals so far:
+
+- **Lightwork:** 1,016 merged PRs, 839 issues closed. Since the `shipyard`
+  label landed on May 18, **524 merged PRs were opened end-to-end by shipyard
+  workers**, and over 300 of the issues in the backlog were filed by
+  shipyard's own audit agents.
+- **Shipyard:** 282 merged PRs, 250 issues closed — and **252 of those PRs
+  (89%) were opened by shipyard working on itself.** The tool is its own
+  primary user, which is exactly the feedback loop you want when shaking out
+  an orchestrator.
+- The codebase split is telling: shipyard is ~48,000 lines, of which ~15,000
+  are markdown and ~26,000 are bash. The "source code" of an agent system is
+  mostly carefully-written specifications — the prompts _are_ the program.
+
+What did it cost? Shipyard keeps a local per-session token ledger, and it
+reports **$357 estimated across 97 orchestrator sessions** (~71M tokens,
+priced at API list rates — about $213 of that on lightwork). Two caveats in
+both directions: early sessions under-recorded their token counts, so that's
+an undercount; and it excludes the interactive Claude Code sessions I drove
+myself. Even doubled, it's a striking number against 500+ merged PRs.
+
+## The honest caveats
+
+I want coworkers to try this, so I'm going to be straight about where it
+hurts:
+
+- **It's experimental.** The README opens with a warning box, and it's
+  earned. Safety comes from prompt discipline and layered guardrails — issue
+  labels, worktree isolation, a no-hook-bypass rule, human-review gates — not
+  from architectural sandboxing. You give it broad permissions by design.
+- **CI minutes are real money.** Parallel workers that retrigger full CI
+  suites can burn through Actions minutes; shipyard now has config knobs
+  specifically to cap that, because I learned the hard way.
+- **Issue quality in, PR quality out.** A clean stack trace or a
+  well-scoped ticket gets a good fix. A vague one-liner gets a vague PR or a
+  `blocked` bail. The leverage shifts your effort toward writing better
+  issues — which, honestly, is effort well spent anyway.
+- **Not everything is auto-fixable.** Shipyard returns `blocked` on work it
+  can't reproduce or safely scope, and parks it for a human. The win is the
+  long tail of well-specified small-to-medium changes that used to sit in
+  the backlog because no human's time ever justified them.
+- **Review is still the gate you make it.** Auto-merge respects branch
+  protection. On lightwork I run with required CI checks; on a team repo
+  you'd keep required reviewers, and shipyard's PRs queue up for humans like
+  anyone else's.
+
+## Why I'm writing this up
+
+Because the pattern generalizes, and I'd like to try it where I work. The
+unit of coordination is just a GitHub issue — which means the intake side
+(Sentry, Dependabot, support tooling, audits, humans) and the review side
+(branch protection, CODEOWNERS, required reviews) are things every team
+already has. Shipyard slots into the middle and burns down the well-specified
+work, while the humans keep every decision that actually needs one.
+
+If you want to poke at it, both repos are public:
+[mattsears18/shipyard](https://github.com/mattsears18/shipyard) (the plugin —
+the closed PRs labeled `shipyard` are the living demo) and
+[mattsears18/lightwork](https://github.com/mattsears18/lightwork) (the app it
+helped build). Installing it is two commands:
+
+```sh
+claude plugin marketplace add mattsears18/shipyard
+claude plugin install shipyard@shipyard
+```
+
+Start it on a throwaway repo with `--concurrency 1` and a billing alert, per
+the README. Then write a good issue and watch the PR show up.
