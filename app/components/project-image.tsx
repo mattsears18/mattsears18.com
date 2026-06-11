@@ -1,5 +1,6 @@
 import Image from 'next/image';
 
+import { LightboxTrigger } from '@/app/components/lightbox-image';
 import type { Project } from '@/lib/work';
 
 type Props = {
@@ -37,11 +38,12 @@ export function ProjectImage({ project, variant, className }: Props) {
     .join(' ');
 
   if (frontmatter.image) {
-    return (
+    const alt = frontmatter.imageAlt ?? `${frontmatter.title} — project preview`;
+    const visual = (
       <div className={wrapperClass}>
         <Image
           src={frontmatter.image}
-          alt={frontmatter.imageAlt ?? `${frontmatter.title} — project preview`}
+          alt={alt}
           fill
           sizes={SIZES_BY_VARIANT[variant]}
           priority={variant === 'hero'}
@@ -49,6 +51,19 @@ export function ProjectImage({ project, variant, className }: Props) {
         />
       </div>
     );
+    /*
+     * Hero opens fullsize in a lightbox (#231). Cards stay plain — the
+     * card's stretched `<Link>` overlay owns the click there, and stacking
+     * a second interactive target under it would fight the navigation.
+     */
+    if (variant === 'hero') {
+      return (
+        <LightboxTrigger src={frontmatter.image} alt={alt}>
+          {visual}
+        </LightboxTrigger>
+      );
+    }
+    return visual;
   }
 
   const initial = frontmatter.title.trim().charAt(0).toUpperCase() || '·';
