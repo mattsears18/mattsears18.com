@@ -2,8 +2,8 @@
 title: 'I built shipyard so I could build lightwork'
 date: '2026-06-11'
 excerpt: >-
-  One command in the morning filed 64 issues. One command in the evening
-  merged thirteen fixes while I did something else. The story of shipyard — an
+  116 pull requests merged and 121 issues closed in one day — 110 of those
+  PRs opened end-to-end by autonomous workers. The story of shipyard — an
   autonomous engineering loop built on Claude Code — and lightwork, the app it
   helped ship. Both of them nights-and-weekends side projects.
 tags:
@@ -14,28 +14,31 @@ tags:
 
 import { LightboxImage } from '@/app/components/lightbox-image';
 
-On the morning of June 4th I typed one command into a terminal. It audited
-lightwork from both ends — browser-level passes over the live, deployed app
-(accessibility, SEO, privacy, performance) and code-level passes over the
-repository behind it (testing gaps, tech debt, observability, API surface,
-docs drift) — and filed **64 GitHub issues**, each one labeled,
-severity-ranked, and written like a competent engineer's bug report. From
-the live app: a skip-navigation link missing from the authenticated shell,
-tap targets two pixels under Apple's 44-point floor, a cookie-consent link
-that wasn't keyboard-activatable. From the codebase: four user-scoped
-Firestore list subscriptions with no row cap, client error handlers that
-logged failures to the console but never reported them to Sentry, a README
-stack section that had drifted out of date.
+On May 19th, 2026, my side project merged **116 pull requests** and closed
+**121 issues** in a single day. The first merge and the last were
+twenty-three and a half hours apart — the machine worked around the clock.
+**110 of those PRs were opened end-to-end by autonomous workers**, each in
+its own git worktree, each merged by CI without me touching the keyboard.
+The median one merged nine minutes after it opened.
 
-That evening I typed one more command and went on with my night. Over the
-next eighty minutes, **thirteen pull requests merged** — each one written by
-an autonomous worker in its own git worktree, each one closing one of the
-morning's issues, each one merged by CI without me touching the keyboard.
-The skip-link fix merged 26 minutes after its PR opened.
+And it wasn't toy work. Security: rate limiting on the invite endpoints to
+stop email-blast abuse, size caps on user-record writes, the
+content-security policy promoted to enforcing mode. Privacy: Sentry data
+auto-purged when an account is deleted. Performance: render-blocking
+stylesheets deferred, layout shift on the task feed pushed under Google's
+0.1 threshold. Accessibility: tap targets raised to Apple's 44-point floor,
+keyboard focus restored to buried CTAs. Plus offline support for the PWA,
+public task-detail pages, and test coverage over the Google, Apple, and
+Facebook sign-in hooks.
 
-I didn't write a line of any of them. This post is about how an ordinary
-Thursday evening got to look like that — because the machinery behind it is
-the most leverage I've ever gotten out of a tool I built.
+I didn't write a line of any of it. Most of the backlog it burned down was
+machine-filed too: 93 of the 121 closed issues had been written by audit
+agents that inspect lightwork from both ends — browser-level passes over
+the live, deployed app (accessibility, SEO, privacy, performance) and
+code-level passes over the repository behind it (testing gaps, tech debt,
+observability, API surface, docs drift). This post is about how an ordinary
+Tuesday got to look like that — because the machinery behind it is the most
+leverage I've ever gotten out of a tool I built.
 
 ## Two projects, one bottleneck
 
@@ -144,7 +147,7 @@ loop runs without a human driving each step. It does three things:
    privacy/GDPR, PWA readiness, release readiness, tech debt, testing gaps,
    docs rot, observability, API surface health, and more — and files a
    labeled, severity-ranked GitHub issue for every finding. That's where
-   June 4th's 64 issues came from.
+   most of the backlog May 19th burned down came from.
 2. **It refines work.** `/refine-issues` takes raw input that isn't ready to
    be worked — a user-feedback form submission, a feature request with open
    questions — and classifies and rewrites it into an implementation-ready
@@ -167,10 +170,10 @@ integration, Dependabot, a support tool, or a human. If a service can file a
 GitHub issue, shipyard can work it. Production error → issue → reproduced →
 fixed → PR → merged, with zero human steps if you let it.
 
-And to be honest about June 4th: fifteen PRs were dispatched that evening
-and thirteen merged on the spot. The other two needed more time — one merged
-two days later, the other three. The loop doesn't bat 1.000; it bats well
-enough that the stragglers are the part I notice.
+And to be honest about May 19th: workers opened 123 PRs that day. 113
+merged the same day, nine took days longer, and one never made it at all.
+The loop doesn't bat 1.000; it bats well enough that the stragglers are the
+part I notice.
 
 ### Self-healing software
 
@@ -297,7 +300,7 @@ myself. Even doubled, it's a striking number against 500+ merged PRs.
 
 ## The honest caveats
 
-If the June 4th story has you tempted, you should know where it hurts first:
+If the May 19th story has you tempted, you should know where it hurts first:
 
 - **It's experimental.** The README opens with a warning box, and it's
   earned. Safety comes from prompt discipline and layered guardrails — issue
@@ -321,12 +324,13 @@ If the June 4th story has you tempted, you should know where it hurts first:
 
 ## The long tail is the point
 
-Every codebase has a backlog like my June 4th list. The missing skip link.
-The tap target two pixels short. The doc that drifted from the code months
-ago. None of it is hard; none of it is urgent; none of it will ever beat a
-feature for a human's afternoon. So it sits — not because anyone decided it
-should, but because attention is the scarcest resource in the building, and
-that work never wins the auction.
+Every codebase has a backlog like the one May 19th burned down. The
+42-pixel tap target. The render-blocking stylesheet. The endpoint nobody
+rate-limited. The doc that drifted from the code months ago. None of it is
+hard; none of it is urgent; none of it will ever beat a feature for a
+human's afternoon. So it sits — not because anyone decided it should, but
+because attention is the scarcest resource in the building, and that work
+never wins the auction.
 
 That's the work an engineering loop is for. The unit of coordination is just
 a GitHub issue, which means the intake side (Sentry, Dependabot, support
