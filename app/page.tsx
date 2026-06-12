@@ -34,13 +34,13 @@ export default function Home() {
           id="hero-heading"
           className="max-w-3xl font-display text-display-sm font-medium tracking-tight text-fg sm:text-display-md lg:text-display-lg"
         >
-          Software engineer with a civil engineering PhD
+          Product engineer with a civil engineering PhD
           <span className="text-accent">.</span>
         </h1>
 
         <p className="mt-8 max-w-2xl text-lg leading-relaxed text-fg-muted sm:text-xl">
-          I lead engineering at SalesRiver, sit on the board of a Kentucky social enterprise, and
-          build Shipyard and Lightwork on nights and weekends.
+          I build software at Hudl, sit on the board of a Kentucky social enterprise, and build
+          Shipyard and Lightwork on nights and weekends.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -61,17 +61,23 @@ export default function Home() {
             <p>
               I came up through civil engineering — undergrad at Eastern Kentucky, a few years on
               $40M–$200M industrial site designs, then a PhD at CU Boulder on how construction craft
-              workers read 2D drawings. Seven peer-reviewed papers came out of it, an artificial
-              neural network now used statewide by the Colorado DOT, and an open-source eye-tracking
-              app that&apos;s still cited.
+              workers read 2D drawings. Even then I was building products: along the way I founded
+              DirtPlan, a construction-submittal SaaS I built solo and sold in 2016, and the PhD
+              itself was user research and data analysis — eye trackers on twenty pipefitters, seven
+              peer-reviewed papers, an artificial neural network now used statewide by the Colorado
+              DOT, and an open-source eye-tracking app that&apos;s still cited.
             </p>
             <p>
-              I left academia for software in 2019. At NCCER I owned Single Sign-On across the
-              entire customer-facing surface. At SalesRiver I lead a team of six and took the
-              platform from Seed through Series A — including a consolidation of ten single-tenant
-              apps into one multi-tenant SaaS in a single hour of scheduled downtime, a 60% cut in
-              AWS infrastructure costs via Terraform, and a white-label transformation that drove
-              $800K+ in new ARR.
+              I left academia for software full-time in 2019, and the focus has stayed the same:
+              talk to the users, watch the data, own the feature from first conversation to deploy.
+              At NCCER I ran focus groups with construction craft professionals, rebuilt the
+              analytics stack their executives ran on, and owned Single Sign-On across the entire
+              customer-facing surface. At SalesRiver I led a team of six from Seed through Series A
+              — consolidating ten single-tenant apps into one multi-tenant SaaS in a single hour of
+              scheduled downtime, shipping a white-label transformation that drove $800K+ in new
+              ARR, and building a team-management feature that traced every marketing dollar to the
+              specific call or lead it bought. Today I build at Hudl, working full-stack across web
+              and mobile.
             </p>
             <p>
               Off-hours I serve on the board of{' '}
