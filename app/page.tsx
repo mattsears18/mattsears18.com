@@ -39,8 +39,8 @@ export default function Home() {
         </h1>
 
         <p className="mt-8 max-w-2xl text-lg leading-relaxed text-fg-muted sm:text-xl">
-          I lead engineering at SalesRiver, sit on the board of a Kentucky social enterprise, and
-          build Shipyard and Lightwork on nights and weekends.
+          I&apos;m a software engineer at Hudl, sit on the board of a Kentucky social enterprise,
+          and build Shipyard and Lightwork on nights and weekends.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -67,11 +67,12 @@ export default function Home() {
             </p>
             <p>
               I left academia for software in 2019. At NCCER I owned Single Sign-On across the
-              entire customer-facing surface. At SalesRiver I lead a team of six and took the
+              entire customer-facing surface. At SalesRiver I led a team of six and took the
               platform from Seed through Series A — including a consolidation of ten single-tenant
               apps into one multi-tenant SaaS in a single hour of scheduled downtime, a 60% cut in
               AWS infrastructure costs via Terraform, and a white-label transformation that drove
-              $800K+ in new ARR.
+              $800K+ in new ARR. Today I&apos;m a software engineer at Hudl, building tools used by
+              sports teams around the world.
             </p>
             <p>
               Off-hours I serve on the board of{' '}

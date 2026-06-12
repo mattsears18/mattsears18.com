@@ -6,7 +6,7 @@
 export const SITE_URL = 'https://mattsears18.com';
 export const SITE_TITLE = 'Matt Sears';
 export const SITE_DESCRIPTION =
-  'Matt Sears — software engineer with a civil engineering PhD. Lead at SalesRiver, board member at Enrich, building Shipyard and Lightwork on the side.';
+  'Matt Sears — software engineer with a civil engineering PhD. Engineer at Hudl, board member at Enrich, building Shipyard and Lightwork on the side.';
 export const SITE_TAGLINE = 'Software engineer with a civil engineering PhD.';
 
 /**
