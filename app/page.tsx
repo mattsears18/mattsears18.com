@@ -59,25 +59,26 @@ export default function Home() {
           <p className="font-mono text-xs uppercase tracking-widest text-fg-muted">About</p>
           <div className="max-w-reading space-y-6 text-base leading-relaxed text-fg sm:text-lg">
             <p>
-              I came up through civil engineering — undergrad at Eastern Kentucky, a few years on
-              $40M–$200M industrial site designs, then a PhD at CU Boulder on how construction craft
-              workers read 2D drawings. Even then I was building products: along the way I founded
-              DirtPlan, a construction-submittal SaaS I built solo and sold in 2016, and the PhD
-              itself was user research and data analysis — eye trackers on twenty pipefitters, seven
-              peer-reviewed papers, an artificial neural network now used statewide by the Colorado
-              DOT, and an open-source eye-tracking app that&apos;s still cited.
+              I came up through civil engineering: undergrad at Eastern Kentucky, a few years
+              designing sites for $40M–$200M industrial projects, then a PhD at CU Boulder. The
+              product habit started early. Along the way I founded DirtPlan, a
+              construction-submittal SaaS that I built solo and sold in 2016. The PhD itself was
+              user research at heart — I put eye trackers on pipefitters to study how they read
+              construction drawings, built an open-source app to analyze the data, and published
+              seven peer-reviewed papers. A neural network I built for the Colorado DOT still
+              estimates highway construction durations statewide.
             </p>
             <p>
-              I left academia for software full-time in 2019, and the focus has stayed the same:
-              talk to the users, watch the data, own the feature from first conversation to deploy.
-              At NCCER I ran focus groups with construction craft professionals, built the analytics
-              stack the executives ran on, and owned Single Sign-On across the entire
-              customer-facing surface — the feature our users asked for most, by a wide margin. At
-              SalesRiver I led a team of six from Seed through Series A — consolidating ten
-              single-tenant apps into one multi-tenant SaaS in a single hour of scheduled downtime,
-              shipping a white-label transformation that drove $800K+ in new ARR, and building a
-              team-management feature that traced every marketing dollar to the specific call or
-              lead it bought. Today I build at Hudl, working full-stack across web and mobile.
+              I moved into software full-time in 2019, and the job has stayed the same ever since:
+              talk to users, watch the data, own the feature from the first conversation to the
+              deploy. At NCCER I ran focus groups with construction craft professionals, built the
+              analytics stack the executives ran on, and shipped Single Sign-On across every
+              customer-facing app — the feature our users asked for most, by a wide margin. At
+              SalesRiver I led a team of six from Seed through Series A. We merged ten single-tenant
+              apps into one multi-tenant SaaS within a single hour of scheduled downtime,
+              white-labeled the platform to unlock $800K+ in new ARR, and built a team-management
+              feature that traced every marketing dollar to the call or lead it bought. Today I
+              build at Hudl, working full-stack across web and mobile.
             </p>
             <p>
               Off-hours I serve on the board of{' '}
