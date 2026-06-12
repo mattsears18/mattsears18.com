@@ -50,7 +50,7 @@ export async function GET() {
   lines.push(`# ${SITE_TITLE}`);
   lines.push('');
   lines.push(
-    `> ${SITE_TAGLINE} Lead engineer at SalesRiver, board member at Enrich, and builder of Shipyard and Lightwork on the side.`,
+    `> ${SITE_TAGLINE} Engineer at Hudl, board member at Enrich, and builder of Shipyard and Lightwork on the side.`,
   );
   lines.push('');
 
