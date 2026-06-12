@@ -70,9 +70,9 @@ export default function Home() {
             <p>
               I left academia for software full-time in 2019, and the focus has stayed the same:
               talk to the users, watch the data, own the feature from first conversation to deploy.
-              At NCCER I ran focus groups with construction craft professionals, rebuilt the
-              analytics stack their executives ran on, and owned Single Sign-On across the entire
-              customer-facing surface — by a wide margin the feature our users asked for most. At
+              At NCCER I ran focus groups with construction craft professionals, built the analytics
+              stack the executives ran on, and owned Single Sign-On across the entire
+              customer-facing surface — the feature our users asked for most, by a wide margin. At
               SalesRiver I led a team of six from Seed through Series A — consolidating ten
               single-tenant apps into one multi-tenant SaaS in a single hour of scheduled downtime,
               shipping a white-label transformation that drove $800K+ in new ARR, and building a
