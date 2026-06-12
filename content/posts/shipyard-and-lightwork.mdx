@@ -189,10 +189,13 @@ loop runs without a human driving each step. It does four things:
    of backing up behind a stalled car.
 4. **It tells me when it's my turn.** `/my-turn` is the human-facing
    counterpart to `/do-work`: it surveys the open PRs, the backlog, and
-   recent comments, and hands back a short, prioritized list of exactly the
-   items that are blocked on _me_ rather than on the machine — sign-offs,
-   judgment calls, stuck work. The other three commands take work off my
-   plate; this one tells me precisely what belongs on it.
+   recent comments to find the work that's blocked on _me_ rather than on
+   the machine — sign-offs, judgment calls, stuck work. And it doesn't
+   just hand back a to-do list. It identifies the most important piece of
+   open work, tells me the exact action to take to start on it, then walks
+   me through the rest step by step until it's done. The other three
+   commands take work off my plate; this one puts the right thing on it
+   and shows me how to clear it.
 
 ![Shipyard at a glance: five stages from issue sources through refinement and human review, into the orchestrator, out to parallel workers in isolated worktrees, and into the PR pipeline with auto-merge](/blog/shipyard-lightwork/shipyard-infographic.svg)
 
