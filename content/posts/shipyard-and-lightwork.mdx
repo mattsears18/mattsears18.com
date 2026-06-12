@@ -1,11 +1,11 @@
 ---
-title: 'I built shipyard so I could build lightwork'
+title: 'I built shipyard so I could build Lightwork'
 date: '2026-06-11'
 excerpt: >-
   Two commands before work: /audit to fill the backlog, /do-work to burn it
   down. By evening, 116 merged pull requests and 121 closed issues. The story
   of shipyard — an autonomous engineering loop built on Claude Code — and
-  lightwork, the app it helped ship. Both nights-and-weekends side projects.
+  Lightwork, the app it helped ship. Both nights-and-weekends side projects.
 tags:
   - ai
   - claude-code
@@ -18,7 +18,7 @@ import { ImageCarousel } from '@/app/components/image-carousel';
 On a Tuesday in May, I got up early and typed two commands into a terminal
 before leaving for work.
 
-The first — `/audit` — inspected lightwork, my side project, from both
+The first — `/audit` — inspected Lightwork, my side project, from both
 ends: browser-level passes over the live, deployed app (accessibility,
 SEO, privacy, performance) and code-level passes over the repository
 behind it (testing gaps, tech debt, observability, API surface, docs
@@ -64,7 +64,7 @@ it into tickets, and turns the issue backlog into merged pull requests, with
 the human kept at exactly the points where judgment matters.
 
 The relationship between the two is the point of this post: **I built
-shipyard because I was the bottleneck in building lightwork.**
+shipyard because I was the bottleneck in building Lightwork.**
 
 ## The app, and the four months that didn't ship
 
@@ -243,14 +243,14 @@ is one small automation away. A feedback form that answers you back.
 The strangest loop points back at itself: **shipyard is built with
 shipyard.** The vast majority of its merged PRs were opened by its own
 workers (the numbers are below). But the flywheel is the part I didn't
-plan: when a `/do-work` run on lightwork hits friction — a worker misreads
+plan: when a `/do-work` run on Lightwork hits friction — a worker misreads
 an ambiguous contract, the orchestrator mishandles an edge case, a helper
 script returns the wrong thing — that friction is **automatically filed as
 an issue against the shipyard repo**. The next `/do-work` run on shipyard
 burns those issues down. Friction encountered building my app becomes the
 spec for improving the tool, and the improved tool builds the app better.
 Dogfooding is eating what you cook; this is closer to a **self-sharpening
-tool** — every rough edge it hits while building lightwork makes it a
+tool** — every rough edge it hits while building Lightwork makes it a
 little better at building everything else.
 
 ### Where the human fits in the loop
@@ -277,7 +277,7 @@ day of the machine working, it's how I find out what the loop actually
 needs from a human, in priority order, instead of trawling GitHub trying
 to reconstruct it myself. It doesn't just hand me a list, either — it
 walks me through each item, step by step, holding my hand the whole way.
-When lightwork needed Facebook login configured, it didn't say "set up
+When Lightwork needed Facebook login configured, it didn't say "set up
 OAuth" and wish me luck; it sat me down: open this Meta developer console
 page, create this type of app, paste exactly this redirect URI, drop these
 two values into these env vars, now run this command to confirm the wiring
@@ -291,7 +291,7 @@ walks me through getting out of the way.
 
 It would be easy to read all of this as "an agent that does small fixes."
 The part that changed my mind about what these loops are for is that
-shipyard built lightwork's **infrastructure** — the unglamorous platform
+shipyard built Lightwork's **infrastructure** — the unglamorous platform
 work that usually eats weeks.
 
 It built the entire CI/CD pipeline: lint, typecheck, and the unit suite on
@@ -351,9 +351,9 @@ merged into the site's repo was opened by shipyard.
 ## The numbers
 
 Shipyard's first commit was **May 16, 2026 — twenty-six days ago**. Here's
-the lightwork repo's merge cadence over the past six weeks:
+the Lightwork repo's merge cadence over the past six weeks:
 
-![Bar chart of merged PRs per week in the lightwork repo, May 4 through June 11. Weekly totals: 17, 263, 354, 161, 175, and 30 in the partial final week](/blog/shipyard-lightwork/lightwork-prs-per-week.svg)
+![Bar chart of merged PRs per week in the Lightwork repo, May 4 through June 11. Weekly totals: 17, 263, 354, 161, 175, and 30 in the partial final week](/blog/shipyard-lightwork/lightwork-prs-per-week.svg)
 
 The totals so far:
 
@@ -369,7 +369,7 @@ The totals so far:
 
 What did it cost? Shipyard keeps a local per-session token ledger, and it
 reports **an estimated $357 across 97 orchestrator sessions** (~71M tokens,
-priced at API list rates — about $213 of that on lightwork). Two caveats,
+priced at API list rates — about $213 of that on Lightwork). Two caveats,
 cutting in opposite directions: early sessions under-recorded their token
 counts, so that's an undercount; and it excludes the interactive Claude
 Code sessions I drove myself. Even doubled, it's a striking number set
@@ -398,7 +398,7 @@ If that Tuesday has you tempted, you should know where it hurts first:
   changes that used to sit in the backlog because no human's time ever
   justified them.
 - **Review is still the gate you make it.** Auto-merge respects branch
-  protection, so the gate is whatever you require. On lightwork I should be
+  protection, so the gate is whatever you require. On Lightwork I should be
   explicit about my choice: CI is the merge gate — a green autonomous PR
   merges without me reading every diff, and I review selectively after the
   fact, where correctness has real stakes. The test suite is what makes
