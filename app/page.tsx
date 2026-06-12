@@ -72,12 +72,12 @@ export default function Home() {
               talk to the users, watch the data, own the feature from first conversation to deploy.
               At NCCER I ran focus groups with construction craft professionals, rebuilt the
               analytics stack their executives ran on, and owned Single Sign-On across the entire
-              customer-facing surface. At SalesRiver I led a team of six from Seed through Series A
-              — consolidating ten single-tenant apps into one multi-tenant SaaS in a single hour of
-              scheduled downtime, shipping a white-label transformation that drove $800K+ in new
-              ARR, and building a team-management feature that traced every marketing dollar to the
-              specific call or lead it bought. Today I build at Hudl, working full-stack across web
-              and mobile.
+              customer-facing surface — by a wide margin the feature our users asked for most. At
+              SalesRiver I led a team of six from Seed through Series A — consolidating ten
+              single-tenant apps into one multi-tenant SaaS in a single hour of scheduled downtime,
+              shipping a white-label transformation that drove $800K+ in new ARR, and building a
+              team-management feature that traced every marketing dollar to the specific call or
+              lead it bought. Today I build at Hudl, working full-stack across web and mobile.
             </p>
             <p>
               Off-hours I serve on the board of{' '}
