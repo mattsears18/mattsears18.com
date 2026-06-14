@@ -34,14 +34,20 @@ export default function Home() {
           id="hero-heading"
           className="font-display text-display-sm text-fg sm:text-display-md lg:text-display-lg max-w-3xl font-medium tracking-tight"
         >
-          Product engineer building developer tools
+          Product engineer with a civil engineering PhD
           <span className="text-accent">.</span>
         </h1>
 
         <p className="text-fg-muted mt-8 max-w-2xl text-lg leading-relaxed sm:text-xl">
           I find what&apos;s painful, follow the data, and build the tool that fixes it — then keep
-          iterating. Lately that&apos;s developer tooling, including Shipyard: the agent that builds
-          and ships the CI/CD behind the products I make.
+          iterating. Lately that&apos;s developer tooling, including{' '}
+          <Link
+            href="/work/shipyard"
+            className="text-accent decoration-accent/40 hover:decoration-accent underline underline-offset-4"
+          >
+            Shipyard
+          </Link>
+          : the agent that builds and ships the CI/CD behind the products I make.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-3">

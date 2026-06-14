@@ -6,8 +6,8 @@
 export const SITE_URL = 'https://mattsears18.com';
 export const SITE_TITLE = 'Matt Sears';
 export const SITE_DESCRIPTION =
-  'Matt Sears — product engineer building developer tools. Engineer at Hudl, board member at Enrich, and creator of Shipyard and Lightwork.';
-export const SITE_TAGLINE = 'Product engineer building developer tools.';
+  'Matt Sears — product engineer with a civil engineering PhD. Engineer at Hudl, board member at Enrich, and creator of Shipyard and Lightwork.';
+export const SITE_TAGLINE = 'Product engineer with a civil engineering PhD.';
 
 /**
  * Shared `Cache-Control` policy for the build-time, crawler/agent-facing
