@@ -56,7 +56,7 @@ export default function Home() {
           About
         </h2>
         <div className="grid gap-12 lg:grid-cols-[1fr_2fr]">
-          <p className="text-fg-muted font-mono text-xs tracking-widest uppercase">About</p>
+          <p className="text-fg-muted font-mono text-xs uppercase tracking-widest">About</p>
           <div className="max-w-reading text-fg space-y-6 text-base leading-relaxed sm:text-lg">
             <p>
               I came up through construction before civil engineering: a construction-management
@@ -64,10 +64,10 @@ export default function Home() {
               degree and a few years designing $40M–$200M industrial facilities, before a PhD at CU
               Boulder. The product habit started early. Along the way I founded DirtPlan, a
               construction-submittal SaaS that I built solo and sold in 2016. The PhD itself was
-              user research at heart — I put eye trackers on pipefitters to study how they read
-              construction drawings, built an open-source app to analyze the data, and published
-              seven peer-reviewed papers. A neural network I built for the Colorado DOT still
-              estimates highway construction durations statewide.
+              user research at heart — I put eye tracking glasses on pipefitters to understand how
+              they extract information from construction drawings, built an open-source app to
+              analyze the data, and published seven peer-reviewed papers. A neural network I built
+              for the Colorado DOT still estimates highway construction durations statewide.
             </p>
             <p>
               I moved into software full-time in 2019, and the job has stayed the same ever since:
