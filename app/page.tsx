@@ -47,7 +47,7 @@ export default function Home() {
           >
             Shipyard
           </Link>
-          : the agent that builds and ships the CI/CD behind the products I make.
+          : the workflow that builds and ships the products I make and the CI/CD behind them.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -124,7 +124,14 @@ export default function Home() {
               web and mobile.
             </p>
             <p>
-              Most of my favorite projects began as tools I built for myself — Shipyard,{' '}
+              Most of my favorite projects began as tools I built for myself —{' '}
+              <Link
+                href="/work/shipyard"
+                className="text-accent decoration-accent/40 hover:decoration-accent underline underline-offset-4"
+              >
+                Shipyard
+              </Link>
+              ,{' '}
               <Link
                 href="/work/lightwork"
                 className="text-accent decoration-accent/40 hover:decoration-accent underline underline-offset-4"
@@ -138,9 +145,16 @@ export default function Home() {
               >
                 Express Delphi
               </Link>
-              , and VisualEyes. I used to love platform engineering and hand-rolling DevOps; now
-              that so much of it can be automated, I&apos;d rather build the thing that does the
-              automating. Off-hours I serve on the board of{' '}
+              , and{' '}
+              <Link
+                href="/work/visual-eyes"
+                className="text-accent decoration-accent/40 hover:decoration-accent underline underline-offset-4"
+              >
+                VisualEyes
+              </Link>
+              . I used to love platform engineering and hand-rolling DevOps; now that so much of it
+              can be automated, I&apos;d rather build the thing that does the automating. Off-hours
+              I serve on the board of{' '}
               <a
                 href="https://www.enrichky.com/"
                 target="_blank"
@@ -150,7 +164,13 @@ export default function Home() {
                 Enrich
               </a>
               , a Madison County, KY social enterprise that employs people with alternative resumes
-              — recovery, homelessness, reentry. Most of this site, fittingly, was built by Shipyard
+              — recovery, homelessness, reentry. Most of this site, fittingly, was built by{' '}
+              <Link
+                href="/work/shipyard"
+                className="text-accent decoration-accent/40 hover:decoration-accent underline underline-offset-4"
+              >
+                Shipyard
+              </Link>{' '}
               rather than by me.
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-2 pt-2">
