@@ -20,24 +20,28 @@ import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '@/lib/site';
  *   - Source Serif 4 → long-form / blog     (next/font/google, self-hosted)
  *   - JetBrains Mono → code / mono accents  (next/font/google, self-hosted)
  *
- * Each exposes a CSS variable that Tailwind references via theme.extend.fontFamily.
+ * Each exposes a CSS variable that the Tailwind `@theme` block in globals.css
+ * folds into the `--font-*` tokens. The instance variables carry a `-instance`
+ * suffix so they don't collide with Tailwind v4's own `--font-sans` /
+ * `--font-serif` / `--font-mono` theme keys (a same-name token would reference
+ * itself — `--font-sans: var(--font-sans)` — and resolve to nothing).
  */
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-sans',
+  variable: '--font-sans-instance',
 });
 
 const serif = Source_Serif_4({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-serif',
+  variable: '--font-serif-instance',
 });
 
 const mono = JetBrains_Mono({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-mono',
+  variable: '--font-mono-instance',
 });
 
 /*
@@ -138,7 +142,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           href="/rss.xml"
         />
       </head>
-      <body className="min-h-screen bg-bg text-fg">
+      <body className="bg-bg text-fg min-h-screen">
         {/*
          * Skip-to-main-content link — WCAG 2.1 AA 2.4.1 (Bypass Blocks).
          * Must be the first focusable element in the document so the very
@@ -150,12 +154,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
          */}
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:border focus:border-border focus:bg-bg focus:px-4 focus:py-2 focus:font-sans focus:text-sm focus:font-medium focus:text-fg"
+          className="focus:border-border focus:bg-bg focus:text-fg sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded focus:border focus:px-4 focus:py-2 focus:font-sans focus:text-sm focus:font-medium"
         >
           Skip to main content
         </a>
         <SiteHeader />
-        <main id="main" className="mx-auto max-w-container px-6 sm:px-12">
+        <main id="main" className="max-w-container mx-auto px-6 sm:px-12">
           {children}
         </main>
         <SiteFooter />

@@ -1,28 +1,83 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
 /*
- * Theme tokens — see docs/design.md for rationale + the full table.
- * Values are stored as space-separated RGB triplets so Tailwind's
- * `rgb(var(--token) / <alpha-value>)` syntax works for opacity utilities.
+ * Class-based dark mode. Tailwind v4 drops the `darkMode: 'class'` config key
+ * in favor of a CSS-defined variant — this matches the v3 behavior (`.dark`
+ * on an ancestor toggles every `dark:` utility).
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Runtime theme channels — see docs/design.md for rationale + the full table.
+ * Values are stored as space-separated RGB triplets under `*-rgb` names so the
+ * `rgb(var(--token-rgb))` wrappers in `@theme inline` below resolve to real
+ * colors. The `-rgb` suffix keeps these raw channels namespaced separately from
+ * the `--color-*` theme keys — a same-name token would re-wrap itself in the
+ * Lightning CSS srgb opacity-fallback (`rgb(rgb(var(--color-accent)))`). A
+ * `.dark` override here swaps the palette at runtime without regenerating any
+ * utility classes.
  */
 :root {
-  --color-bg: 250 250 249; /* #FAFAF9 */
-  --color-bg-elevated: 255 255 255; /* #FFFFFF */
-  --color-fg: 23 23 23; /* #171717 */
-  --color-fg-muted: 82 82 82; /* #525252 */
-  --color-border: 229 229 229; /* #E5E5E5 */
-  --color-accent: 194 65 12; /* #C2410C */
+  --color-bg-rgb: 250 250 249; /* #FAFAF9 */
+  --color-bg-elevated-rgb: 255 255 255; /* #FFFFFF */
+  --color-fg-rgb: 23 23 23; /* #171717 */
+  --color-fg-muted-rgb: 82 82 82; /* #525252 */
+  --color-border-rgb: 229 229 229; /* #E5E5E5 */
+  --color-accent-rgb: 194 65 12; /* #C2410C */
 }
 
 .dark {
-  --color-bg: 10 10 10; /* #0A0A0A */
-  --color-bg-elevated: 23 23 23; /* #171717 */
-  --color-fg: 250 250 249; /* #FAFAF9 */
-  --color-fg-muted: 163 163 163; /* #A3A3A3 */
-  --color-border: 38 38 38; /* #262626 */
-  --color-accent: 251 146 60; /* #FB923C */
+  --color-bg-rgb: 10 10 10; /* #0A0A0A */
+  --color-bg-elevated-rgb: 23 23 23; /* #171717 */
+  --color-fg-rgb: 250 250 249; /* #FAFAF9 */
+  --color-fg-muted-rgb: 163 163 163; /* #A3A3A3 */
+  --color-border-rgb: 38 38 38; /* #262626 */
+  --color-accent-rgb: 251 146 60; /* #FB923C */
+}
+
+/*
+ * CSS-first theme configuration (replaces tailwind.config.ts).
+ *
+ * `@theme inline` makes the generated utilities reference the CSS variables
+ * directly instead of inlining a snapshot of their value at build time — this
+ * is what lets the `.dark` overrides above re-color `bg-bg`, `text-fg`, etc.
+ * at runtime. v4's opacity modifiers (`bg-accent/20`, `decoration-accent/40`)
+ * work on these colors via `color-mix()`, so the v3 `<alpha-value>` token is
+ * no longer needed.
+ */
+@theme inline {
+  --color-bg: rgb(var(--color-bg-rgb));
+  --color-bg-elevated: rgb(var(--color-bg-elevated-rgb));
+  --color-fg: rgb(var(--color-fg-rgb));
+  --color-fg-muted: rgb(var(--color-fg-muted-rgb));
+  --color-border: rgb(var(--color-border-rgb));
+  --color-accent: rgb(var(--color-accent-rgb));
+
+  /*
+   * Font tokens. The `geist` package sets --font-geist-sans; next/font sets
+   * --font-{sans,serif,mono}-instance (the `-instance` suffix avoids a
+   * self-referential collision with these very theme keys — see app/layout.tsx).
+   * `font-display` aliases Geist Sans so design.md's naming holds at the
+   * Tailwind layer.
+   */
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans-instance), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif-instance), ui-serif, Georgia, serif;
+  --font-mono: var(--font-mono-instance), ui-monospace, SFMono-Regular, monospace;
+
+  --container-container: 1100px;
+  --container-reading: 720px;
+
+  /* Hero display sizes — design.md type scale (ratio 1.25, base 12) */
+  --text-display-sm: 2.5rem;
+  --text-display-sm--line-height: 1.1;
+  --text-display-sm--letter-spacing: -0.02em;
+  --text-display-md: 3.5rem;
+  --text-display-md--line-height: 1.05;
+  --text-display-md--letter-spacing: -0.025em;
+  --text-display-lg: 4.5rem;
+  --text-display-lg--line-height: 1;
+  --text-display-lg--letter-spacing: -0.03em;
 }
 
 @layer base {
@@ -31,7 +86,7 @@
   }
 
   body {
-    @apply bg-bg font-sans text-fg antialiased;
+    @apply bg-bg text-fg font-sans antialiased;
     font-size: 17px;
     line-height: 1.6;
     text-rendering: optimizeLegibility;
@@ -45,7 +100,7 @@
 
   /* Visible focus ring for keyboard users. */
   :focus-visible {
-    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg;
+    @apply ring-accent ring-offset-bg ring-2 ring-offset-2 outline-none;
   }
 }
 
@@ -57,7 +112,7 @@
    * stylesheet narrow and on-theme.
    */
   .prose-post {
-    @apply text-base leading-relaxed text-fg sm:text-lg;
+    @apply text-fg text-base leading-relaxed sm:text-lg;
   }
 
   .prose-post > * + * {
@@ -65,10 +120,10 @@
   }
 
   .prose-post h2 {
-    @apply mt-12 font-display text-2xl font-medium tracking-tight text-fg sm:text-3xl;
+    @apply font-display text-fg mt-12 text-2xl font-medium tracking-tight sm:text-3xl;
   }
   .prose-post h3 {
-    @apply mt-10 font-display text-xl font-medium tracking-tight text-fg sm:text-2xl;
+    @apply font-display text-fg mt-10 text-xl font-medium tracking-tight sm:text-2xl;
   }
   .prose-post h2 + p,
   .prose-post h3 + p {
@@ -82,7 +137,7 @@
    * full-strength accent on hover. See issue #31.
    */
   .prose-post a {
-    @apply text-accent underline decoration-accent/40 underline-offset-4;
+    @apply text-accent decoration-accent/40 underline underline-offset-4;
   }
   .prose-post a:hover {
     @apply decoration-accent;
@@ -99,11 +154,11 @@
   }
 
   .prose-post blockquote {
-    @apply border-l-2 border-accent pl-4 italic text-fg-muted;
+    @apply border-accent text-fg-muted border-l-2 pl-4 italic;
   }
 
   .prose-post hr {
-    @apply my-10 border-border;
+    @apply border-border my-10;
   }
 
   /*
@@ -112,7 +167,7 @@
    * clobbered.
    */
   .prose-post :not(pre) > code {
-    @apply rounded border border-border bg-bg-elevated px-1.5 py-0.5 font-mono text-[0.875em];
+    @apply border-border bg-bg-elevated rounded border px-1.5 py-0.5 font-mono text-[0.875em];
   }
 
   /*
@@ -127,7 +182,7 @@
   }
 
   .prose-post pre {
-    @apply overflow-x-auto rounded-lg border border-border bg-bg-elevated px-5 py-4 font-mono text-sm leading-relaxed;
+    @apply border-border bg-bg-elevated overflow-x-auto rounded-lg border px-5 py-4 font-mono text-sm leading-relaxed;
   }
 
   .prose-post pre code {

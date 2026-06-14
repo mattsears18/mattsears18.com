@@ -35,16 +35,16 @@ All fonts self-hosted (no FOIT, no Google CDN call at runtime).
 
 **Measure**: 65–72ch on blog post bodies. Don't let lines run full container width.
 
-CSS variable bindings (set in `app/layout.tsx` via `next/font` and consumed by `tailwind.config.ts`):
+Font wiring (Tailwind v4, CSS-first — no `tailwind.config.ts`). `next/font` in `app/layout.tsx` emits an instance variable per family with a `-instance` suffix (`--font-sans-instance`, `--font-serif-instance`, `--font-mono-instance`); Geist's package emits `--font-geist-sans`. The `@theme inline` block in `app/globals.css` folds those into the Tailwind font tokens below, so `font-display` / `font-sans` / `font-serif` / `font-mono` utilities resolve to the right stacks. The `-instance` suffix is deliberate — naming the `next/font` variable `--font-sans` would collide with v4's own `--font-sans` theme key and resolve to nothing.
 
-- `--font-display` → Geist Sans
-- `--font-sans` → Inter
-- `--font-serif` → Source Serif 4
-- `--font-mono` → JetBrains Mono
+- `--font-display` → Geist Sans (← `--font-geist-sans`)
+- `--font-sans` → Inter (← `--font-sans-instance`)
+- `--font-serif` → Source Serif 4 (← `--font-serif-instance`)
+- `--font-mono` → JetBrains Mono (← `--font-mono-instance`)
 
 ## Color palette
 
-Restrained, two-mode. Tokens are declared as CSS custom properties on `:root` (light) and `.dark` (dark) and surfaced as Tailwind theme colors.
+Restrained, two-mode. Raw RGB channels are declared as CSS custom properties on `:root` (light) and `.dark` (dark) under `--color-*-rgb` names in `app/globals.css`; the `@theme inline` block wraps each in `rgb(var(--color-*-rgb))` to surface them as Tailwind theme colors (`bg-bg`, `text-fg`, `border-border`, `bg-accent`, …). Because the theme tokens reference the runtime variables (`@theme inline`), a `.dark` override re-colors every utility at runtime without regenerating CSS. Opacity modifiers (`bg-accent/20`) work via v4's `color-mix()` — the v3 `<alpha-value>` placeholder is gone. The `-rgb` suffix keeps the raw channels namespaced apart from the `--color-*` theme keys, avoiding a self-referential `rgb(rgb(…))` double-wrap in Lightning CSS's srgb opacity fallback.
 
 | Token         | Light     | Dark      | Use                                                   |
 | ------------- | --------- | --------- | ----------------------------------------------------- |

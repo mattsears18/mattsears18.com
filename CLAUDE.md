@@ -4,7 +4,7 @@ Repo-scoped guidance for Claude Code sessions on `mattsears18.com`. Pointer-styl
 
 ## Stack
 
-Next.js 16 (App Router) + React 19 + TypeScript + Tailwind 3 + MDX, deployed on Vercel. Sentry wired via `@sentry/nextjs`. Node `>=22.0.0` (`.nvmrc` pins `24.15.0`). Package manager is **npm** — `package-lock.json` is the source of truth.
+Next.js 16 (App Router) + React 19 + TypeScript + Tailwind 4 + MDX, deployed on Vercel. Sentry wired via `@sentry/nextjs`. Node `>=22.0.0` (`.nvmrc` pins `24.15.0`). Package manager is **npm** — `package-lock.json` is the source of truth.
 
 ## Content model
 
@@ -28,7 +28,7 @@ CI ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)) runs `npm ci` → 
 ## Conventions
 
 - **TypeScript everywhere.** Prefer Server Components; reach for `'use client'` only when an interactive surface needs it.
-- **Tailwind for styling**, not CSS modules. Design tokens (colors, fonts) are CSS custom properties in [`app/globals.css`](./app/globals.css) consumed via `tailwind.config.ts`. Add new long-form prose surfaces under the `.prose-post` component layer in `globals.css` — the Tailwind typography plugin is intentionally not installed.
+- **Tailwind v4 for styling** (CSS-first, no `tailwind.config.ts`), not CSS modules. Config lives in [`app/globals.css`](./app/globals.css): `@import "tailwindcss"`, an `@theme inline { … }` block for design tokens, and `@custom-variant dark` for class-based dark mode. Design tokens (colors, fonts) are CSS custom properties in `globals.css` surfaced into the theme — colors as `--color-*-rgb` channels wrapped by `rgb(var(--color-*-rgb))` in `@theme inline`. PostCSS uses `@tailwindcss/postcss` (no `autoprefixer` — v4 prefixes via Lightning CSS). Add new long-form prose surfaces under the `.prose-post` component layer in `globals.css` — the Tailwind typography plugin is intentionally not installed.
 - **Single-purpose commits, Conventional Commits titles** (`feat(seo):`, `fix(a11y,web):`, `chore(dx):`, `docs(dx):`, `content(home):`). One concern per PR — open a new issue for drive-by bugs you spot.
 - **No `git add -A`.** Stage paths explicitly.
 - **shadcn/ui primitives are installed on-demand.** Don't pre-pull the catalog; each PR adds only what it uses.
