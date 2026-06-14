@@ -59,8 +59,8 @@ export default function Home() {
           <p className="text-fg-muted font-mono text-xs uppercase tracking-widest">About</p>
           <div className="max-w-reading text-fg space-y-6 text-base leading-relaxed sm:text-lg">
             <p>
-              I came up through construction before civil engineering: a construction-management
-              degree and a few years managing water-treatment-plant builds, then a civil engineering
+              I came up through construction before civil engineering: a construction management
+              degree and a few years managing water treatment plant builds, then a civil engineering
               degree and a few years designing $40M–$200M industrial facilities, before a PhD at CU
               Boulder. The product habit started early. Along the way I founded DirtPlan, a
               construction-submittal SaaS that I built solo and sold in 2016. The PhD itself was
@@ -71,15 +71,15 @@ export default function Home() {
             </p>
             <p>
               I moved into software full-time in 2019, and the job has stayed the same ever since:
-              talk to users, watch the data, own the feature from the first conversation to the
-              deploy. At NCCER I ran focus groups with construction craft professionals, built the
-              analytics stack the executives ran on, and shipped Single Sign-On across every
-              customer-facing app — the feature our users asked for most, by a wide margin. At
-              SalesRiver I led a team of six from Seed through Series A. We merged ten single-tenant
-              apps into one multi-tenant SaaS within a single hour of scheduled downtime,
-              white-labeled the platform to unlock $800K+ in new ARR, and built a team-management
-              feature that traced every marketing dollar to the call or lead it bought. Today I
-              build at Hudl, working full-stack across web and mobile.
+              talk to users, watch the data, own the feature from the first conversation through
+              deploy and the production monitoring that keeps it healthy. At NCCER I ran focus
+              groups with construction craft professionals, built the analytics stack the executives
+              ran on, and shipped Single Sign-On across every customer-facing app — the feature our
+              users asked for most, by a wide margin. At SalesRiver I led a team of six engineers
+              from Seed through Series A. White-labeling the platform unlocked $800K+ in new ARR —
+              and spun up ten single-tenant apps that we later consolidated into one multi-tenant
+              SaaS in a single hour of scheduled downtime, zero incidents. Today I build at Hudl,
+              working full-stack across web and mobile.
             </p>
             <p>
               Off-hours I serve on the board of{' '}
