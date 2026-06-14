@@ -23,7 +23,7 @@ describe('personSchema', () => {
       '@type': 'Person',
       name: SITE_TITLE,
       url: SITE_URL,
-      jobTitle: 'Lead Software Engineer',
+      jobTitle: 'Product Engineer',
       sameAs: ['https://github.com/mattsears18', 'https://www.linkedin.com/in/mattsears18/'],
     });
   });

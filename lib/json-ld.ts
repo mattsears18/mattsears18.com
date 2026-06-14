@@ -16,8 +16,8 @@ import { SITE_TITLE, SITE_URL } from '@/lib/site';
 /**
  * The canonical Person schema for Matt — used in the site-wide root layout.
  *
- * `jobTitle` mirrors how he describes himself across the site (lead engineer,
- * not generic "Software Engineer"). `sameAs` lists the public profile URLs
+ * `jobTitle` mirrors how he describes himself across the site ("product
+ * engineer," the through-line of the home page). `sameAs` lists the public profile URLs
  * Google uses to disambiguate the Knowledge Panel entity; keep it tight
  * (GitHub + LinkedIn) — adding throwaway profiles dilutes the signal.
  */
@@ -27,7 +27,7 @@ export function personSchema() {
     '@type': 'Person',
     name: SITE_TITLE,
     url: SITE_URL,
-    jobTitle: 'Lead Software Engineer',
+    jobTitle: 'Product Engineer',
     sameAs: ['https://github.com/mattsears18', 'https://www.linkedin.com/in/mattsears18/'],
   } as const;
 }
