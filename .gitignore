@@ -34,7 +34,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-.shipyard/
+# shipyard: ignore local audit output etc., but track the trusted-authors override
+.shipyard/*
+!.shipyard/trusted-authors.txt
 
 # Claude Code — committed: .claude/settings.json
 # Ignored: per-user override + orchestrator worktrees

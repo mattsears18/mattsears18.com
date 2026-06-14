@@ -4,7 +4,7 @@
     "policy": "trusted-only"
   },
   "trust": {
-    "authors": ["mattsears18"]
+    "authors": ["mattsears18", "dependabot[bot]", "vercel[bot]"]
   },
   "cost_tracking": {
     "enabled": true
