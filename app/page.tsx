@@ -64,10 +64,10 @@ export default function Home() {
               degree and a few years designing $40M–$200M industrial facilities, before a PhD at CU
               Boulder. The product habit started early. Along the way I founded DirtPlan, a
               construction-submittal SaaS that I built solo and sold in 2016. The PhD itself was
-              user research at heart — I put eye trackers on pipefitters to understand how they
-              extract information from construction drawings, built an open-source app to analyze
-              the data, and published seven peer-reviewed papers. A neural network I built for the
-              Colorado DOT still estimates highway construction durations statewide.
+              user research at heart — I put eye tracking glasses on pipefitters to understand how
+              they extract information from construction drawings, built an open-source app to
+              analyze the data, and published seven peer-reviewed papers. A neural network I built
+              for the Colorado DOT still estimates highway construction durations statewide.
             </p>
             <p>
               I moved into software full-time in 2019, and the job has stayed the same ever since:
