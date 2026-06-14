@@ -20,9 +20,9 @@
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
-    "@next/mdx": "^16.2.7",
+    "@next/mdx": "^16.2.9",
     "@radix-ui/react-slot": "1.2.5",
-    "@sentry/nextjs": "^10.56.0",
+    "@sentry/nextjs": "^10.57.0",
     "@types/mdx": "^2.0.14",
     "@types/node": "24.13.2",
     "@types/react": "^19.2.17",
@@ -32,11 +32,11 @@
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^16.2.7",
+    "eslint-config-next": "^16.2.9",
     "feed": "^5.2.1",
     "geist": "1.7.2",
     "gray-matter": "^4.0.3",
-    "next": "^16.2.7",
+    "next": "^16.2.9",
     "pino": "^10.3.1",
     "postcss": "8.5.15",
     "react": "^19.2.7",
@@ -44,8 +44,8 @@
     "rehype-pretty-code": "^0.14.3",
     "remark-frontmatter": "^5.0.0",
     "shiki": "^4.2.0",
-    "tailwind-merge": "2.5.4",
-    "tailwindcss": "3.4.3",
+    "tailwind-merge": "2.6.1",
+    "tailwindcss": "3.4.19",
     "typescript": "^6.0.3"
   },
   "overrides": {
@@ -56,7 +56,7 @@
     "@vitest/coverage-v8": "^4.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.7",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "vitest": "^4.1.7"
   }
