@@ -14,9 +14,6 @@ updates:
       # tailwind-merge v3 is coupled to the Tailwind v4 ecosystem.
       - dependency-name: "tailwind-merge"
         update-types: ["version-update:semver-major"]
-      # typescript 6 — defer until evaluated for breaking changes.
-      - dependency-name: "typescript"
-        update-types: ["version-update:semver-major"]
       # eslint 10 is blocked by eslint-config-next's base parser (its
       # scopeManager lacks the addGlobals API eslint 10 requires).
       - dependency-name: "eslint"
