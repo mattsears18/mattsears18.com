@@ -63,7 +63,7 @@ describe('GET /llms.txt', () => {
     const body = await (await GET()).text();
 
     expect(body).toContain('# Matt Sears');
-    expect(body).toContain('> Software engineer with a civil engineering PhD.');
+    expect(body).toContain('> Product engineer with a civil engineering PhD.');
   });
 
   it('builds absolute URLs from relative hrefs via bullet()', async () => {
