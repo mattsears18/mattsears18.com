@@ -32,13 +32,13 @@ export default function Home() {
       >
         <h1
           id="hero-heading"
-          className="max-w-3xl font-display text-display-sm font-medium tracking-tight text-fg sm:text-display-md lg:text-display-lg"
+          className="font-display text-display-sm text-fg sm:text-display-md lg:text-display-lg max-w-3xl font-medium tracking-tight"
         >
           Product engineer with a civil engineering PhD
           <span className="text-accent">.</span>
         </h1>
 
-        <p className="mt-8 max-w-2xl text-lg leading-relaxed text-fg-muted sm:text-xl">
+        <p className="text-fg-muted mt-8 max-w-2xl text-lg leading-relaxed sm:text-xl">
           I build software at Hudl, sit on the board of a Kentucky social enterprise, and build
           Shipyard and Lightwork on nights and weekends.
         </p>
@@ -51,17 +51,18 @@ export default function Home() {
         </div>
       </section>
 
-      <section aria-labelledby="about-heading" className="border-t border-border py-16 sm:py-20">
+      <section aria-labelledby="about-heading" className="border-border border-t py-16 sm:py-20">
         <h2 id="about-heading" className="sr-only">
           About
         </h2>
         <div className="grid gap-12 lg:grid-cols-[1fr_2fr]">
-          <p className="font-mono text-xs uppercase tracking-widest text-fg-muted">About</p>
-          <div className="max-w-reading space-y-6 text-base leading-relaxed text-fg sm:text-lg">
+          <p className="text-fg-muted font-mono text-xs tracking-widest uppercase">About</p>
+          <div className="max-w-reading text-fg space-y-6 text-base leading-relaxed sm:text-lg">
             <p>
-              I came up through civil engineering: undergrad at Eastern Kentucky, a few years
-              designing sites for $40M–$200M industrial projects, then a PhD at CU Boulder. The
-              product habit started early. Along the way I founded DirtPlan, a
+              I came up through construction before civil engineering: a construction-management
+              degree and a few years managing water-treatment-plant builds, then a civil engineering
+              degree and a few years designing $40M–$200M industrial facilities, before a PhD at CU
+              Boulder. The product habit started early. Along the way I founded DirtPlan, a
               construction-submittal SaaS that I built solo and sold in 2016. The PhD itself was
               user research at heart — I put eye trackers on pipefitters to study how they read
               construction drawings, built an open-source app to analyze the data, and published
@@ -86,7 +87,7 @@ export default function Home() {
                 href="https://www.enrichky.com/"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-block py-0.5 text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
+                className="text-accent decoration-accent/40 hover:decoration-accent inline-block py-0.5 underline underline-offset-4"
               >
                 Enrich
               </a>
@@ -94,14 +95,14 @@ export default function Home() {
               — recovery, homelessness, reentry. I&apos;m also building{' '}
               <Link
                 href="/work/shipyard"
-                className="text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
+                className="text-accent decoration-accent/40 hover:decoration-accent underline underline-offset-4"
               >
                 Shipyard
               </Link>{' '}
               (a Claude Code plugin that autonomously works a GitHub issue backlog) and{' '}
               <Link
                 href="/work/lightwork"
-                className="text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
+                className="text-accent decoration-accent/40 hover:decoration-accent underline underline-offset-4"
               >
                 Lightwork
               </Link>{' '}
@@ -111,7 +112,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-x-6 gap-y-2 pt-2">
               <Link
                 href="/blog"
-                className="inline-flex min-h-[44px] items-center text-accent underline-offset-4 hover:underline"
+                className="text-accent inline-flex min-h-[44px] items-center underline-offset-4 hover:underline"
               >
                 Read the blog →
               </Link>
@@ -119,7 +120,7 @@ export default function Home() {
                 href="https://github.com/mattsears18"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-[44px] items-center text-accent underline-offset-4 hover:underline"
+                className="text-accent inline-flex min-h-[44px] items-center underline-offset-4 hover:underline"
               >
                 View on GitHub →
               </a>
@@ -127,7 +128,7 @@ export default function Home() {
                 href="https://www.linkedin.com/in/mattsears18/"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-[44px] items-center text-accent underline-offset-4 hover:underline"
+                className="text-accent inline-flex min-h-[44px] items-center underline-offset-4 hover:underline"
               >
                 LinkedIn →
               </a>
