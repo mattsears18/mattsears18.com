@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono, Source_Serif_4 } from 'next/font/google';
 import { GeistSans } from 'geist/font/sans';
 import { headers } from 'next/headers';
 import { VercelToolbar } from '@vercel/toolbar/next';
+import { Analytics } from '@vercel/analytics/next';
 
 import './globals.css';
 import { JsonLd } from './components/json-ld';
@@ -159,6 +160,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </main>
         <SiteFooter />
         {showVercelToolbar ? <VercelToolbar /> : null}
+        <Analytics />
       </body>
     </html>
   );
