@@ -77,7 +77,7 @@ export default function Home() {
               >
                 Shipyard
               </Link>
-              , which builds and runs the CI/CD pipelines behind the user-facing products I ship.
+              .
             </p>
             <p>
               The product instinct started early, and far from a keyboard. I came up through
