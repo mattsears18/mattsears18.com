@@ -1,0 +1,8 @@
+# Trusted authors for /shipyard:do-work dispatch.
+# One GitHub login per line. Comments (#) and blank lines ignored.
+# The repo owner (mattsears18) is implicitly trusted.
+# Bot/GitHub-App accounts must be listed explicitly. Either login shape works
+# (`<bot>[bot]` or `app/<bot>`) — the normalizer cross-adds the alias.
+mattsears18
+dependabot[bot]
+vercel[bot]
