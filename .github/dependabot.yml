@@ -8,12 +8,6 @@ updates:
     # Major bumps deferred deliberately — re-enable by removing the matching
     # ignore entry when the migration is scheduled. See issues for context.
     ignore:
-      # tailwindcss v4 is a CSS-first rewrite; stack is locked to Tailwind 3.
-      - dependency-name: "tailwindcss"
-        update-types: ["version-update:semver-major"]
-      # tailwind-merge v3 is coupled to the Tailwind v4 ecosystem.
-      - dependency-name: "tailwind-merge"
-        update-types: ["version-update:semver-major"]
       # eslint 10 is blocked by eslint-config-next's base parser (its
       # scopeManager lacks the addGlobals API eslint 10 requires).
       - dependency-name: "eslint"
