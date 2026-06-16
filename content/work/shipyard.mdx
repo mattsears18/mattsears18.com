@@ -16,3 +16,5 @@ Shipyard is an experimental [Claude Code](https://docs.claude.com/en/docs/claude
 The orchestrator dispatches up to `--concurrency` workers at once, opens PRs that close their assigned issues, arms auto-merge, and gracefully handles failing CI, red main, and PR pileups via specialized diversion workers.
 
 Shipyard is built with shipyard — the majority of merged PRs in the repo were opened by `/do-work` workers, fixed up through CI failures, and merged without a human touching the keyboard between issue triage and PR review. This portfolio site is also built with it.
+
+For the full story — two commands in the morning, 116 merged PRs and 121 closed issues by evening — read the writeup: [I built shipyard so I could build Lightwork](/blog/shipyard-and-lightwork).
