@@ -28,10 +28,16 @@ const SIZES_BY_VARIANT: Record<Props['variant'], string> = {
  * means "asset exists" — no broken-img edge case to handle in JSX.
  */
 export function ProjectImage({ project, variant, className }: Props) {
-  const { frontmatter, slug } = project;
+  const { frontmatter, slug, imageDimensions } = project;
+  // The hero renders at the image's natural aspect ratio (full width, auto
+  // height) when we measured its dimensions — no fixed box, so off-16:9
+  // images aren't letterboxed with dead side-margins. Cards keep the fixed
+  // 4:3 crop for a tidy grid. Without dimensions we fall back to the old
+  // fixed-aspect box.
+  const heroNatural = variant === 'hero' && imageDimensions != null;
   const wrapperClass = [
     'relative overflow-hidden rounded-lg border border-border bg-bg-elevated',
-    variant === 'hero' ? 'aspect-[16/9]' : 'aspect-[4/3]',
+    heroNatural ? '' : variant === 'hero' ? 'aspect-[16/9]' : 'aspect-[4/3]',
     className ?? '',
   ]
     .filter(Boolean)
@@ -41,14 +47,26 @@ export function ProjectImage({ project, variant, className }: Props) {
     const alt = frontmatter.imageAlt ?? `${frontmatter.title} — project preview`;
     const visual = (
       <div className={wrapperClass}>
-        <Image
-          src={frontmatter.image}
-          alt={alt}
-          fill
-          sizes={SIZES_BY_VARIANT[variant]}
-          priority={variant === 'hero'}
-          className={variant === 'hero' ? 'object-contain' : 'object-cover'}
-        />
+        {heroNatural ? (
+          <Image
+            src={frontmatter.image}
+            alt={alt}
+            width={imageDimensions.width}
+            height={imageDimensions.height}
+            sizes={SIZES_BY_VARIANT[variant]}
+            priority
+            className="h-auto w-full"
+          />
+        ) : (
+          <Image
+            src={frontmatter.image}
+            alt={alt}
+            fill
+            sizes={SIZES_BY_VARIANT[variant]}
+            priority={variant === 'hero'}
+            className={variant === 'hero' ? 'object-contain' : 'object-cover'}
+          />
+        )}
       </div>
     );
     /*
@@ -69,7 +87,7 @@ export function ProjectImage({ project, variant, className }: Props) {
   const initial = frontmatter.title.trim().charAt(0).toUpperCase() || '·';
   return (
     <div
-      className={`${wrapperClass} bg-gradient-to-br from-bg-elevated via-bg to-bg-elevated`}
+      className={`${wrapperClass} from-bg-elevated via-bg to-bg-elevated bg-gradient-to-br`}
       role="img"
       aria-label={`${frontmatter.title} — placeholder`}
       data-project-slug={slug}
@@ -77,16 +95,16 @@ export function ProjectImage({ project, variant, className }: Props) {
       <div className="absolute inset-0 flex items-center justify-center">
         <span
           aria-hidden="true"
-          className="font-display text-7xl font-medium tracking-tight text-fg-muted/40 sm:text-8xl"
+          className="font-display text-fg-muted/40 text-7xl font-medium tracking-tight sm:text-8xl"
         >
           {initial}
         </span>
       </div>
-      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 border-t border-border bg-bg/60 px-3 py-2 backdrop-blur-sm">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-fg-muted">
+      <div className="border-border bg-bg/60 absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 border-t px-3 py-2 backdrop-blur-sm">
+        <span className="text-fg-muted font-mono text-[10px] tracking-widest uppercase">
           {frontmatter.title}
         </span>
-        <span className="font-mono text-[10px] uppercase tracking-widest text-fg-muted">
+        <span className="text-fg-muted font-mono text-[10px] tracking-widest uppercase">
           {frontmatter.year}
         </span>
       </div>

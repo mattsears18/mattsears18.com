@@ -2,6 +2,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import matter from 'gray-matter';
+import sharp from 'sharp';
 
 import { reportError } from './logger';
 
@@ -36,10 +37,21 @@ export type ProjectFrontmatter = {
   imageAlt?: string;
 };
 
+export type ImageDimensions = { width: number; height: number };
+
 export type Project = {
   slug: string;
   frontmatter: ProjectFrontmatter;
   content: string;
+  /**
+   * Intrinsic pixel dimensions of `frontmatter.image`, measured from disk at
+   * read time. Present only when `frontmatter.image` survived the on-disk
+   * check below. The hero renders at this natural aspect ratio so a portrait
+   * screenshot or an off-16:9 illustration isn't letterboxed inside a fixed
+   * box (no dead side-margins). Falls back to the fixed-aspect box when
+   * absent. See #298-followup.
+   */
+  imageDimensions?: ImageDimensions;
 };
 
 const WORK_DIR = path.join(process.cwd(), 'content', 'work');
@@ -72,6 +84,7 @@ async function readProjectFile(filename: string): Promise<Project | null> {
       `Project ${slug} is missing required frontmatter (title, role, year, summary, tech[])`,
     );
   }
+  let imageDimensions: ImageDimensions | undefined;
   if (frontmatter.image) {
     // public-root paths only; strip the field if the asset isn't on disk so
     // the UI renders the initial-card fallback instead of a broken <Image>.
@@ -81,9 +94,19 @@ async function readProjectFile(filename: string): Promise<Project | null> {
     if (!onDisk || !(await fileExists(onDisk))) {
       delete frontmatter.image;
       delete frontmatter.imageAlt;
+    } else {
+      // Measure intrinsic dimensions so the hero can render at the image's
+      // natural aspect ratio. Best-effort: a measurement failure leaves
+      // `imageDimensions` undefined and the UI falls back to the fixed box.
+      try {
+        const { width, height } = await sharp(onDisk).metadata();
+        if (width && height) imageDimensions = { width, height };
+      } catch (err) {
+        reportError(err, { op: 'measureProjectImage', slug });
+      }
     }
   }
-  return { slug, frontmatter, content };
+  return { slug, frontmatter, content, imageDimensions };
 }
 
 /**
