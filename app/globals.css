@@ -162,6 +162,15 @@
   }
 
   /*
+   * Match the work-page image treatment (`project-image.tsx` uses
+   * `rounded-lg`) so post images carry the same corner radius. Applies to
+   * every MDX image, which renders through `LightboxImage` as a plain `<img>`.
+   */
+  .prose-post img {
+    @apply rounded-lg;
+  }
+
+  /*
    * Inline code (single backticks). `:not(pre) > code` excludes block code
    * spans inside the rehype-pretty-code <pre> so token styling there isn't
    * clobbered.
