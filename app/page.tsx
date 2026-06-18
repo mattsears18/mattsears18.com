@@ -63,7 +63,7 @@ export default function Home() {
           About
         </h2>
         <div className="grid gap-12 lg:grid-cols-[1fr_2fr]">
-          <p className="text-fg-muted font-mono text-xs uppercase tracking-widest">About</p>
+          <p className="text-fg-muted font-mono text-xs tracking-widest uppercase">About</p>
           <div className="max-w-reading text-fg space-y-6 text-base leading-relaxed sm:text-lg">
             <p>
               I&apos;m a product engineer, and I mean something specific by that: I find what&apos;s
@@ -82,9 +82,9 @@ export default function Home() {
             <p>
               The product instinct started early, and far from a keyboard. I came up through
               construction before civil engineering — a few years managing water treatment plant
-              builds, then designing $40M–$200M industrial facilities — before a PhD at CU Boulder
-              that was really user research: I put eye tracking glasses on pipefitters to understand
-              how they extract information from construction drawings, built{' '}
+              builds, then designing $40M–$200M industrial facility sites — before a PhD at CU
+              Boulder that was really user research: I put eye tracking glasses on pipefitters to
+              understand how they extract information from construction drawings, built{' '}
               <a
                 href="https://www.npmjs.com/package/time-hulls"
                 target="_blank"
