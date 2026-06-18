@@ -47,7 +47,7 @@ export default function Home() {
           >
             Shipyard
           </Link>
-          : the workflow that builds and ships the products I make and the CI/CD behind them.
+          : the workflow that builds and ships the products I make and the platforms behind them.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -63,7 +63,7 @@ export default function Home() {
           About
         </h2>
         <div className="grid gap-12 lg:grid-cols-[1fr_2fr]">
-          <p className="text-fg-muted font-mono text-xs tracking-widest uppercase">About</p>
+          <p className="text-fg-muted font-mono text-xs uppercase tracking-widest">About</p>
           <div className="max-w-reading text-fg space-y-6 text-base leading-relaxed sm:text-lg">
             <p>
               I&apos;m a product engineer, and I mean something specific by that: I find what&apos;s
