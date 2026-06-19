@@ -1,0 +1,216 @@
+---
+title: 'I deleted my CI pipeline and let AI run it locally instead'
+date: '2026-06-19'
+excerpt: >-
+  The bill for checking my code passed the bill for writing it. So I moved
+  Lightwork's entire CI/build/deploy pipeline off GitHub Actions and onto
+  local-only execution — something that only became practical because an AI
+  agent now provides the one thing cloud CI was really for: unattended,
+  never-forgets consistency.
+tags:
+  - ai
+  - claude-code
+  - tooling
+  - ci
+ogImage: /blog/killing-ci-for-local-only/og.png
+---
+
+The bill for _checking_ my code had passed the bill for _writing_ it.
+
+That was the line in the spreadsheet that made me stop. For months I'd
+watched two costs climb on the same side project — the tokens I spent
+having an AI agent build [Lightwork](https://getlightwork.com), and the
+GitHub Actions minutes I spent proving each change was safe. Writing the
+code was the expensive part, obviously. Except it wasn't anymore: the CI
+bill had quietly grown until it rivaled, then exceeded, what I was paying
+to generate the code in the first place.
+
+So I did the thing that sounds reckless until you look at the math: I
+turned off the cloud CI pipeline entirely and moved the whole thing —
+lint, typecheck, unit, end-to-end, builds, deploys — onto a machine I
+already own. This is the story of why that's not as reckless as it sounds,
+and why it only became possible because of the same AI agent that
+[burns down my backlog](/blog/shipyard-and-lightwork).
+
+## The numbers
+
+Lightwork's repo keeps a committed CI cost audit — a read-only script that
+hits the GitHub API and tallies what the pipeline actually runs. Over a
+trailing seven-day window it counted **916 workflow runs**:
+
+| Workflow                                 | Runs/wk | Est. billable min/wk |
+| ---------------------------------------- | ------: | -------------------: |
+| CI (lint, unit, E2E shards, **deploys**) |     198 |               ~2,016 |
+| Bundle size                              |     186 |                 ~629 |
+| Release Channel Preview                  |     142 |                 ~190 |
+| _everything else_                        |    ~390 |                 ~239 |
+| **Total**                                | **916** |           **~3,074** |
+
+About **3,074 billable minutes a week — and that's a floor, not the
+truth.** GitHub doesn't expose per-repo minute _billing_ through its API,
+so the audit approximates spend as summed wall-clock duration times the
+runner multiplier. The main CI workflow fans out to 23 jobs plus a
+three-shard end-to-end matrix, and a matrix like that **bills the sum of
+every job but reports only the longest path as the run's duration** — so
+the real number sits meaningfully above this estimate.
+
+Run the back-of-envelope at GitHub's hosted-Linux standard rate
+($0.008/min):
+
+- ~3,074 min/wk works out to roughly **13,300 minutes a month → about
+  $107/month, or ~$1,280/year — and I want to be precise that this is a
+  _lower bound_.** I'm citing the audit's computed floor here rather than a
+  headline invoice figure, because the actual out-of-pocket number lives on
+  a private billing dashboard I'm not going to reproduce. Treat ~$107/mo /
+  ~$1,280/yr as the floor the measured runs justify; the true bill is
+  higher (the matrix undercount above) minus whatever the plan's included
+  minutes absorb.
+
+The local replacement runs on a dev machine that's **already a sunk cost**,
+so the marginal compute cost of CI drops to about zero. The savings is
+essentially the entire Actions bill — whatever its real ceiling turns out
+to be, the floor alone was enough to act on.
+
+## What cloud CI was actually buying
+
+Here's the thing I had to be honest with myself about: local CI has _always_
+been technically possible. `npm test` has run on laptops since laptops ran
+`npm`. The compute was never the hard part. So if it was always possible,
+why did everyone — me included — rent ephemeral runners by the minute
+instead?
+
+Because **cloud CI was never really selling compute. It was selling
+consistency.**
+
+A human won't reliably run the full lint + typecheck + unit + E2E matrix
+before every single push. A human won't remember the exact multi-step
+deploy sequence at 11pm. A human won't wait around for three parallel test
+shards to finish before moving on. So you rent runners to _enforce_ that a
+tired person can't skip the slow, boring, load-bearing steps — and to
+parallelize so nobody has to sit and watch. The product was discipline and
+unattendedness. You were paying GitHub for the fact that the cloud doesn't
+get bored, doesn't forget, and doesn't cut corners at the end of a long day.
+
+That framing matters, because it tells you exactly what you'd need to
+replace before you could safely bring CI home.
+
+## Why local CI always lost to human inconsistency
+
+The failure mode of local-only CI was never the test runner. It was the
+operator. It was the forgotten step before a push. It was "well, it passed
+on _my_ machine." It was deploying to production with the wrong backend
+project because someone had switched environments an hour earlier and never
+switched back. The cloud was insurance against human inconsistency — and
+the premium was worth paying precisely because the inconsistency was real
+and constant.
+
+You couldn't fix that by being more careful. Being more careful is exactly
+the thing humans are bad at sustaining across hundreds of pushes. The
+discipline gap was structural, so the cloud's value was structural, so the
+bill was permanent. That was the deal.
+
+## What an AI agent changes
+
+The deal changed when the operator stopped being a human.
+
+An agent — in my case [Claude Code](https://docs.claude.com/en/docs/claude-code) —
+runs the full local pipeline autonomously: lint, typecheck, unit suite,
+end-to-end tests, builds. It reads the failures, fixes them, and re-runs,
+every time, without getting bored or deciding the last shard "probably
+passes." It never forgets the pre-deploy step because it isn't tired at
+11pm. It doesn't deploy to the wrong environment because it doesn't carry
+over stale state from an hour ago — it checks, every time, as a matter of
+course.
+
+That's the whole unlock. **The consistency I was renting from the cloud now
+runs on hardware I already own, because the thing that made local CI
+unreliable — the inconsistent human in the loop — got replaced by something
+that doesn't drift.** The agent isn't just the test runner. It's the
+runner _and_ the operator: it executes the pipeline and it makes the
+judgment calls a deploy script can't, with the same boring reliability on
+the thousandth run as the first.
+
+If cloud CI was insurance against human inconsistency, and the human is no
+longer the one driving, then a big chunk of what you were insuring against
+simply isn't there anymore.
+
+## The guardrails that make local deploys safe
+
+This is the part that separates "smart migration" from "yolo deploying off
+a laptop," so I want to be concrete: bringing deploys local is only
+defensible because of the guardrails the agent executes _deterministically_,
+every time.
+
+The migration plan put a hard gate in front of every deploy:
+
+- **A mandatory pre-deploy environment validator** that asserts the
+  resolved backend project, app bundle identifier, and OAuth configuration
+  all match the intended target _before any network call goes out_. If the
+  resolved environment doesn't match what was asked for, the deploy aborts
+  before it can touch anything.
+- **Default-to-test, with a typed confirmation required for production.**
+  The safe target is the default; hitting production takes an explicit,
+  unambiguous opt-in, not a flag you can fat-finger.
+- **Clean-tree and correct-ref checks** so you can't ship uncommitted work
+  or deploy from the wrong branch.
+- **Fail-fast secret-presence checks** that confirm the required
+  credentials exist before starting — and that **never print their
+  values**.
+
+Here's the insight that ties it back to the thesis: _an agent executing
+those guards is exactly what makes local deploys trustworthy._ A human
+skips guards — that's the entire reason the guards exist, and also the
+reason humans defeat them ("I know it's the right project, just let me
+ship"). An agent doesn't skip them. It runs the validator on every deploy
+with the same indifference to how confident it feels. The guardrails were
+always the right design; what changed is that there's finally an operator
+who actually runs them, unfailingly, instead of routing around them when
+they're inconvenient.
+
+## The honest caveats
+
+I don't want this to read as "cloud CI is obsolete." It isn't — for me,
+right now, the tradeoff flipped; that's the whole claim, and the conditions
+that flipped it are specific:
+
+- **Lightwork is pre-launch with zero real users.** The blast radius of any
+  slip today is tiny, which makes the cloud's "gate every PR for everyone"
+  insurance low-value _at this moment_. That calculus changes the day real
+  users and outside contributors show up — at that point the cost of a bad
+  deploy stops being "I notice and fix it" and the gate-everything posture
+  starts earning its keep again.
+- **It's a solo, AI-operated repo.** The reason local consistency holds is
+  that there's exactly one operator and it doesn't drift. Add human
+  contributors pushing from their own machines and you reintroduce the
+  inconsistency the cloud was insuring against — the argument doesn't
+  transfer to a team repo as-is.
+- **I disabled the workflows, I didn't delete them.** This is the part that
+  makes the whole bet reversible: the pipeline definitions still live in the
+  repo. Re-enabling cloud CI is one change away the moment the math flips
+  back — when there are users to protect, contributors to coordinate, or a
+  failure mode whose cost finally justifies the bill again.
+
+So this isn't "cloud CI was a scam." It's "the specific thing cloud CI sold
+me — unattended consistency — became available locally because an agent now
+provides it, and for a solo pre-launch repo that made the bill stop being
+worth paying." Different repo, different answer.
+
+## The tie-back
+
+If you've read [the post about how I built shipyard so I could build
+Lightwork](/blog/shipyard-and-lightwork), this will feel familiar — because
+it's the same machine, pointed at a new job.
+
+There, the agent took over the part of engineering that's pure logistics:
+finding work, writing it up, implementing it, shepherding PRs home. The
+insight was that an agent is brilliant at the consistent, never-forgets,
+around-the-clock work that a human is structurally bad at sustaining. CI is
+that same shape of work — run the suite, read the failures, run the
+deploy steps in the right order, check the guardrails, never skip one — and
+so the same property that let an agent burn down my backlog is what lets it
+_be_ my CI pipeline. The thing I built to do my old job as a code reviewer
+now also does my old job as a build engineer. Same leverage, one more place
+I used to be the bottleneck.
+
+The bill for checking the code passed the bill for writing it — so I handed
+the checking to the same thing that was already doing the writing.
