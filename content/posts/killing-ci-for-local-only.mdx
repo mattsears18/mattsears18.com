@@ -1,11 +1,11 @@
 ---
-title: 'My CI bill passed my AI bill, so I fired GitHub Actions'
+title: 'How I cut ~$500/month by replacing GitHub Actions with git hooks and a coding agent'
 date: '2026-06-19'
 excerpt: >-
-  My GitHub Actions bill for checking my code passed the bill for writing it.
-  So I moved Lightwork's whole pipeline off Actions and onto local-only
-  execution — practical only because an AI agent now provides the one thing
-  cloud CI was really for: unattended, never-forgets consistency.
+  My GitHub Actions bill hit $489.85 in a single month — to check a
+  pre-launch app with zero users. So I disabled the workflows and moved the
+  pipeline onto local scripts run by a git hook, with a coding agent as the
+  operator. New marginal cost: about zero.
 tags:
   - ai
   - claude-code
@@ -13,53 +13,77 @@ tags:
   - ci
 ---
 
-For months two costs climbed on the same side project: the tokens I spent
-having an AI agent build [Lightwork](https://getlightwork.com), and the
-GitHub Actions minutes I spent checking each change. Then I opened the
-invoice. **May's Actions bill was $489.85** — 86,053 minutes of compute,
-almost all of it CI for a pre-launch app with zero users. The bill for
-_checking_ the code had passed the bill for _writing_ it.
+In May my GitHub Actions bill was **$489.85**. For a pre-launch side project
+([Lightwork](https://getlightwork.com)) with zero users — and roughly
+two-thirds of it was one workflow, the CI run that fires on every push. June
+was on the same pace. I was paying about **$500 a month, ~$6,000 a year, to
+check code nobody was using yet.**
 
-So I turned Actions off — lint, typecheck, unit, end-to-end, builds,
-deploys — and moved all of it onto the same dev machine where the code gets
-written in the first place. Marginal cost: about zero.
+So I turned the cloud pipeline off and moved it onto a machine I already own.
+Here's the actual setup, and why it now costs me close to nothing.
 
 ![Bar chart of estimated billable GitHub Actions minutes per week for the lightwork repo by workflow: CI (lint, unit, E2E, deploys) ~2,016 minutes is the dominant cost, then bundle size ~629, everything else ~239, and release channel preview ~190](/blog/killing-ci-for-local-only/billable-minutes-by-workflow.svg)
 
-## What I was actually paying for
+## What replaced it
+
+No new platform — just three plain pieces:
+
+- **One script that is the pipeline.** `ci:local` runs lint → typecheck →
+  unit → (optionally) end-to-end, fail-fast. Its header comment literally
+  reads _"This IS the new CI."_
+- **A git hook that enforces it.** A `pre-push` hook runs that script on
+  every push; a `pre-commit` hook scans for secrets and runs typecheck +
+  lint. The discipline a cloud runner used to impose now lives in the hook.
+- **A coding agent as the operator.** [Claude Code](https://docs.claude.com/en/docs/claude-code)
+  runs the full gate, _reads the failures, fixes them, and re-runs_ — then
+  ships. It's the same agent that
+  [burns down my backlog](/blog/shipyard-and-lightwork), now pushing through
+  the same hook every other commit does.
+
+The merge gate didn't disappear. A second command runs the full suite
+including E2E and posts a `local-ci` commit status back to GitHub via the
+API — so the server still blocks a merge until the checks are green; only the
+_compute_ moved to my desk. Re-enabling the cloud workflows (they're disabled
+at the API level, not deleted) is a single command if the math ever flips.
+
+## Why this works now and didn't before
 
 Local CI was always possible — `npm test` runs on a laptop. Actions wasn't
-selling compute; it was selling **consistency**. A tired human won't run the
-full lint + typecheck + unit + E2E matrix before every push, won't remember
-the deploy sequence at 11pm, won't wait for three shards. So you rent runners
-to _enforce_ the boring, load-bearing steps. That's also why local CI always
-lost: the failure mode was never the test runner, it was the human operator —
-the skipped step, "it passed on _my_ machine," the deploy to the wrong
-environment.
+selling compute; it was selling **consistency.** A tired human won't run the
+full matrix before every push, won't remember the deploy sequence at 11pm,
+won't wait for three shards. So you rent runners to _enforce_ it. That's also
+why local CI always lost: the failure mode was never the test runner, it was
+the human operator skipping steps.
 
-## What changed
+A coding agent doesn't skip steps. It runs the same checks with the same
+indifference on the thousandth push as the first. The consistency I was
+renting from the cloud is now just how the agent works — locally, for free.
 
-The operator stopped being a human. An agent —
-[Claude Code](https://docs.claude.com/en/docs/claude-code) — runs the whole
-pipeline autonomously: reads failures, fixes them, re-runs, every time,
-without getting bored or cutting corners, and never forgets a pre-deploy
-guard. The consistency I was renting from the cloud now runs on hardware I
-own — the agent is the runner _and_ the operator.
+## The deploy guard is where the safety lives
 
-That's only safe because the guards are deterministic: a pre-deploy validator
-that aborts if the resolved project, bundle id, and OAuth config don't match
-the target; default-to-test with a typed confirmation for production;
-clean-tree checks; secret-presence checks that never print values. A human
-skips guards when they're inconvenient. An agent doesn't.
+Bringing deploys local is only defensible because every deploy goes through
+one guarded wrapper that aborts before any network call unless:
 
-## The honest caveat
+- the resolved project, bundle id, and OAuth config all match the intended
+  target;
+- the target is **test** by default — production demands a typed
+  confirmation;
+- the working tree is clean and prod ships only from `main` or a release tag;
+- every required secret is present (checked by name; values are never
+  printed).
 
-This flipped for _me, right now_: pre-launch, zero users, one operator. A
-team can run local-only CI too — it just takes shared config so every
-contributor's agent enforces the same guards. And I disabled the workflows, I
-didn't delete them; re-enabling is one change away when the math flips back.
+A human skips guards when they're inconvenient. The wrapper doesn't.
 
-It's the [same agent that burns down my backlog](/blog/shipyard-and-lightwork),
-pointed at a new job. The bill for checking the code passed the bill for
-writing it — so I handed the checking to the same thing already doing the
-writing.
+## The honest part
+
+This flipped for _me, right now_: pre-launch, zero users, one operator. And
+it's a hybrid, not a purity play — the merge gate still lives on GitHub, and
+a human with write access could technically hand-post a green status; truly
+spoof-proof enforcement still wants the cloud as the producer. A team can run
+this too, but it takes shared setup so every contributor's agent enforces the
+same checks.
+
+For a solo, pre-launch, agent-operated repo, though, the trade was easy: the
+bill for checking the code had passed the bill for writing it — so I handed
+the checking to the same thing already doing the writing, and ~$500 a month
+went with it.
