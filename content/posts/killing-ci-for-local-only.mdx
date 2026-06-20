@@ -1,5 +1,5 @@
 ---
-title: 'I deleted my CI pipeline and let AI run it locally instead'
+title: 'My CI bill passed my AI bill, so I fired GitHub Actions'
 date: '2026-06-19'
 excerpt: >-
   My GitHub Actions bill for checking my code passed the bill for writing it.
@@ -41,6 +41,11 @@ wall-clock duration times the runner multiplier. The main workflow fans out
 to 23 jobs plus a three-shard E2E matrix, and a matrix like that **bills the
 sum of every job but reports only the longest path as the run's duration** —
 so the real number sits well above the estimate.
+
+![Horizontal bar chart of estimated billable GitHub Actions minutes per week for the lightwork repo, by workflow: CI (lint, unit, E2E, deploys) ~2,016 minutes, bundle size ~629, everything else ~239, release channel preview ~190 — totaling ~3,074 billable minutes a week across 916 runs, cited as a measured floor rather than a ceiling](/blog/killing-ci-for-local-only/billable-minutes-by-workflow.svg)
+
+Where it all went: one workflow — the main CI run that gates and deploys
+every change — is the lion's share. That's the bill that kept climbing.
 
 At GitHub's hosted-Linux rate ($0.008/min), ~3,074 min/wk is roughly **$107
 a month, or ~$1,280/year — and I want to be precise that this is a _lower
