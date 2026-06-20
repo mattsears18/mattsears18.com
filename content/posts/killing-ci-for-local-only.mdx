@@ -11,7 +11,6 @@ tags:
   - claude-code
   - tooling
   - ci
-ogImage: /blog/killing-ci-for-local-only/og.png
 ---
 
 My GitHub Actions bill for _checking_ my code had passed my bill for
@@ -25,9 +24,12 @@ bill had quietly grown until it exceeded what I paid to generate the code in
 the first place.
 
 So I turned the Actions pipeline off entirely — lint, typecheck, unit,
-end-to-end, builds, deploys — and moved all of it onto a machine I already
-own. Here's why that's less reckless than it sounds, and why it only became
-possible because of the same agent that
+end-to-end, builds, deploys — and moved all of it onto the exact same
+machine where the code gets written in the first place: my own dev box. The
+checks now run right next to the work, on the same hardware that produced it,
+instead of getting shipped off to a rented runner in the cloud to be
+verified somewhere else. Here's why that's less reckless than it sounds, and
+why it only became possible because of the same agent that
 [burns down my backlog](/blog/shipyard-and-lightwork).
 
 ## The numbers
