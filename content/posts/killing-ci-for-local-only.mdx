@@ -93,6 +93,31 @@ A coding agent doesn't skip steps. It runs the same checks with the same
 indifference on the thousandth push as the first. The consistency I was
 renting from the cloud is now just how the agent works — locally, for free.
 
+## "But that's just a slow pre-push hook"
+
+This is the objection everyone lands on: _you've swapped a cloud bill for a
+multi-minute hook that blocks every `git push`. Hard pass._ Fair. Two
+answers.
+
+**The push hook isn't the full suite.** On push it runs the fast gate — lint,
+typecheck, unit — and skips the slow end-to-end tests. Those run in the
+deliberate `ci:report` step, when I'm actually certifying a merge, not on
+every push. Docs-only changes skip even that. So the everyday push isn't a
+coffee break.
+
+**And the thing waiting usually isn't _me_.** The agent pushes, the agent
+waits, the agent reads what's red and fixes it — unattended. A slow gate only
+wrecks _your_ flow if a human is sitting there watching it, and the whole
+premise is that a human mostly isn't. "Runs without you having to babysit
+it" was cloud CI's entire pitch; that property didn't go away, it just moved
+to the agent. The wall-clock still gets spent — it's simply not spent out of
+my attention.
+
+That's also the honest boundary. If you push by hand all day, your suite
+genuinely takes 20+ minutes, or you need cloud parallelism across a big team,
+keep the runners — this isn't for you. It works for me because the agent eats
+the wait, not because waiting stopped existing.
+
 ## The deploy guard is where the safety lives
 
 Bringing deploys local is only defensible because every deploy goes through
