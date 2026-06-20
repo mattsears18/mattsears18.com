@@ -49,12 +49,21 @@ so the real number sits well above the estimate.
 Where it all went: one workflow — the main CI run that gates and deploys
 every change — is the lion's share. That's the bill that kept climbing.
 
-At GitHub's hosted-Linux rate ($0.008/min), ~3,074 min/wk is roughly **$107
-a month, or ~$1,280/year — and I want to be precise that this is a _lower
-bound_.** I'm citing the audit's computed floor, not a headline invoice
-figure; the true bill is higher (the matrix undercount) minus whatever the
-plan's included minutes absorb. The local replacement runs on a dev machine
-that's already a sunk cost, so the marginal cost of CI drops to about zero.
+At GitHub's hosted-Linux rate ($0.006/min) that floor pencils out to maybe
+$100 a month — low enough to shrug at. So I stopped estimating and opened
+the actual invoice. **May came in at $489.85**, almost all of it Lightwork,
+and almost all of _that_ a single line item: **86,053 minutes of Linux
+Actions compute in one month.** June was on the same pace — $248 billed
+through the first three weeks. The audit floor wasn't a little conservative;
+it ran more than **four times under** the real bill, exactly the
+matrix-undercount it warned about. So the honest number isn't ~$100/month.
+It's **~$490 a month, tracking toward ~$5,900 a year** — to run CI on a
+pre-launch side project with zero users. _That's_ the figure that made me
+stop, not the floor.
+
+The local replacement runs on a dev machine that's already a sunk cost, so
+the marginal cost of CI drops to about zero. The savings isn't a rounding
+error I talked myself into caring about — it's most of a $6k/year bill.
 
 ## What Actions was actually buying
 
