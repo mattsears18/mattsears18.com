@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" role="img" aria-labelledby="t d">
 <title id="t">Estimated billable GitHub Actions minutes per week, by workflow</title>
-<desc id="d">Horizontal bar chart of estimated billable minutes per week for the lightwork repo, by workflow category. CI (lint, unit, end-to-end shards, deploys) about 2,016 minutes; bundle size about 629; everything else about 239; release channel preview about 190. Total about 3,074 billable minutes per week across 916 runs, cited as a floor rather than a ceiling.</desc>
+<desc id="d">Horizontal bar chart of estimated billable minutes per week for the lightwork repo, by workflow category. CI (lint, unit, end-to-end shards, deploys) about 2,016 minutes is the dominant cost; bundle size about 629; everything else about 239; release channel preview about 190. CI gates and deploys every change and is the lion's share of the bill.</desc>
 <text x="20" y="30" font-size="16" font-weight="600" fill="#737373">Estimated billable Actions minutes / week — by workflow</text>
 <!-- CI -->
 <text x="20" y="85" font-size="14" fill="#737373">CI · lint, unit, E2E, deploys</text>
@@ -18,5 +18,5 @@
 <text x="20" y="283" font-size="14" fill="#737373">Release Channel Preview</text>
 <rect x="20" y="290" width="54" height="28" fill="#C2410C" rx="3"/>
 <text x="82" y="309" font-size="14" font-weight="600" fill="#737373">~190</text>
-<text x="20" y="346" font-size="13" fill="#737373" font-style="italic">Total ~3,074 billable min/week across 916 runs — a measured floor, not the ceiling.</text>
+<text x="20" y="346" font-size="13" fill="#737373" font-style="italic">CI gates and deploys every change — the lion's share of the bill.</text>
 </svg>
