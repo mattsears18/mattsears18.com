@@ -28,23 +28,46 @@ Here's the actual setup, and why it now costs me close to nothing.
 
 No new platform — just three plain pieces:
 
-- **One script that is the pipeline.** `ci:local` runs lint → typecheck →
+- **A script that is the pipeline.** `ci:local` runs lint → typecheck →
   unit → (optionally) end-to-end, fail-fast. Its header comment literally
   reads _"This IS the new CI."_
 - **A git hook that enforces it.** A `pre-push` hook runs that script on
   every push; a `pre-commit` hook scans for secrets and runs typecheck +
   lint. The discipline a cloud runner used to impose now lives in the hook.
 - **A coding agent as the operator.** [Claude Code](https://docs.claude.com/en/docs/claude-code)
-  runs the full gate, _reads the failures, fixes them, and re-runs_ — then
-  ships. It's the same agent that
+  runs the gate, _reads the failures, fixes them, and re-runs_ — then ships.
+  It's the same agent that
   [burns down my backlog](/blog/shipyard-and-lightwork), now pushing through
   the same hook every other commit does.
 
-The merge gate didn't disappear. A second command runs the full suite
-including E2E and posts a `local-ci` commit status back to GitHub via the
-API — so the server still blocks a merge until the checks are green; only the
-_compute_ moved to my desk. Re-enabling the cloud workflows (they're disabled
-at the API level, not deleted) is a single command if the math ever flips.
+## Running the checks vs. certifying a merge
+
+Those are two different jobs, so there are two commands — and that split is
+worth being precise about, because it's where the "but how does GitHub still
+gate the merge?" question lives.
+
+- **`ci:local` runs the checks.** This is the pipeline above: lint,
+  typecheck, unit, and — when I ask for it — the slow end-to-end suite. It's
+  what I run constantly while working, and what the `pre-push` hook fires
+  automatically. For speed, the inner loop and the hook skip E2E by default.
+  It's pure local: no network, and it posts nothing anywhere.
+- **`ci:report` certifies a merge.** It's a thin wrapper around `ci:local`
+  that forces the _full_ suite — E2E included — and then posts a `local-ci`
+  status back to GitHub through the API.
+
+That second command exists for one reason: my branch protection still
+requires a passing status check before any merge. A cloud runner used to
+produce that check; now nothing in the cloud does, so `ci:report` publishes
+the green from my machine instead. `ci:local` answers _"is my work good?"_
+(constantly, fast, local-only); `ci:report` answers _"certify this for the
+merge button"_ (once, full suite, and tells GitHub).
+
+The upshot: the **compute** moved to my desk, but the **merge gate stayed on
+the server.** GitHub still refuses the merge until that `local-ci` status is
+green — I just produce the status locally now instead of renting a runner to
+produce it. (And the old cloud workflows are disabled at the API level, not
+deleted, so flipping the whole thing back is a single command if the math
+ever changes.)
 
 ## Why this works now and didn't before
 
