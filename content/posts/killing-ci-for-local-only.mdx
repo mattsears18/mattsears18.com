@@ -55,19 +55,30 @@ gate the merge?" question lives.
   that forces the _full_ suite — E2E included — and then posts a `local-ci`
   status back to GitHub through the API.
 
-That second command exists for one reason: my branch protection still
-requires a passing status check before any merge. A cloud runner used to
-produce that check; now nothing in the cloud does, so `ci:report` publishes
-the green from my machine instead. `ci:local` answers _"is my work good?"_
-(constantly, fast, local-only); `ci:report` answers _"certify this for the
-merge button"_ (once, full suite, and tells GitHub).
+That second command exists for one reason: GitHub still won't let me merge
+until a check named `local-ci` is green. The trick is that this keeps working
+with no cloud CI at all — here's how.
 
-The upshot: the **compute** moved to my desk, but the **merge gate stayed on
-the server.** GitHub still refuses the merge until that `local-ci` status is
-green — I just produce the status locally now instead of renting a runner to
-produce it. (And the old cloud workflows are disabled at the API level, not
-deleted, so flipping the whole thing back is a single command if the math
-ever changes.)
+The `main` branch has a **branch-protection rule** that lists `local-ci` as a
+**required status check.** And a "status check" is less magic than it sounds:
+it's just a named pass/fail flag pinned to a specific commit. GitHub lets
+anything with write access attach one through its
+[commit-status API](https://docs.github.com/en/rest/commits/statuses) — it
+doesn't care whether the flag came from an Actions runner or from my laptop.
+So `ci:report` runs the full suite and, if everything passes, posts a
+`local-ci = success` status to the commit via that API (a one-line
+`gh api` call). Branch protection sees its required check is green and
+un-greys the merge button; until that status exists and is green, the merge
+stays blocked. The cloud used to be the thing posting that flag; now my
+machine is.
+
+So `ci:local` answers _"is my work good?"_ (constantly, fast, local-only);
+`ci:report` answers _"certify this commit for the merge button"_ (once, full
+suite, then posts the status GitHub is waiting on). The **compute** moved to
+my desk, but the **merge gate stayed on the server** — I just produce the
+required status locally now instead of renting a runner to produce it. (And
+the old cloud workflows are disabled at the API level, not deleted, so
+flipping the whole thing back is a single command if the math ever changes.)
 
 ## Why this works now and didn't before
 
