@@ -13,137 +13,53 @@ tags:
   - ci
 ---
 
-My GitHub Actions bill for _checking_ my code had passed my bill for
-_writing_ it.
-
-Two costs had been climbing on the same side project — the tokens I spent
+For months two costs climbed on the same side project: the tokens I spent
 having an AI agent build [Lightwork](https://getlightwork.com), and the
-GitHub Actions minutes I spent proving each change was safe. Writing the
-code was supposed to be the expensive part. It wasn't anymore: the Actions
-bill had quietly grown until it exceeded what I paid to generate the code in
-the first place.
+GitHub Actions minutes I spent checking each change. Then I opened the
+invoice. **May's Actions bill was $489.85** — 86,053 minutes of compute,
+almost all of it CI for a pre-launch app with zero users. The bill for
+_checking_ the code had passed the bill for _writing_ it.
 
-So I turned the Actions pipeline off entirely — lint, typecheck, unit,
-end-to-end, builds, deploys — and moved all of it onto the exact same
-machine where the code gets written in the first place: my own dev box. The
-checks now run right next to the work, on the same hardware that produced it,
-instead of getting shipped off to a rented runner in the cloud to be
-verified somewhere else. Here's why that's less reckless than it sounds, and
-why it only became possible because of the same agent that
-[burns down my backlog](/blog/shipyard-and-lightwork).
+So I turned Actions off — lint, typecheck, unit, end-to-end, builds,
+deploys — and moved all of it onto the same dev machine where the code gets
+written in the first place. Marginal cost: about zero.
 
-## The numbers
+![Bar chart of estimated billable GitHub Actions minutes per week for the lightwork repo by workflow: CI (lint, unit, E2E, deploys) ~2,016 minutes is the dominant cost, then bundle size ~629, everything else ~239, and release channel preview ~190](/blog/killing-ci-for-local-only/billable-minutes-by-workflow.svg)
 
-Lightwork keeps a committed cost audit — a read-only script that hits the
-GitHub API and tallies what the Actions pipeline actually runs. Over a
-trailing seven-day window it counted **916 workflow runs** totaling about
-**3,074 billable minutes a week** — and that's a floor, not the truth.
-GitHub doesn't expose per-repo minute _billing_ via API, so the audit sums
-wall-clock duration times the runner multiplier. The main workflow fans out
-to 23 jobs plus a three-shard E2E matrix, and a matrix like that **bills the
-sum of every job but reports only the longest path as the run's duration** —
-so the real number sits well above the estimate.
+## What I was actually paying for
 
-![Horizontal bar chart of estimated billable GitHub Actions minutes per week for the lightwork repo, by workflow: CI (lint, unit, E2E, deploys) ~2,016 minutes, bundle size ~629, everything else ~239, release channel preview ~190 — totaling ~3,074 billable minutes a week across 916 runs, cited as a measured floor rather than a ceiling](/blog/killing-ci-for-local-only/billable-minutes-by-workflow.svg)
+Local CI was always possible — `npm test` runs on a laptop. Actions wasn't
+selling compute; it was selling **consistency**. A tired human won't run the
+full lint + typecheck + unit + E2E matrix before every push, won't remember
+the deploy sequence at 11pm, won't wait for three shards. So you rent runners
+to _enforce_ the boring, load-bearing steps. That's also why local CI always
+lost: the failure mode was never the test runner, it was the human operator —
+the skipped step, "it passed on _my_ machine," the deploy to the wrong
+environment.
 
-Where it all went: one workflow — the main CI run that gates and deploys
-every change — is the lion's share. That's the bill that kept climbing.
+## What changed
 
-At GitHub's hosted-Linux rate ($0.006/min) that floor pencils out to maybe
-$100 a month — low enough to shrug at. So I stopped estimating and opened
-the actual invoice. **May came in at $489.85**, almost all of it Lightwork,
-and almost all of _that_ a single line item: **86,053 minutes of Linux
-Actions compute in one month.** June was on the same pace — $248 billed
-through the first three weeks. The audit floor wasn't a little conservative;
-it ran more than **four times under** the real bill, exactly the
-matrix-undercount it warned about. So the honest number isn't ~$100/month.
-It's **~$490 a month, tracking toward ~$5,900 a year** — to run CI on a
-pre-launch side project with zero users. _That's_ the figure that made me
-stop, not the floor.
+The operator stopped being a human. An agent —
+[Claude Code](https://docs.claude.com/en/docs/claude-code) — runs the whole
+pipeline autonomously: reads failures, fixes them, re-runs, every time,
+without getting bored or cutting corners, and never forgets a pre-deploy
+guard. The consistency I was renting from the cloud now runs on hardware I
+own — the agent is the runner _and_ the operator.
 
-The local replacement runs on a dev machine that's already a sunk cost, so
-the marginal cost of CI drops to about zero. The savings isn't a rounding
-error I talked myself into caring about — it's most of a $6k/year bill.
+That's only safe because the guards are deterministic: a pre-deploy validator
+that aborts if the resolved project, bundle id, and OAuth config don't match
+the target; default-to-test with a typed confirmation for production;
+clean-tree checks; secret-presence checks that never print values. A human
+skips guards when they're inconvenient. An agent doesn't.
 
-## What Actions was actually buying
+## The honest caveat
 
-Local CI has _always_ been possible — `npm test` has run on laptops forever.
-The compute was never the hard part. So why rent ephemeral runners by the
-minute? Because **Actions wasn't selling compute. It was selling
-consistency.**
+This flipped for _me, right now_: pre-launch, zero users, one operator. A
+team can run local-only CI too — it just takes shared config so every
+contributor's agent enforces the same guards. And I disabled the workflows, I
+didn't delete them; re-enabling is one change away when the math flips back.
 
-A human won't reliably run the full lint + typecheck + unit + E2E matrix
-before every push, won't remember the exact deploy sequence at 11pm, won't
-wait around for three parallel shards. So you rent runners to _enforce_ that
-a tired person can't skip the slow, load-bearing steps. The product was
-discipline and unattendedness — the cloud doesn't get bored, doesn't forget,
-and doesn't cut corners at the end of a long day. That's also exactly why
-local CI always lost: the failure mode was never the test runner, it was the
-operator. The forgotten step, "it passed on _my_ machine," the deploy to the
-wrong environment because someone switched an hour ago and never switched
-back. You can't fix that by being more careful — being careful across
-hundreds of pushes is the thing humans are structurally bad at.
-
-## What an AI agent changes
-
-The deal changed when the operator stopped being a human.
-
-An agent — in my case [Claude Code](https://docs.claude.com/en/docs/claude-code) —
-runs the full local pipeline autonomously: lint, typecheck, unit,
-end-to-end, builds. It reads failures, fixes them, and re-runs, every time,
-without getting bored or deciding the last shard "probably passes." It never
-forgets the pre-deploy step and never carries over stale environment state.
-**The consistency I was renting from Actions now runs on hardware I own,
-because the thing that made local CI unreliable — the inconsistent human in
-the loop — got replaced by something that doesn't drift.** The agent is the
-runner _and_ the operator, with the same boring reliability on the
-thousandth run as the first.
-
-## The guardrails that make local deploys safe
-
-This is what separates a smart migration from yolo-deploying off a laptop.
-The plan put a hard gate in front of every deploy:
-
-- **A mandatory pre-deploy validator** that asserts the resolved backend
-  project, bundle id, and OAuth config match the intended target _before any
-  network call_ — mismatch aborts.
-- **Default-to-test, with a typed confirmation required for production** —
-  not a flag you can fat-finger.
-- **Clean-tree and correct-ref checks** so you can't ship uncommitted work
-  or the wrong branch.
-- **Fail-fast secret-presence checks** that confirm credentials exist and
-  **never print their values**.
-
-An agent executing those guards is exactly what makes local deploys
-trustworthy. A human skips guards when they're inconvenient — that's why the
-guards exist _and_ why humans defeat them. An agent runs the validator on
-every deploy regardless of how confident it feels.
-
-## The honest caveats
-
-This isn't "cloud CI is obsolete." The tradeoff flipped for _me, right now_,
-under specific conditions:
-
-- **Lightwork is pre-launch with zero users**, so the blast radius of a slip
-  is tiny and gate-every-PR insurance is low-value today. That changes the
-  day real users and outside contributors arrive.
-- **It's a solo, AI-operated repo** — which makes the consistency argument
-  trivial to satisfy. A team can run local-only CI too; it just takes more
-  setup: every contributor's agent has to enforce the same guards from shared
-  config, so "consistent across one operator" becomes "consistent across all
-  of them." That's a real engineering investment, not a free lunch — but it's
-  tenable, not outlandish. I get it for free today because there's exactly
-  one operator.
-- **I disabled the workflows, I didn't delete them.** The definitions still
-  live in the repo; re-enabling Actions is one change away the moment the
-  math flips back.
-
-If you've read [how I built shipyard to build
-Lightwork](/blog/shipyard-and-lightwork), this is the same machine pointed
-at a new job. CI is pure logistics — run the suite, read the failures, run
-the deploy steps in order, check the guardrails, never skip one — and an
-agent is brilliant at exactly that. The thing I built to do my old job as a
-code reviewer now also does my old job as a build engineer.
-
-My Actions bill for checking the code passed the bill for writing it — so I
-handed the checking to the same thing that was already doing the writing.
+It's the [same agent that burns down my backlog](/blog/shipyard-and-lightwork),
+pointed at a new job. The bill for checking the code passed the bill for
+writing it — so I handed the checking to the same thing already doing the
+writing.
