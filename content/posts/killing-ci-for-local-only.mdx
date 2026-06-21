@@ -118,6 +118,42 @@ genuinely takes 20+ minutes, or you need cloud parallelism across a big team,
 keep the runners — this isn't for you. It works for me because the agent eats
 the wait, not because waiting stopped existing.
 
+## How a deploy actually runs now
+
+Same principle as the tests: one command per target, run from the terminal
+(by me or the agent), with nothing firing automatically. They're all
+`npm run ship:*`, and each runs the deploy guard before it touches the
+network.
+
+- **Backend** — `ship:rules` and `ship:functions` run the Firebase CLI
+  locally to push Firestore rules/indexes and Cloud Functions.
+- **Web** — Vercel's git auto-deploy is turned **off** (`deploymentEnabled:
+false`), so a push never ships the site. `ship:web` builds the production
+  bundle locally and uploads it _prebuilt_ with the Vercel CLI. The site
+  deploys only when I run that command.
+- **Mobile, JS-only (OTA)** — `ship:ota` runs `eas update` locally: it
+  bundles the JavaScript and publishes the over-the-air update. For any
+  change that doesn't need a new native binary, that's the entire release,
+  straight from my machine.
+
+And the honest exception:
+
+- **Native app-store builds still run in the cloud.** `ship:store` kicks off
+  `eas build` on **Expo's** build service, not my laptop — producing signed
+  iOS/Android binaries needs that infrastructure, and claiming otherwise
+  would be a lie. The important part for this story: EAS is billed
+  _separately_ from GitHub Actions, so it was never part of the ~$500 I was
+  cutting. What moved local is the **GitHub Actions** compute — the
+  test/lint/build/deploy-orchestration churn that fired on every push.
+  App-store binaries were always going to build on someone's cloud; this
+  change didn't touch that, and never claimed to.
+
+Store listings get the same hand-on-the-wheel treatment: a command drafts the
+"What's new" copy locally and pushes it to a **draft** store version only —
+it never auto-submits. I still tap "Submit for review" myself. Cutting a
+release is local too: merging the release PR tags the version, and then I run
+the prod `ship:*` sequence — nothing deploys off the tag on its own.
+
 ## The deploy guard is where the safety lives
 
 Bringing deploys local is only defensible because every deploy goes through
