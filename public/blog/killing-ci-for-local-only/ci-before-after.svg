@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Where the build pipeline runs: before versus after</title>
+  <desc id="d">A before-and-after diagram. Before: your machine pushes to GitHub Actions in the cloud, where lint, test, build, and deploy all run on rented runners, costing $489 a month. After: the same checks run locally on your machine with a coding agent as the operator at about $0 a month; only a lightweight merge-gate status check is posted up to GitHub, and web, backend, and mobile OTA deploys go out locally — with the one exception that native app-store binaries still build on Expo's EAS cloud.</desc>
+
+  <defs>
+    <marker id="ag" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#737373"/></marker>
+    <marker id="aa" markerWidth="10" markerHeight="10" refX="7" refY="3.2" orient="auto"><path d="M0,0 L8,3.2 L0,6.4 Z" fill="#C2410C"/></marker>
+  </defs>
+
+  <text x="450" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#737373">Where the build pipeline runs</text>
+  <text x="450" y="54" text-anchor="middle" font-size="12.5" fill="#737373">The same checks — moved off rented cloud runners onto the machine that writes the code.</text>
+
+  <!-- divider + transition -->
+  <line x1="450" y1="78" x2="450" y2="438" stroke="#737373" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="4 5"/>
+  <line x1="412" y1="250" x2="486" y2="250" stroke="#C2410C" stroke-width="3" marker-end="url(#aa)"/>
+  <text x="450" y="240" text-anchor="middle" font-size="11" font-weight="700" fill="#C2410C">moved</text>
+  <text x="450" y="272" text-anchor="middle" font-size="11" font-weight="700" fill="#C2410C">local</text>
+
+  <!-- ============ BEFORE ============ -->
+  <text x="36" y="96" font-size="14" font-weight="700" fill="#737373">BEFORE — rented cloud CI</text>
+
+  <!-- cloud -->
+  <path d="M150,182 C126,182 117,160 134,149 C128,127 156,114 175,126 C184,107 226,107 237,128 C266,120 289,141 278,158 C296,163 293,182 273,182 Z" fill="none" stroke="#737373" stroke-width="1.6"/>
+  <text x="205" y="150" text-anchor="middle" font-size="13" font-weight="700" fill="#737373">GitHub Actions</text>
+  <text x="205" y="168" text-anchor="middle" font-size="9.5" fill="#737373">23 jobs · 3 E2E shards</text>
+  <text x="205" y="206" text-anchor="middle" font-size="10" font-style="italic" fill="#737373">lint · test · build · deploy — all run up here</text>
+
+  <!-- cost -->
+  <text x="225" y="258" text-anchor="middle" font-size="27" font-weight="800" fill="#C2410C">$489 / mo</text>
+  <text x="225" y="278" text-anchor="middle" font-size="10.5" fill="#737373">billed by the minute, every push</text>
+
+  <!-- laptop -->
+  <rect x="170" y="322" width="110" height="64" rx="6" fill="none" stroke="#737373" stroke-width="1.6"/>
+  <path d="M160,392 L290,392 L300,400 L150,400 Z" fill="none" stroke="#737373" stroke-width="1.6"/>
+  <text x="225" y="420" text-anchor="middle" font-size="11" fill="#737373">your machine</text>
+
+  <!-- push arrow -->
+  <path d="M192,322 C150,298 150,228 166,186" fill="none" stroke="#737373" stroke-width="1.8" marker-end="url(#ag)"/>
+  <text x="120" y="300" font-size="11" font-style="italic" fill="#737373">git push</text>
+
+  <!-- ============ AFTER ============ -->
+  <text x="478" y="96" font-size="14" font-weight="700" fill="#C2410C">AFTER — local, agent-operated</text>
+
+  <!-- merge gate icon -->
+  <text x="680" y="126" text-anchor="middle" font-size="10.5" font-weight="700" fill="#737373">merge gate · status check</text>
+  <circle cx="680" cy="150" r="15" fill="none" stroke="#737373" stroke-width="1.6"/>
+  <path d="M673,150 l5,6 l10,-12" fill="none" stroke="#C2410C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M680,200 L680,168" fill="none" stroke="#737373" stroke-width="1.5" stroke-dasharray="3 4" marker-end="url(#ag)"/>
+  <text x="694" y="188" font-size="9" font-style="italic" fill="#737373">posted via API</text>
+
+  <!-- laptop (active) -->
+  <rect x="575" y="200" width="210" height="118" rx="8" fill="none" stroke="#C2410C" stroke-width="2"/>
+  <!-- agent bot -->
+  <line x1="680" y1="222" x2="680" y2="214" stroke="#C2410C" stroke-width="1.5"/>
+  <circle cx="680" cy="212" r="2.2" fill="#C2410C"/>
+  <rect x="663" y="222" width="34" height="26" rx="5" fill="none" stroke="#C2410C" stroke-width="1.5"/>
+  <circle cx="672" cy="235" r="2.6" fill="#C2410C"/>
+  <circle cx="688" cy="235" r="2.6" fill="#C2410C"/>
+  <text x="680" y="272" text-anchor="middle" font-size="12" font-weight="600" fill="#737373">lint · test · build · deploy</text>
+  <text x="680" y="289" text-anchor="middle" font-size="9.5" font-style="italic" fill="#737373">the agent runs every check, locally</text>
+  <text x="680" y="312" text-anchor="middle" font-size="20" font-weight="800" fill="#C2410C">$0 / mo</text>
+  <path d="M560,326 L800,326 L812,334 L548,334 Z" fill="none" stroke="#C2410C" stroke-width="2"/>
+  <text x="680" y="352" text-anchor="middle" font-size="11" fill="#737373">your machine · the agent is the operator</text>
+
+  <!-- deploy bus -->
+  <path d="M680,360 L680,374" fill="none" stroke="#737373" stroke-width="1.5"/>
+  <line x1="600" y1="374" x2="762" y2="374" stroke="#737373" stroke-width="1.5"/>
+  <path d="M600,374 L600,388" fill="none" stroke="#737373" stroke-width="1.5" marker-end="url(#ag)"/>
+  <path d="M680,374 L680,388" fill="none" stroke="#737373" stroke-width="1.5" marker-end="url(#ag)"/>
+  <path d="M762,374 L762,388" fill="none" stroke="#737373" stroke-width="1.5" marker-end="url(#ag)"/>
+  <text x="600" y="404" text-anchor="middle" font-size="10.5" font-weight="600" fill="#737373">web</text>
+  <text x="600" y="418" text-anchor="middle" font-size="9" fill="#737373">Vercel</text>
+  <text x="680" y="404" text-anchor="middle" font-size="10.5" font-weight="600" fill="#737373">backend</text>
+  <text x="680" y="418" text-anchor="middle" font-size="9" fill="#737373">Firebase</text>
+  <text x="762" y="404" text-anchor="middle" font-size="10.5" font-weight="600" fill="#737373">mobile OTA</text>
+  <text x="762" y="418" text-anchor="middle" font-size="9" fill="#737373">eas update</text>
+  <text x="680" y="446" text-anchor="middle" font-size="9.5" font-style="italic" fill="#737373" fill-opacity="0.85">↳ native app-store builds still build on Expo's EAS cloud (billed separately)</text>
+</svg>
