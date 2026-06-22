@@ -22,7 +22,7 @@ check code nobody was using yet.**
 So I turned the cloud pipeline off and moved it onto a machine I already own.
 Here's the actual setup, and why it now costs me close to nothing.
 
-![Bar chart of estimated billable GitHub Actions minutes per week for the lightwork repo by workflow: CI (lint, unit, E2E, deploys) ~2,016 minutes is the dominant cost, then bundle size ~629, everything else ~239, and release channel preview ~190](/blog/killing-ci-for-local-only/billable-minutes-by-workflow.svg)
+![Before-and-after diagram of where the build pipeline runs. Before: your machine pushes to GitHub Actions in the cloud, where lint, test, build, and deploy run on rented runners at $489 a month. After: the same checks run locally on your machine with a coding agent as the operator at about $0 a month; only a lightweight merge-gate status check is posted up to GitHub, while web (Vercel), backend (Firebase), and mobile OTA (eas update) deploys go out locally — with native app-store binaries still building on Expo's EAS cloud](/blog/killing-ci-for-local-only/ci-before-after.svg)
 
 ## What replaced it
 
