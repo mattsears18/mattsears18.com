@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">The evolution of my CI: cloud, then local scripts, then self-hosted runners</title>
+  <desc id="d">A three-panel diagram. Panel one: the original setup runs the GitHub Actions workflows on GitHub's rented cloud runners, costing $489 a month. Panel two, version one of the fix: the pipeline is rewritten as local scripts run on my Mac with a hand-posted merge status, costing about $0 but requiring a hand-maintained reimplementation that can drift from the real workflows. Panel three, version two and the better fix: the exact same unchanged GitHub Actions workflows run on my Mac registered as self-hosted runners, still gated by GitHub's real merge checks, also costing about $0 but with nothing to keep in sync.</desc>
+
+  <defs>
+    <marker id="ag" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#737373"/></marker>
+    <marker id="aa" markerWidth="10" markerHeight="10" refX="7" refY="3.2" orient="auto"><path d="M0,0 L8,3.2 L0,6.4 Z" fill="#C2410C"/></marker>
+  </defs>
+
+  <text x="450" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#737373">Same CI, three homes for the compute</text>
+  <text x="450" y="52" text-anchor="middle" font-size="12.5" fill="#737373">The workflows never changed — only the machine that runs them, and the bill.</text>
+
+  <!-- dividers + transition arrows -->
+  <line x1="300" y1="76" x2="300" y2="410" stroke="#737373" stroke-opacity="0.22" stroke-width="1" stroke-dasharray="4 5"/>
+  <line x1="600" y1="76" x2="600" y2="410" stroke="#737373" stroke-opacity="0.22" stroke-width="1" stroke-dasharray="4 5"/>
+  <line x1="272" y1="232" x2="328" y2="232" stroke="#737373" stroke-width="2.2" marker-end="url(#ag)"/>
+  <line x1="572" y1="232" x2="628" y2="232" stroke="#C2410C" stroke-width="3" marker-end="url(#aa)"/>
+  <text x="600" y="222" text-anchor="middle" font-size="10.5" font-weight="700" fill="#C2410C">better</text>
+
+  <!-- ============ PANEL 1 — cloud ============ -->
+  <text x="30" y="98" font-size="13.5" font-weight="700" fill="#737373">ORIGINAL — cloud runners</text>
+
+  <!-- cloud -->
+  <path d="M95,178 C73,178 65,158 80,148 C74,128 100,116 118,127 C126,110 165,110 175,129 C202,122 223,141 213,157 C230,161 227,178 208,178 Z" fill="none" stroke="#737373" stroke-width="1.6"/>
+  <text x="145" y="150" text-anchor="middle" font-size="12.5" font-weight="700" fill="#737373">GitHub Actions</text>
+  <text x="145" y="167" text-anchor="middle" font-size="9" fill="#737373">ubuntu-latest, rented</text>
+  <text x="145" y="205" text-anchor="middle" font-size="9.5" font-style="italic" fill="#737373">the real ci.yml — run up here</text>
+
+  <text x="145" y="258" text-anchor="middle" font-size="25" font-weight="800" fill="#C2410C">$489 / mo</text>
+  <text x="145" y="277" text-anchor="middle" font-size="10" fill="#737373">billed by the minute</text>
+
+  <rect x="98" y="316" width="94" height="54" rx="6" fill="none" stroke="#737373" stroke-width="1.5"/>
+  <path d="M90,376 L200,376 L209,383 L81,383 Z" fill="none" stroke="#737373" stroke-width="1.5"/>
+  <text x="145" y="402" text-anchor="middle" font-size="10.5" fill="#737373">my Mac · just pushes</text>
+  <path d="M118,316 C86,296 82,232 96,182" fill="none" stroke="#737373" stroke-width="1.6" marker-end="url(#ag)"/>
+
+  <!-- ============ PANEL 2 — local scripts (v1) ============ -->
+  <text x="330" y="98" font-size="13.5" font-weight="700" fill="#737373">v1 — local scripts</text>
+
+  <!-- hand-posted status up to github -->
+  <text x="445" y="128" text-anchor="middle" font-size="9.5" font-weight="700" fill="#737373">merge gate</text>
+  <circle cx="445" cy="150" r="13" fill="none" stroke="#737373" stroke-width="1.5"/>
+  <path d="M439,150 l4,5 l9,-10" fill="none" stroke="#C2410C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M445,196 L445,166" fill="none" stroke="#737373" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#ag)"/>
+  <text x="459" y="186" font-size="8.5" font-style="italic" fill="#C2410C">hand-posted</text>
+
+  <rect x="352" y="196" width="186" height="86" rx="8" fill="none" stroke="#737373" stroke-width="1.7"/>
+  <text x="445" y="224" text-anchor="middle" font-size="11.5" font-weight="700" fill="#737373">ci-local.js · ci-report.js</text>
+  <text x="445" y="244" text-anchor="middle" font-size="9.5" font-style="italic" fill="#737373">scripts that mimic the pipeline</text>
+  <text x="445" y="270" text-anchor="middle" font-size="9" fill="#C2410C">a second copy — can drift</text>
+  <path d="M368,290 L522,290 L531,297 L359,297 Z" fill="none" stroke="#737373" stroke-width="1.7"/>
+  <text x="445" y="318" text-anchor="middle" font-size="19" font-weight="800" fill="#C2410C">~$0 / mo</text>
+  <text x="445" y="338" text-anchor="middle" font-size="9.5" fill="#737373">but hand-maintained</text>
+
+  <!-- ============ PANEL 3 — self-hosted runners (v2) ============ -->
+  <text x="630" y="98" font-size="13.5" font-weight="700" fill="#C2410C">v2 — self-hosted runners</text>
+
+  <!-- real merge gate up to github -->
+  <text x="745" y="128" text-anchor="middle" font-size="9.5" font-weight="700" fill="#737373">real merge gate</text>
+  <circle cx="745" cy="150" r="13" fill="none" stroke="#737373" stroke-width="1.5"/>
+  <path d="M739,150 l4,5 l9,-10" fill="none" stroke="#C2410C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M745,196 L745,166" fill="none" stroke="#C2410C" stroke-width="1.6" marker-end="url(#aa)"/>
+  <text x="759" y="186" font-size="8.5" font-style="italic" fill="#737373">the actual check</text>
+
+  <rect x="652" y="196" width="186" height="86" rx="8" fill="none" stroke="#C2410C" stroke-width="2"/>
+  <text x="745" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#737373">the same ci.yml</text>
+  <text x="745" y="242" text-anchor="middle" font-size="9.5" font-style="italic" fill="#737373">3 self-hosted runners on one Mac</text>
+  <text x="745" y="268" text-anchor="middle" font-size="9" fill="#C2410C">nothing to keep in sync</text>
+  <path d="M668,290 L822,290 L831,297 L659,297 Z" fill="none" stroke="#C2410C" stroke-width="2"/>
+  <text x="745" y="318" text-anchor="middle" font-size="19" font-weight="800" fill="#C2410C">~$0 / mo</text>
+  <text x="745" y="338" text-anchor="middle" font-size="9.5" fill="#737373">runners aren't billed minutes</text>
+
+  <text x="450" y="386" text-anchor="middle" font-size="10.5" font-style="italic" fill="#737373">Same workflows, same triggers, same green checkmarks — the merge gate came back for real, and the bill went to zero.</text>
+  <text x="450" y="406" text-anchor="middle" font-size="9" fill="#737373" fill-opacity="0.85">EAS builds, Vercel deploys, and store uploads stay remote in every version — the runner only ever talks to them.</text>
+</svg>
