@@ -60,6 +60,28 @@ without running anything. Now the required checks are the real workflow contexts
 when an actual run produces them. The gate is exactly as strict as when I paid
 $500 a month for it — it just doesn't cost $500 a month.
 
+## I kept the cockpit I'd grown to love
+
+This is the benefit that actually sold me over any clever local-script scheme: I
+didn't have to give up GitHub Actions to stop paying for it. Every part of the
+experience I'd spent years getting fluent in is exactly where I left it. Each PR
+still has its Checks tab with the same status dots; a red one still expands into
+the same step-by-step logs; "Re-run failed jobs" still does what it always did.
+The Actions tab still holds the full run history I go back and dig through.
+Branch protection, required checks, dependabot, the inline annotations on a
+failing diff — all the wiring still clicks together the way it did when GitHub
+was hosting the compute.
+
+And it isn't a lookalike that behaves subtly differently under load — it _is_
+GitHub Actions. Same YAML dialect, same marketplace actions I lean on
+(`actions/setup-node`, `cache`, `upload-artifact`), same matrix builds, secrets,
+and environments. No bespoke config to learn, no homegrown log format, no custom
+dashboard that only makes sense to me. Version one asked me to trade a tool I
+actually enjoy using for a pile of scripts that lived entirely in my own head.
+This trades nothing: I kept the whole cockpit and just moved the engine under my
+desk. My muscle memory — where to click, how to read a failed run, which log
+line to trust — all still pays off.
+
 ## The honest trade-offs
 
 - **It's slower and it queues.** My Mac (three runner instances, for shard
