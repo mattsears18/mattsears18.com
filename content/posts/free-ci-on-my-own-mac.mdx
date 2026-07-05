@@ -1,0 +1,181 @@
+---
+title: 'The better version of free CI: I run my old GitHub Actions on my own Mac now'
+date: '2026-07-05'
+excerpt: >-
+  Last month I killed cloud CI and rebuilt the pipeline as local scripts run by
+  a git hook. It worked — but it was a reimplementation that could drift. The
+  better idea: register my Mac as a self-hosted GitHub Actions runner and run
+  the exact same workflows I always had. Same checks, same merge gate, same
+  everything — for about $0.
+tags:
+  - ai
+  - claude-code
+  - tooling
+  - ci
+---
+
+[A few weeks ago I wrote about cutting ~$500/month](/blog/killing-ci-for-local-only)
+by turning off GitHub Actions and moving the pipeline onto local scripts run by
+a git hook, with a coding agent as the operator. The bill went to about zero and
+the thing worked.
+
+But I want to be honest about that first version, because I've since replaced
+it. Rewriting your CI as a pile of local scripts is a **reimplementation** —
+a second copy of your pipeline that has to be kept faithful to the first by
+hand. That's a real cost, and it's the kind that doesn't show up on an invoice.
+
+Then I realized I didn't need a reimplementation at all. I could just run my
+**actual GitHub Actions workflows** — the same `ci.yml` I'd been running for
+months — on my own machine. Nothing rewritten. Nothing to keep in sync. Same
+checks, same triggers, same merge gate, same green checkmarks in the PR. Just a
+different computer doing the work.
+
+The mechanism is a feature GitHub has shipped the whole time and I'd never had a
+reason to use: **self-hosted runners.**
+
+## What a self-hosted runner actually is
+
+A GitHub Actions "runner" is just the program that picks up a queued job and
+executes the steps. Normally GitHub runs it for you on a rented VM — that's the
+`ubuntu-latest` you see in every `runs-on:` line, and on a private repo that's
+the meter that was charging me.
+
+But the runner is
+[a program you can download and run yourself](https://docs.github.com/en/actions/hosting-your-own-runners).
+You register it against your repo, it opens an **outbound** long-poll to GitHub
+("any jobs for me?"), and when a workflow triggers, GitHub hands the job to your
+machine instead of a rented one. The steps run on your hardware. The results —
+logs, statuses, checkmarks — flow back up to GitHub exactly as if a cloud runner
+had produced them.
+
+Crucially: **GitHub doesn't bill Actions minutes for jobs that run on a
+self-hosted runner.** That single fact is the whole story. The orchestration,
+the Checks UI, the merge gate — all the parts I actually wanted — stay on
+GitHub, for free. Only the compute moved, and compute on a machine I already own
+is compute I've already paid for.
+
+## The change was almost nothing
+
+Here's what makes this so much better than the script version: the diff is
+trivial. My workflows used to say
+
+```yaml
+runs-on: ubuntu-latest
+```
+
+and now the real-compute jobs say
+
+```yaml
+runs-on: [self-hosted, macOS]
+```
+
+That's it. That's the migration, per job. The steps underneath —
+lint, typecheck, the unit suite, the three-way E2E shard matrix, bundle-size,
+the deploy chain — are **byte-for-byte the workflows I already had.** I didn't
+port them to bash. I didn't teach a script to imitate them. GitHub still parses
+the same YAML, still fires on the same `push` and `pull_request` events, still
+reports the same named checks.
+
+Compare that to the first version, where I'd written `scripts/ci-local.js` and
+`scripts/ci-report.js` to _mimic_ the pipeline, plus a `ship.js` deploy wrapper,
+plus a hand-rolled `local-ci` status posted to GitHub through the commit-status
+API so branch protection had something to gate on. All of that is now
+**deleted.** It was clever, and it was a liability — every one of those scripts
+was a place where my "local CI" could quietly diverge from what the cloud used
+to enforce. The self-hosted runner has nothing to diverge from. It _is_ the
+pipeline.
+
+## The merge gate got more honest, not less
+
+This is the part I'm happiest about.
+
+In the script version, GitHub still gated `main` on a required check — but that
+check was a flag I posted myself with a `gh api` call after my local script
+passed. I said so in the last post, and I flagged the soft spot: anyone with
+write access could hand-post a green `local-ci` status without running anything.
+The enforcement was real enough for a solo pre-launch repo, but it leaned on the
+honor system.
+
+Now the required checks are the **genuine article** again. My `main` branch
+protection requires the actual workflow contexts —
+`🧹 Lint & Typecheck`, `🧪 Unit Tests`, `🎭 Web E2E Tests` — and those names
+only turn green when a real Actions run produces them. You can't fake the check
+by curling a status; you have to actually run the job, and the job runs the real
+suite. The merge gate is exactly as strict as it was when I was paying $500 a
+month for it. It just doesn't cost $500 a month anymore.
+
+## How it runs on my desk
+
+The setup is unglamorous, which is the point:
+
+- **The runner is my Mac.** One Apple Silicon machine, registered against the
+  repo with the `macOS` label so `runs-on: [self-hosted, macOS]` finds it. It
+  provisions its own toolchain per run the same way a cloud runner does — Node
+  from `.nvmrc` via `actions/setup-node`, a JDK for the Firestore emulator,
+  Playwright browsers on demand.
+- **It stays alive with launchd.** The runner is installed as a background
+  service, so it survives reboots and logout and just sits there long-polling
+  for work. No inbound ports, no public IP — it works fine behind my home
+  router because the only connection is outbound to GitHub.
+- **A few instances for parallelism.** GitHub's fleet ran my E2E shards in
+  parallel across separate VMs; one runner would run them one at a time. So I
+  register **three** runner instances (`lightwork-mac-{1,2,3}`) on the one Mac,
+  and GitHub distributes the queued jobs across them.
+
+That last point is where the only real engineering lived. Three runners sharing
+one physical machine means they share one `$HOME`, one set of caches, and one
+set of ports — and concurrent jobs will happily corrupt each other's `~/.npm`
+cache or fight over the Firestore emulator's port 8080. Cloud runners never hit
+this because every job gets its own pristine VM. So each runner instance gets
+its **own `$HOME`** (isolating every cache), and the emulator-backed jobs
+allocate a **dynamic, non-overlapping set of ports** per run instead of the
+fixed defaults. Once that isolation was in place, three jobs run at once on the
+one machine without stepping on each other.
+
+## The honest trade-offs
+
+This is not free lunch, it's _cheap_ lunch, and the difference matters:
+
+- **It's slower, and it queues.** My Mac is not GitHub's elastic fleet. Three
+  runners is not thirty. When I push a stack of branches, the jobs line up and
+  wait their turn instead of all starting at once. A single run that GitHub
+  might have finished in a handful of minutes takes longer here — a fair chunk
+  of that being the emulator-heavy E2E shards contending for one machine's CPU.
+- **It only runs while the Mac is awake.** A cloud runner is always there. Mine
+  isn't — if the machine is asleep, jobs sit `queued` until it wakes. A check
+  stuck in `queued` isn't a bug, it's my laptop napping. (I keep it from
+  sleeping when I want checks to run unattended.)
+- **A few glue jobs stayed in the cloud on purpose.** The tiny, always-on bits —
+  the PR-title lint that's a required gate, release-please, dependabot's
+  auto-merge — still run on GitHub-hosted `ubuntu-latest`. They're seconds-long
+  free-tier jobs, and I _want_ them to run even when my Mac is asleep, precisely
+  because one of them is a merge gate. Paying nothing to keep the always-available
+  glue always available is the right call.
+- **External services were never on the meter and still aren't.** EAS builds,
+  Vercel deploys, App Store Connect and Play uploads, the Firebase deploy
+  targets — those are services the runner _talks to_, not compute that ran on a
+  GitHub runner. They didn't move because they were never part of the bill I was
+  cutting. Native app-store binaries still build on Expo's cloud, same as always.
+
+## Why this is the version I'd actually recommend
+
+The first post's framing was "a coding agent can be the consistent operator that
+local CI always lacked," and that's still true — the agent still pushes, still
+reads what's red, still fixes and re-runs. What changed is what it's operating.
+
+In version one, the agent operated a **reimplementation** of my pipeline. In
+version two, it operates the **pipeline itself**, unchanged, just hosted on my
+hardware. There's no second copy to maintain, no hand-posted status to trust, no
+gap between "what my local script checks" and "what the cloud used to enforce."
+The workflows are the workflows. GitHub still runs the show. The merge button
+still obeys the same real checks it always did.
+
+I'm running CI/CD exactly like I used to — same YAML, same gates, same
+green checkmarks. The only thing that changed is the invoice: from ~$500 a month
+to whatever three runner processes add to my electric bill, which I have to
+assume is rounding error.
+
+And it's still reversible in a breath. Flip the `runs-on:` labels back to
+`ubuntu-latest` and the jobs go straight back to GitHub's fleet — the workflows
+never changed, so there's nothing to un-rewrite. That's the quiet luxury of not
+having a reimplementation: going back is a one-line diff, not a migration.
