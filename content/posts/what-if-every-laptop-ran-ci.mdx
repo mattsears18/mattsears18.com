@@ -1,0 +1,187 @@
+---
+title: 'What if every company laptop ran the CI?'
+date: '2026-07-11'
+excerpt: >-
+  I cut my CI bill to $0 by running GitHub Actions on my own Mac. The obvious
+  next thought: every company laptop is idle compute — put a little daemon on
+  all of them and the corporate CI bill vanishes too. It's a good instinct. It's
+  also a 40-year-old idea with a name, and the reasons it stays niche are exactly
+  the reasons my version works.
+tags:
+  - tooling
+  - ci
+  - distributed-systems
+---
+
+[Last week I wrote about running my actual GitHub Actions workflows on my own
+Mac](/blog/free-ci-on-my-own-mac) as self-hosted runners — same YAML, same
+merge gate, ~$500/month down to about $0. The moment you internalize that
+GitHub doesn't meter Actions minutes on hardware you own, a bigger idea shows
+up almost on its own:
+
+Every software company hands its engineers a laptop that's several thousand
+dollars of compute. Most of the day most of those machines are 90% idle —
+reading Slack, waiting on a build, sitting locked at lunch. **What if a little
+daemon lived on all of them, polled GitHub for queued Actions jobs, and ran
+them whenever the machine had spare cycles?** Jobs run primarily on employee
+hardware that would otherwise be wasted; when no idle capacity is around, they
+fall back to the paid GitHub-hosted runners the company already budgets for. No
+speed loss if you want none, and the CI invoice drops toward zero.
+
+I like this idea. I want it to be true. So I went looking for who's already
+built it and why it isn't everywhere — and the honest answer is more
+interesting than a straight pitch would be.
+
+## The idea already has a name — and it's older than I am
+
+Harvesting idle cycles off machines people already own is one of the oldest
+ideas in distributed systems. It's called **cycle scavenging** (or cycle
+stealing), and the canonical system is **Condor** — now
+[HTCondor](https://htcondor.org/description.html) — built at the University of
+Wisconsin–Madison starting in **1984**. Condor's whole job was to notice which
+workstations on campus were idle and run batch work on them. It even solved the
+problems you'd immediately worry about: it watched the keyboard and mouse and
+only used a machine while its owner was away, and when the owner came back it
+would **checkpoint** the running job and **migrate** it to another idle box so
+the reclaimed work wasn't lost. Forty years later it's still running science on
+scavenged cores.
+
+Then the internet scaled it up. **SETI@home** and **Folding@home** (both 1999),
+generalized by Berkeley's **BOINC** (2002), turned millions of idle home PCs
+into supercomputers for radio-signal and protein-folding work. "There is idle
+compute everywhere; go use it" is not a new thought. It's a well-explored one
+with a decades-long research literature behind it.
+
+So the instinct is sound and ancient. The interesting question isn't _has anyone
+thought of this_ — it's _why did the whole industry walk away from it_.
+
+## Why the cloud won anyway
+
+Cycle scavenging thrived on a specific kind of work: embarrassingly parallel,
+checkpointable, latency-insensitive batch jobs. Analyze a chunk of sky; if the
+machine dies mid-chunk, hand the chunk to someone else; nobody's waiting on any
+single result. Scavenged desktops are heterogeneous, intermittently available,
+and messy — and for that workload none of it mattered.
+
+The cloud won by inverting the trade. Data centers gave you **homogeneous,
+elastic, on-demand, reproducible** compute behind an API. You stopped depending
+on whether someone else's machine happened to be on, idle, and networked. You
+traded "free but unreliable and inconsistent" for "paid but uniform and always
+there." Every serious CI system is built on the second half of that trade —
+which is exactly the half the every-laptop idea proposes to give back.
+
+That's the tension. And CI turns out to be close to the _worst_ possible fit for
+scavenged compute, for reasons that become obvious the moment you scale my setup
+from one person to a company.
+
+## Why it works for me
+
+My solo version isn't clever. It works because a solo, pre-launch,
+agent-operated repo happens to satisfy four conditions that CI quietly demands:
+
+1. **I trust every line of code that runs.** No fork PRs, no outside
+   contributors, no untrusted workflows. The runner executes my code on my
+   machine.
+2. **I have exactly one environment.** One Mac, one toolchain. Nothing to keep
+   consistent across a fleet.
+3. **Nobody expensive is waiting.** [The coding agent pushes, waits, reads what's
+   red, and fixes it](/blog/killing-ci-for-local-only) — unattended. Latency
+   doesn't cost me anything because I'm not standing there.
+4. **My compute bill genuinely exceeded my labor bill.** Pre-launch, zero users,
+   the CI meter was the biggest line item I had.
+
+Scale that to a company and it inverts all four.
+
+## Why a company has none of them
+
+**Trust is the killer.** A self-hosted runner is a persistent code-execution
+endpoint, and GitHub's own docs are blunt that self-hosted runners
+[should almost never be used with public repositories](https://docs.github.com/en/actions/reference/security/secure-use):
+a fork PR can rewrite the workflow and run arbitrary code on your runner, which
+isn't sandboxed and can stay compromised between jobs. Now put that endpoint on
+a laptop that also holds SSO cookies, cloud credentials, SSH keys, and the
+source tree. Security teams have already documented attackers
+[using self-hosted runners as backdoors](https://www.sysdig.com/blog/how-threat-actors-are-using-self-hosted-github-actions-runners-as-backdoors).
+A daemon on _every_ laptop that pulls and executes jobs isn't a cost
+optimization; it's company-wide remote code execution with a fallback plan.
+That's the opposite of what you want on the machines holding your crown jewels.
+
+**Reproducibility goes with it.** A cloud runner is a clean VM per job. Employee
+laptops are long-lived, dirty, and heterogeneous — Intel and Apple Silicon,
+different OS versions, different installed tools, leftover state from actual
+work. "Works on my machine" stops being a joke and becomes your CI policy.
+You can claw reproducibility back with containers, but that's exactly the
+overhead the pitch was trying to avoid, and it's painful-to-impossible for the
+macOS/iOS builds where the idea is most tempting.
+
+**Latency stops being free, and availability turns adversarial.** My agent eats
+the wait; a company _pays engineers to wait_. Shaving a $500 bill is noise next
+to a team idling on a build. And the pool you'd schedule against is a coin flip:
+laptops sleep, lids close, machines roam onto VPN and behind NAT, people walk
+out of the building. Worse, availability is anti-correlated with demand —
+everyone pushes before standup, which is precisely when every laptop is busy
+being _worked on_. The one machine you can safely scavenge is the one nobody's
+using, which for a working employee mostly means nights and weekends — a batch
+window, not a live-CI fleet.
+
+**And the economics usually point the other way.** For a funded company the CI
+invoice is a rounding error against salaries; the real cost is engineers waiting
+on slow, flaky builds. Which is why the actual market moved in the _opposite_
+direction: [Depot](https://depot.dev), Blacksmith, WarpBuild, Namespace and a
+dozen others sell drop-in runners that are **faster** (and often cheaper) than
+GitHub's, competing on caching and raw CPU — not on scavenging anyone's laptop.
+Even DHH's 37signals, when they
+[moved CI back onto developer machines](https://world.hey.com/dhh/we-re-moving-continuous-integration-back-to-developer-machines-3ac6c611),
+did it for _speed_ — their beefy dev boxes beat the cloud run — and explicitly
+on the committer's _own_ machine, not by harvesting idle cycles from everyone
+else's.
+
+## Where the idea actually has teeth: macOS
+
+There's one place the numbers genuinely bite. GitHub's macOS runners cost
+roughly **ten times** its Linux ones, because Apple's licensing forces real Mac
+hardware in the loop. A company full of MacBooks is sitting on a pile of
+expensive, idle Apple Silicon — and self-hosting Mac CI is
+[documented saving thousands a month](https://jeffverkoeyen.com/blog/2025/10/17/SelfHostingMacMinis/).
+
+But notice how that case gets solved in practice: **dedicated Mac minis in a
+closet**, or a self-hosted runner pool, not a daemon riding everyone's working
+laptop. That's the tell. The savings come from owning always-on, trusted,
+uniform hardware — which is a rack of minis, not the machine an engineer is
+mid-sentence on. It's also, quietly, what I actually did: I run CI on a Mac I've
+_dedicated_ to it, not the one I'm typing this on. GitHub already ships the
+grown-up version of this —
+[Actions Runner Controller](https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/add-runners),
+auto-scaling ephemeral runners on your own boxes, with hosted runners as
+overflow. The pattern in the pitch is real and supported. The part nobody ships
+is putting it on the laptops people work on.
+
+Even the closest modern restatement dodges the hard part. HashiCorp's engineers
+recently described
+[harvesting idle office compute](https://hashicorpengineering.substack.com/p/harvesting-idle-office-compute-with)
+by turning employee workstations into an overnight cluster — but for _batch_
+jobs, in a fixed nighttime window, drained before 8 a.m., and they still flag
+the blast-radius risk of running arbitrary jobs across the fleet. Overnight
+batch on trusted internal work is Condor 1984 with better tooling. Live,
+latency-sensitive CI carrying untrusted PRs on machines full of secrets is a
+different animal.
+
+## The honest version
+
+I went looking for the exact thing — a daemon opportunistically stealing idle
+cycles from _active employee laptops_ to run GitHub Actions, with paid fallback
+— and as far as I can tell nobody ships it. Not because it's unthought-of: it's
+just cycle scavenging (1984) plus "CI on dev machines" (DHH) plus "harvest the
+office" (HashiCorp), recombined. It's unshipped because assembling those three
+re-introduces every failure mode my little setup happens to sidestep. Trust,
+reproducibility, latency, availability, and the actual math all break the moment
+you go from _my code on my machine_ to _everyone's code on everyone's machine_.
+
+So the reframe I'd offer past-me, mid-daydream: the reason my $500 went to zero
+isn't that I found free compute lying around that companies are too dim to use.
+It's that a solo pre-launch repo dissolves the four things that make idle-cycle
+CI hard — and a company is defined by having all four back. The right-sized
+version of the idea already exists and companies already run it: **dedicated,
+trusted, self-hosted runner pools, with hosted runners as overflow.** That's the
+part worth copying. The romantic part — a build quietly humming on every
+coworker's laptop while they work — is romantic for a reason.
