@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif" role="img" aria-label="A dot plot of the Unit Tests CI job wall-clock time, before and after excluding the runners' build directories from Spotlight. Before: five runs scattered wide from 447 to 783 seconds, median 548 seconds. After: five runs clustered tightly from 248 to 274 seconds, median 266 seconds. The suite got about twice as fast and the scatter collapsed.">
+  <rect x="0" y="0" width="800" height="400" rx="16" fill="#F7F8FA"/>
+  <rect x="0.5" y="0.5" width="799" height="399" rx="15.5" fill="none" stroke="#E2E6EC"/>
+
+  <text x="40" y="52" font-size="20" font-weight="640" fill="#1A1E25" letter-spacing="-0.01em">Unit&#8202;Tests job — wall-clock time</text>
+  <text x="40" y="76" font-size="13.5" fill="#5C6672">Emulator-backed, so its runtime is a clean read on disk-I/O health. Each dot is one run.</text>
+
+  <g stroke="#E8EBEF" stroke-width="1">
+    <line x1="90" y1="120" x2="90" y2="300"/>
+    <line x1="257.5" y1="120" x2="257.5" y2="300"/>
+    <line x1="425" y1="120" x2="425" y2="300"/>
+    <line x1="592.5" y1="120" x2="592.5" y2="300"/>
+    <line x1="760" y1="120" x2="760" y2="300"/>
+  </g>
+
+  <text x="40" y="167" font-size="13" font-weight="640" fill="#C0463E" letter-spacing="0.02em">BEFORE</text>
+  <rect x="90" y="142" width="670" height="44" rx="8" fill="#EEF1F4"/>
+  <line x1="548.95" y1="134" x2="548.95" y2="194" stroke="#C0463E" stroke-width="2"/>
+  <text x="548.95" y="128" font-size="11" font-weight="640" fill="#C0463E" text-anchor="middle">median 548s</text>
+  <g fill="#C0463E" stroke="#F7F8FA" stroke-width="2.5">
+    <circle cx="464.4" cy="164" r="8"/>
+    <circle cx="485.3" cy="164" r="8"/>
+    <circle cx="548.95" cy="164" r="8"/>
+    <circle cx="606.7" cy="164" r="8"/>
+    <circle cx="745.8" cy="164" r="8"/>
+  </g>
+
+  <text x="40" y="247" font-size="13" font-weight="640" fill="#1B8A5A" letter-spacing="0.02em">AFTER</text>
+  <rect x="90" y="222" width="670" height="44" rx="8" fill="#EEF1F4"/>
+  <line x1="312.8" y1="214" x2="312.8" y2="274" stroke="#1B8A5A" stroke-width="2"/>
+  <text x="312.8" y="208" font-size="11" font-weight="640" fill="#1B8A5A" text-anchor="middle">median 266s</text>
+  <g fill="#1B8A5A" stroke="#F7F8FA" stroke-width="2.5">
+    <circle cx="297.7" cy="244" r="8"/>
+    <circle cx="304.4" cy="238" r="8"/>
+    <circle cx="312.8" cy="250" r="8"/>
+    <circle cx="315.0" cy="238" r="8"/>
+    <circle cx="319.5" cy="248" r="8"/>
+  </g>
+
+  <g font-size="11.5" fill="#8A94A1" text-anchor="middle" font-variant-numeric="tabular-nums">
+    <text x="90" y="322">0</text>
+    <text x="257.5" y="322">200</text>
+    <text x="425" y="322">400</text>
+    <text x="592.5" y="322">600</text>
+    <text x="760" y="322">800</text>
+  </g>
+  <text x="425" y="346" font-size="11.5" fill="#8A94A1" text-anchor="middle" letter-spacing="0.04em">seconds</text>
+
+  <text x="40" y="384" font-size="13" fill="#5C6672">Same suite, more tests, heavier load — yet <tspan font-weight="680" fill="#1B8A5A">~2&#215; faster</tspan> and the spread <tspan font-weight="680" fill="#1B8A5A">collapsed from 336s to 26s</tspan>. That scatter was the I/O contention.</text>
+</svg>
