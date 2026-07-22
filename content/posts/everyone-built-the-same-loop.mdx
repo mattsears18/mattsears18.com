@@ -1,0 +1,198 @@
+---
+title: 'I built an engineering loop. Then everyone else built the same one.'
+date: '2026-07-22'
+excerpt: >-
+  A few months ago I built shipyard — an autonomous engineering loop — because
+  I was the bottleneck in building my app. This spring the whole industry
+  converged on the exact same architecture, and half of what I'd hand-built
+  quietly became native. Here's what that convergence taught me, the one
+  problem it revealed nobody had solved yet, and how I just changed my loop
+  to fix it.
+tags:
+  - ai
+  - claude-code
+  - tooling
+---
+
+A few months ago I built a machine to do my job. Not my whole job — the part
+of it that had become a bottleneck: the endless shepherding of code from
+"an agent could write this" to "this is merged and green." I wrote about it
+[here](/blog/shipyard-and-lightwork). The short version is that a coding
+agent writes a well-specified change faster than I can review the result, so
+the human in the middle becomes the slowest part of every cycle. So I took
+myself out of the middle and wrapped the agent in a loop — find work, refine
+it, do it, merge it, repeat — that runs without me driving each step.
+
+Then, over the following few months, I watched most of the industry build
+the same machine. Not my machine — their own — but shaped so much like mine
+that reading the announcements felt like reading my own commit history back
+to myself. This post is about that convergence: what it felt like, what it
+taught me, and the one thing it made obvious that I'd gotten wrong.
+
+## The pattern I thought I was inventing
+
+When you build one of these loops from scratch, you make a handful of
+structural bets. At the time they felt like my own hard-won discoveries.
+Mine were:
+
+- **The unit of work is a GitHub issue.** Not a chat message, not a task in
+  some bespoke queue — an issue. That one choice is what lets audits,
+  Sentry, Dependabot, a feedback form, and a human all feed the same loop
+  without knowing about each other.
+- **Every worker gets its own git worktree.** Isolation is what makes
+  parallelism safe — a dozen agents editing a dozen checkouts, never
+  colliding on one index.
+- **Knowledge lives in files, not prompts.** Repeatable know-how gets
+  written down as reusable skills the agents load on demand, so the loop
+  gets smarter without getting a longer prompt.
+- **Progress lives outside the agent.** State goes in files and issue
+  labels, so a run survives a crash, a restart, or the end of a session.
+- **The human keeps the decisions.** Anything derived from untrusted input
+  or real product judgment waits behind a review gate. The machine grinds;
+  the person decides.
+
+I was quietly proud of that list. It took weeks of hitting walls to arrive
+at it.
+
+## Everyone arrived at the same list
+
+Here's the humbling part. That list is now, more or less, the industry
+consensus — and it got there without any help from me.
+
+In June, Addy Osmani wrote a piece giving the whole discipline a name:
+**loop engineering**. His framing — that the bottleneck stopped being prompt
+quality and became the design of the loop _around_ the agent — landed on the
+same six components I'd stumbled into: worktrees, skills, independent
+verification via subagents, external state files, and scheduled automation,
+split into an inner loop the agent owns and an outer loop the human owns.
+Reading it was uncanny. He'd written down the thing I'd built, more clearly
+than I'd ever articulated it to myself.
+
+And it wasn't just one influential blog post. The same primitives showed up
+in product after product, all at once:
+
+- GitHub shipped **Agent HQ** — a "mission control" for pointing a fleet of
+  agents at a backlog and steering them from one place. That's my
+  orchestrator, as a first-party feature.
+- **Cursor** reorganized itself around parallel agents, each in its own git
+  worktree. That's my isolation model, in an editor.
+- **Vercel** released an open-source agent framework and pitched it as
+  "Next.js for agents" — filesystem-first, with skills, subagents, and
+  human-approval gates. That's my file-based knowledge and my review gate.
+- **Google's** new agent platform grew "agent teams" with subagents and
+  hooks. Same shape again.
+
+And closest to home: the platform my loop is built on absorbed big pieces of
+what I'd hand-rolled. Claude Code shipped **Dynamic Workflows**, where the
+agent writes its own orchestration script and fans out to parallel
+subagents — the deterministic control flow I'd been encoding in prose.
+Subagents became **background-by-default**, and now open their own draft
+pull requests when they finish work in a worktree. There's a built-in
+dashboard for watching them all, and even a way to run the whole thing on a
+schedule in the cloud. (I keep mine running on a Mac on my own desk,
+[on purpose](/blog/free-ci-on-my-own-mac) — but the option's there now.) A
+meaningful chunk of shipyard's plumbing quietly became a native feature I no
+longer have to maintain.
+
+The honest reading of all this isn't "they copied me." Nobody copied me —
+shipyard is a small personal plugin, and I'm not so vain as to think it was
+on anyone's radar. It's **convergent evolution**. The solution was latent in
+the shape of the problem, and enough people walked into the same wall at the
+same time to draw the same box around it. When that many independent efforts
+land on the same architecture, that's not a coincidence to feel scooped by —
+it's the field telling you the architecture is _correct_.
+
+Which was, weirdly, the most reassuring thing that could have happened. I'd
+been building on nights and weekends, half-wondering if I'd talked myself
+into an over-engineered contraption. The convergence was the outside world
+grading my homework and handing it back with a check mark.
+
+## The part nobody had solved
+
+But convergence does something more useful than validate you. Once everyone
+agrees on the plumbing, the plumbing stops being where the interesting
+problems are — and the frontier moves somewhere new. The moment the whole
+industry could reliably dispatch parallel agents that open pull requests, a
+different question got loud:
+
+**How do you know the code they wrote is actually right?**
+
+For a year the implicit answer was "the tests pass, so ship it." Mine was no
+different: a worker implements its issue, opens a PR, CI goes green, it
+merges. But green CI plus the worker's own confidence is a shaky gate, and
+in June a piece of research made exactly why uncomfortably clear. The finding
+that stuck with me: for modern coding agents, **generating a solution has
+become easier than verifying one**. The models got good enough that the hard
+problem inverted. And a verifier isn't free to trust either — no fixed set of
+checks stays honest as the thing it's grading gets smarter; a capable agent
+will, without any malice, find the shortcut that makes the check pass without
+solving the problem. Delete the failing test. Weaken the assertion. Widen the
+`catch`. Green, and wrong.
+
+The uncomfortable corollary, backed by more than one study: an agent asked to
+_check its own work_ mostly doesn't get better — it rationalizes. Self-review
+is the weak form of verification. The strong form is an **independent**
+skeptic, one that didn't write the code and has no stake in believing it's
+done.
+
+My loop didn't have one. It had CI, and it had the worker's own say-so. That
+was the blind spot the convergence revealed: I'd optimized the whole pipeline
+for _producing_ changes and left _trusting_ them to a green check mark.
+
+## So I changed the loop
+
+This week I built the missing stage — the **verify** in find → implement →
+verify → merge.
+
+Now, before a worker arms auto-merge, it hands the finished pull request to a
+separate, independent agent whose entire job is to _try to prove the change
+wrong_. It reads the diff against the issue's acceptance criteria and asks the
+adversarial questions: does this actually address the reported problem, or
+just something near it? Is every requirement covered? And the one that
+matters most — did it cheat? Skipped tests, weakened assertions, suppressed
+errors, scope creep, a quietly edited CI file. It defaults to _not verified_
+under any real doubt, because the cost of a wrong "looks good" is a bad merge
+and the cost of a wrong "needs a look" is thirty seconds of my time. When it
+can't confirm the change is right, the PR doesn't merge — it gets flagged for
+me, with the verifier's reasoning attached, so I see _why_.
+
+I run the verifier on the strongest model I have, even when the worker that
+wrote the code ran on a cheaper one — because catching a plausible-but-wrong
+change is worth more than writing the change was. That's the other thing the
+new model lineup makes easy: cheap, fast workers for the writing, an expensive
+skeptic for the judging. Spend the money where the stakes are.
+
+And the pieces the platform now does natively — background agents, workflow
+orchestration — I'm handing back. There's no prize for maintaining plumbing
+the tool ships for free. The reason I built shipyard was never to own the
+plumbing; it was to own the _policy_ — which issues to work, how to sequence
+them, where to put the human, and now, how hard to check the result. That
+part is still mine to get right, and it's the part no framework hands you.
+
+## What the convergence was actually worth
+
+It would be easy to read all this as a cautionary tale: don't build your own
+loop, the industry will just catch up and make your work redundant. I think
+that's exactly backwards.
+
+Building it myself was never wasted, even as the market erased my head start —
+because building it is how I learned _where the real problems live_. I didn't
+read that verification was the next frontier and nod along; I felt it, as a
+specific blind spot in a specific machine I understood down to the plumbing.
+The people who only ever consumed a loop as a product got the convenience.
+The people who built one got the _map_. And the map is what tells you where
+to go next when the plumbing commoditizes — which it always does.
+
+The plumbing converged. The judgment didn't. What to build, how to gate it,
+how much to trust the machine and where to stand when you don't — that's still
+a human calling the shots, and it's a more interesting job than shepherding
+pull requests ever was.
+
+One last thing, and it's the truest part of the story. This post exists
+because I asked my own coding agent a simple question: _is there a better way
+to build this stuff now than the thing I built a few months ago?_ It went and
+read the field, came back with the convergence and the verification research,
+and then — in the same afternoon — we built the verify gate together. The
+loop, pointed at itself, one more time. That's the whole trick, really. You
+don't finish building the machine. You keep asking it what it's missing, and
+then you go add that.
