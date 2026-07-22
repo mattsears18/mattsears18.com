@@ -3,8 +3,8 @@ title: 'I built an engineering loop. Then everyone else built the same one.'
 date: '2026-07-22'
 excerpt: >-
   A few months ago I built shipyard — an autonomous engineering loop — because
-  I was the bottleneck in building my app. This spring the whole industry
-  converged on the exact same architecture, and half of what I'd hand-built
+  I was the bottleneck in building my app. Over the past year the whole
+  industry converged on the exact same architecture, and half of what I'd hand-built
   quietly became native. Here's what that convergence taught me, the one
   problem it revealed nobody had solved yet, and how I just changed my loop
   to fix it.
@@ -21,13 +21,15 @@ of it that had become a bottleneck: the endless shepherding of code from
 agent writes a well-specified change faster than I can review the result, so
 the human in the middle becomes the slowest part of every cycle. So I took
 myself out of the middle and wrapped the agent in a loop — find work, refine
-it, do it, merge it, repeat — that runs without me driving each step.
+it, do it, merge it, repeat — that runs without me driving each step. My first
+commit to that machine landed on **May 16, 2026**.
 
-Then, over the following few months, I watched most of the industry build
-the same machine. Not my machine — their own — but shaped so much like mine
-that reading the announcements felt like reading my own commit history back
-to myself. This post is about that convergence: what it felt like, what it
-taught me, and the one thing it made obvious that I'd gotten wrong.
+Then I noticed the rest of the industry was building the same machine — not my
+machine, their own, but shaped so much like mine that reading the
+announcements felt like reading my own commit history back to myself. Some of
+it had shipped before that May commit; a lot of it shipped in the weeks right
+after. This post is about that convergence: what it felt like, what it taught
+me, and the one thing it made obvious I'd gotten wrong.
 
 ## The pattern I thought I was inventing
 
@@ -59,7 +61,7 @@ at it.
 Here's the humbling part. That list is now, more or less, the industry
 consensus — and it got there without any help from me.
 
-In June, Addy Osmani wrote a piece giving the whole discipline a name:
+On June 7, 2026 — three weeks after my first commit — Addy Osmani wrote a piece giving the whole discipline a name:
 **loop engineering**. His framing — that the bottleneck stopped being prompt
 quality and became the design of the loop _around_ the agent — landed on the
 same six components I'd stumbled into: worktrees, skills, independent
@@ -68,26 +70,32 @@ split into an inner loop the agent owns and an outer loop the human owns.
 Reading it was uncanny. He'd written down the thing I'd built, more clearly
 than I'd ever articulated it to myself.
 
-And it wasn't just one influential blog post. The same primitives showed up
-in product after product, all at once:
+And it wasn't just one influential blog post. The same primitives had been
+surfacing across the industry for the better part of a year — some before my
+first commit, some after, none of the efforts aware of the others:
 
-- GitHub shipped **Agent HQ** — a "mission control" for pointing a fleet of
-  agents at a backlog and steering them from one place. That's my
-  orchestrator, as a first-party feature.
-- **Cursor** reorganized itself around parallel agents, each in its own git
-  worktree. That's my isolation model, in an editor.
-- **Vercel** released an open-source agent framework and pitched it as
-  "Next.js for agents" — filesystem-first, with skills, subagents, and
-  human-approval gates. That's my file-based knowledge and my review gate.
-- **Google's** new agent platform grew "agent teams" with subagents and
-  hooks. Same shape again.
+- Back in **October 2025**, months before I started, **Cursor** had already
+  rebuilt its editor around parallel agents, each working in its own git
+  worktree. My isolation model, shipped by someone else before I'd written a
+  line of mine.
+- At **GitHub Universe that same October**, GitHub announced **Agent HQ** — a
+  "mission control" for pointing a fleet of agents at a backlog and steering
+  them from one place, which rolled out through early 2026. My orchestrator, as
+  a first-party feature.
+- In **June 2026**, a few weeks after my build, **Vercel** released an
+  open-source agent framework and pitched it as "Next.js for agents" —
+  filesystem-first, with skills, subagents, and human-approval gates. My
+  file-based knowledge and my review gate.
+- And around **Google I/O this spring**, Google's new agent platform grew
+  "agent teams" with subagents and hooks. The same shape, again.
 
-And closest to home: the platform my loop is built on absorbed big pieces of
-what I'd hand-rolled. Claude Code shipped **Dynamic Workflows**, where the
-agent writes its own orchestration script and fans out to parallel
-subagents — the deterministic control flow I'd been encoding in prose.
-Subagents became **background-by-default**, and now open their own draft
-pull requests when they finish work in a worktree. There's a built-in
+And closest to home, right on this timeline: the platform my loop is built on
+absorbed big pieces of what I'd hand-rolled. In **late May 2026**, a couple of
+weeks after I'd hand-wired my own version, Claude Code shipped **Dynamic
+Workflows** — the agent writes its own orchestration script and fans out to
+parallel subagents, the deterministic control flow I'd been encoding in prose.
+By **July**, subagents had become **background-by-default**, opening their own
+draft pull requests when they finish work in a worktree. There's a built-in
 dashboard for watching them all, and even a way to run the whole thing on a
 schedule in the cloud. (I keep mine running on a Mac on my own desk,
 [on purpose](/blog/free-ci-on-my-own-mac) — but the option's there now.) A
@@ -97,8 +105,8 @@ longer have to maintain.
 The honest reading of all this isn't "they copied me." Nobody copied me —
 shipyard is a small personal plugin, and I'm not so vain as to think it was
 on anyone's radar. It's **convergent evolution**. The solution was latent in
-the shape of the problem, and enough people walked into the same wall at the
-same time to draw the same box around it. When that many independent efforts
+the shape of the problem, and enough people walked into the same wall in the
+same stretch of months to draw the same box around it. When that many independent efforts
 land on the same architecture, that's not a coincidence to feel scooped by —
 it's the field telling you the architecture is _correct_.
 
@@ -120,7 +128,7 @@ different question got loud:
 For a year the implicit answer was "the tests pass, so ship it." Mine was no
 different: a worker implements its issue, opens a PR, CI goes green, it
 merges. But green CI plus the worker's own confidence is a shaky gate, and
-in June a piece of research made exactly why uncomfortably clear. The finding
+in late June 2026 a piece of research made exactly why uncomfortably clear. The finding
 that stuck with me: for modern coding agents, **generating a solution has
 become easier than verifying one**. The models got good enough that the hard
 problem inverted. And a verifier isn't free to trust either — no fixed set of
@@ -156,8 +164,9 @@ and the cost of a wrong "needs a look" is thirty seconds of my time. When it
 can't confirm the change is right, the PR doesn't merge — it gets flagged for
 me, with the verifier's reasoning attached, so I see _why_.
 
-I run the verifier on the strongest model I have, even when the worker that
-wrote the code ran on a cheaper one — because catching a plausible-but-wrong
+I run the verifier on the strongest model I have — Opus 4.8, released at the
+end of May 2026 — even when the worker that wrote the code ran on a cheaper
+one, because catching a plausible-but-wrong
 change is worth more than writing the change was. That's the other thing the
 new model lineup makes easy: cheap, fast workers for the writing, an expensive
 skeptic for the judging. Spend the money where the stakes are.
