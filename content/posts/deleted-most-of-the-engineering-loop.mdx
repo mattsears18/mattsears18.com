@@ -1,11 +1,11 @@
 ---
-title: 'I tried to delete my agent harness. Almost none of it was redundant.'
+title: 'I built an orchestrator for my agents. They outgrew it.'
 date: '2026-09-30'
 excerpt: >-
-  In July I wrote that half of the engineering loop I'd built had quietly
-  become a native feature. In September I went to delete that half. Of 82
-  scripts, the number with a real first-party replacement turned out to be
-  zero — and understanding why taught me more than the deletion would have.
+  I built shipyard in May because the models needed a lot of managing. By
+  September they didn't, and most of the managing layer had quietly become
+  dead weight. Here's what I removed, what I kept, and why everyone who built
+  one of these is arriving at the same place.
 tags:
   - ai
   - claude-code
@@ -14,39 +14,32 @@ tags:
 
 In June I wrote about [building shipyard](/blog/shipyard-and-lightwork), an
 autonomous engineering loop on Claude Code. In July I wrote that
-[everyone else had built the same one](/blog/everyone-built-the-same-loop),
-and that a meaningful chunk of my plumbing had quietly become native.
+[everyone else had built the same one](/blog/everyone-built-the-same-loop) and
+that a chunk of my plumbing had quietly become a native feature.
 
-I ended that post saying the trick is to keep asking the machine what it's
-missing. So in September I asked again, and the answer was: _most of me._
+In September I went and deleted it.
 
-## The easy part
+## What an orchestrator was for
 
-Some of it really was dead weight, and the numbers were embarrassing.
+Shipyard existed because a May-2026 model couldn't be handed an issue and
+trusted to finish it. So the harness did the managing. It picked which issue
+to work. It refined the raw text into something dispatchable first. It decided
+an epic was too big and sharded it into ordered sub-issues. It told the worker
+what order to do things in, and it checked the worker's homework afterwards.
 
-**176 of 258 scripts were tests of shipyard itself** — 66,784 lines of
-self-test against 36,333 lines of tool. 119 of those had no executable at all;
-they asserted on prompt _markdown_, checking that two hand-copied versions of
-the same instruction still matched.
+That's a lot of scaffolding, and all of it earned its place at the time. It
+burned down a backlog of a couple thousand issues.
 
-There was a 519 KB design-rationale file living in the directory the
-orchestrator reads specs from, one over-eager file read away from eating a
-context window. There was a whole second dispatch system kept as a "reversible
-alternate," which had been found non-functional months earlier and was still
-being recommended as a fallback.
+Then the models got good enough that the managing stopped helping.
 
-I deleted about 11,000 lines in four passes. All of it was redundant with
-something else in the repo, or wasn't in the execution path at all.
+## Everyone is arriving here at once
 
-Then I got to the part I was actually excited about.
-
-## Uncle Bob got there first, sort of
-
-On 4 August, Robert C. Martin
+Robert C. Martin
 [described](https://x.com/unclebobmartin/status/2084638878548304046) building
-an orchestration harness for "a squad of agents" driven by a state machine,
-with a simulator and Monte Carlo testing over it. He signed off: _"Don't tell
-me software engineering is dead."_
+an orchestration harness for "a squad of agents" on 4 August — analysts,
+reviewers, implementers, reviewers, the lot, driven by a state machine with a
+simulator over it. He signed off: _"Don't tell me software engineering is
+dead."_
 
 Five weeks later, [he wrote](https://x.com/unclebobmartin/status/2098432570887217520):
 
@@ -54,80 +47,74 @@ Five weeks later, [he wrote](https://x.com/unclebobmartin/status/209843257088721
 > better. So much so that when I came up for air, the need for my harness was
 > obviated.
 
-Anthropic's own team says the same thing with numbers: they
-[cut ~80% of the Claude Code system prompt](https://simonwillison.net/2026/Jul/21/cat-and-thariq/),
-and now ship _a different system prompt per model_, because only the frontier
-ones can go without the training wheels.
+Anthropic's own team says the same thing with a number: they
+[cut about 80% of the Claude Code system prompt](https://simonwillison.net/2026/Jul/21/cat-and-thariq/),
+and now ship a _different system prompt per model_, because only the frontier
+ones can go without the training wheels. Boris Cherny, who built Claude Code,
+tells people to delete their `CLAUDE.md`, their skills and their hooks every
+six months and see what the model does without them.
 
-So I made a table. Shipyard polls CI; the harness has a `Monitor` tool — tick.
-Shipyard tracks session state; the harness has `TaskCreate` — tick. Sixty-two
-ticks out of eighty scripts. 76% of the lines.
+Nobody coordinated this. It's just what happens when the thing underneath your
+abstraction gets better than the abstraction.
 
-I was going to write a post about deleting three quarters of my own tool.
+## What we deleted
 
-## Then I opened the files
+Four changes, about 11,000 lines:
 
-`gh-cached.sh`, which I'd marked replaceable by the GitHub MCP, is a TTL cache
-with explicit post-write invalidation. The MCP has no cache. Swapping them
-doesn't remove a redundancy — it adds API calls.
+- **A whole second dispatch system**, kept as a "reversible alternate." It only
+  ever existed because its primitive couldn't isolate a worker into its own
+  git worktree — something the platform now does for free.
+- **The issue refiner.** It classified and rewrote raw bug reports into
+  dispatchable specs in a pass *before* the work started. A current model does
+  that while reading the issue, in the same breath as understanding it.
+- **The epic decomposer.** Same story: a model asked to work a large issue
+  shards it as part of planning it. It doesn't need a separate agent and a
+  config knob to be told.
+- **A context-bloat linter** whose entire job was policing the size of my own
+  prompt corpus — which is a fairly good sign the corpus had a problem.
 
-`session-state.sh`, marked replaceable by `TaskCreate`, writes to
-`.tmp.<pid>` and renames, so a process killed mid-update leaves the previous
-state intact instead of a corrupted file. `TaskCreate` is a todo list.
+Plus half a megabyte of design notes that were sitting in the directory the
+orchestrator reads specs from, one careless file read away from eating a
+context window. Those moved rather than died.
 
-And my favourite. `assert-ci-green.sh` exists because
-`gh run list --commit <sha>` silently matches **zero runs** when you hand it an
-abbreviated SHA — and exits 0. So the obvious three-line version of "is this
-commit green" passes on the empty set. It reports green having looked at
-nothing. The script's stated purpose is that it "can never answer green
-without having observed at least one run."
+## What's still worth keeping
 
-Five rows fell over in an afternoon. So I stopped guessing and had all 82
-headers read properly — contract, not category.
+I expected to keep going and take out most of the rest. I didn't, and the
+reason is the useful half of this story.
 
-**Zero.** Not one script had a genuine first-party replacement. Seventy-three
-had none at all. The remaining nine are obsolete only if I delete the spec
-corpus, which documents the seventy-three that are staying.
+The orchestration was obsolete. The *verification* wasn't.
 
-## Why the illusion is so convincing
+There's a script in there whose only job is answering "did CI actually pass?"
+It exists because `gh run list --commit <sha>` silently matches zero runs if
+you hand it an abbreviated SHA — and exits 0. So the obvious three-line
+version of that check passes on the empty set. It reports green having looked
+at nothing at all.
 
-Every one of those scripts is, at the category level, exactly what I said it
-was. A cache. A state store. A CI check. And the platform genuinely has a
-cache-shaped thing, a state-shaped thing, a CI-shaped thing.
+There's another that writes state to a temp file and renames it, so a process
+killed mid-update leaves the previous state intact instead of a corrupted one.
+Another that caches GitHub reads because the loop was asking the same question
+four times a session.
 
-What it doesn't have is _the specific property each one was written to
-guarantee_ — don't call this green unless you saw a run, don't let a killed
-process leave a half-written file, don't ask GitHub the same question four
-times in one session.
+None of those care how smart the model is. They're not managing the model at
+all — they're catching the world being weird: an API that returns success for
+a query that matched nothing, a process that dies mid-write, a rate limit.
+Each one is a thing that went wrong once, compressed into a check that won't
+let it go wrong again, and a better model doesn't make any of them less true.
 
-Every one of those exists because something went wrong once.
+If you're doing this to your own harness, that's the sorting question I'd use:
+**is this compensating for the model, or for the world?** The first kind
+expires. The second kind doesn't.
 
-And none of them are visible from outside the file. You cannot tell a script
-that polls CI from a script that polls CI _and refuses to lie about an empty
-result_ by looking at its name, its size, or what category it belongs to. You
-have to open it.
+## The line I'd draw
 
-A category match tells you two things do the same kind of work. It tells you
-nothing about whether one can replace the other. I wrote a confident table
-that would have deleted about 8,800 lines on exactly that confusion.
+My July post said the plumbing converged and the judgment didn't. I'd sharpen
+that now.
 
-## What I'd say now
+The parts of a harness that go obsolete are the parts that were compensating
+for the model: do this before that, don't forget the other thing, here's the
+shape of the output I want. Those were always a workaround, and they expire
+the moment the workaround isn't needed.
 
-Uncle Bob is right, and I don't want to soften it: a harness built to
-_constrain_ a model gets obviated when the model stops needing constraining. I
-removed the parts of mine that did that, and I'd remove them again.
-
-But that's not what most of my harness turned out to be.
-
-The rest of it is memory. Seventy-three scripts, each one a thing that went
-wrong once, compressed into a check that won't let it go wrong again. A
-smarter model doesn't make any of them less true. It just makes them easier to
-mistake for scaffolding.
-
-My July post said the plumbing converged and the judgment didn't. I'd put it
-more sharply now. The plumbing that converges is the plumbing that never had
-to be _right_ about anything in particular. The moment a script encodes a
-reason, it has stopped being plumbing — it's a decision someone made after
-being burned, wearing plumbing's clothes.
-
-I went looking for scaffolding to tear down and found a scar.
+The parts that stay are the parts that encode a reason. And those aren't
+scaffolding at all — they're scar tissue, and you don't remove scar tissue
+because the patient got healthier.
