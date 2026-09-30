@@ -1,318 +1,133 @@
 ---
-title: 'I deleted most of the engineering loop I built'
+title: 'I tried to delete my agent harness. Almost none of it was redundant.'
 date: '2026-09-30'
 excerpt: >-
-  In June I wrote about building shipyard. In July I wrote that half of what
-  I'd hand-built had quietly become native, and wondered what that was worth.
-  In September I finally went and measured it: 68% of my harness was the
-  harness testing itself. Then I checked my own claim that most of the rest
-  had a first-party replacement, and found I'd been matching categories
-  instead of reading contracts. Here's what actually came out, what stayed,
-  and the one study that says I might be wrong.
+  In July I wrote that half of the engineering loop I'd built had quietly
+  become a native feature. In September I went to delete that half. Of 82
+  scripts, the number with a real first-party replacement turned out to be
+  zero — and understanding why taught me more than the deletion would have.
 tags:
   - ai
   - claude-code
   - tooling
 ---
 
-I've written about this loop twice already.
+In June I wrote about [building shipyard](/blog/shipyard-and-lightwork), an
+autonomous engineering loop on Claude Code. In July I wrote that
+[everyone else had built the same one](/blog/everyone-built-the-same-loop),
+and that a meaningful chunk of my plumbing had quietly become native.
 
-In [June](/blog/shipyard-and-lightwork) I wrote about building shipyard — an
-autonomous engineering loop on Claude Code — and what it felt like to wake up
-to 116 merged pull requests. In [July](/blog/everyone-built-the-same-loop) I
-wrote that the industry had converged on the same architecture and that "a
-meaningful chunk of shipyard's plumbing quietly became a native feature I no
-longer needed." I ended that post saying the trick is to keep asking the
-machine what it's missing.
+I ended that post saying the trick is to keep asking the machine what it's
+missing. So in September I asked again, and the answer was: _most of me._
 
-So I asked again. This time the answer was: _most of me._
+## The easy part
 
-## The number I didn't want
+Some of it really was dead weight, and the numbers were embarrassing.
 
-I pointed a session at my own repo and asked it to measure, not estimate.
+**176 of 258 scripts were tests of shipyard itself** — 66,784 lines of
+self-test against 36,333 lines of tool. 119 of those had no executable at all;
+they asserted on prompt _markdown_, checking that two hand-copied versions of
+the same instruction still matched.
 
-shipyard was 9.9 MB across 43 agents, 73 command files, 31 skills and 258
-scripts — about 137,000 lines. The prompt corpus alone came to roughly 700,000
-tokens.
+There was a 519 KB design-rationale file living in the directory the
+orchestrator reads specs from, one over-eager file read away from eating a
+context window. There was a whole second dispatch system kept as a "reversible
+alternate," which had been found non-functional months earlier and was still
+being recommended as a fallback.
 
-Then the part that actually settled it:
+I deleted about 11,000 lines in four passes. All of it was redundant with
+something else in the repo, or wasn't in the execution path at all.
 
-- **176 of 258 scripts — 68% — were tests of shipyard itself.** 66,784 lines of
-  self-test against 36,333 lines of tool. **1.8 lines of test per line of
-  thing-being-tested.**
-- **119 of those tests had no executable at all.** They asserted on prompt
-  *markdown*: that two hand-copied versions of the same dispatch prompt still
-  matched, that 205 deep links into a 531 KB rationale file still resolved,
-  that a phase file hadn't exceeded its token budget.
-- And — I thought — **62 of 80 top-level scripts, 76% of the lines, now had a
-  first-party equivalent.** Worktree reaping is `Agent(isolation:
-  "worktree")`. Session state is `TaskCreate`/`TaskUpdate`. CI polling and a
-  `gh` response cache are `Monitor` plus the GitHub MCP.
+Then I got to the part I was actually excited about.
 
-That last bullet turned out to be wrong, and how it was wrong is the most
-useful thing in this post. I'll come back to it.
+## Uncle Bob got there first, sort of
 
-And the figure that reframed the whole thing: shipyard's own repo has absorbed
-**793 issues and 1,270 commits**. It delivered 1,788 merged PRs to my app in
-that time — so I filed roughly **0.44 shipyard issues per pull request
-shipped**. Nearly half a unit of harness maintenance for every unit of work.
-
-That ratio was fine when the harness was the only way to get the work done. It
-stopped being fine the moment it wasn't.
-
-## Uncle Bob got there five weeks after I wrote about it
-
-On **4 August 2026**, Robert C. Martin
+On 4 August, Robert C. Martin
 [described](https://x.com/unclebobmartin/status/2084638878548304046) building
-an orchestration harness for "a squad of agents" — analysts, reviewers,
-gherkin authors, QA authors, implementers, cleaners, code reviewers, hardeners,
-architects — driven by a static finite state machine, with a simulator and
-Monte Carlo testing over it. He ended the post: _"Don't tell me software
-engineering is dead."_
+an orchestration harness for "a squad of agents" driven by a state machine,
+with a simulator and Monte Carlo testing over it. He signed off: _"Don't tell
+me software engineering is dead."_
 
-On **11 September**, five weeks later, he
-[posted this](https://x.com/unclebobmartin/status/2098432570887217520):
+Five weeks later, [he wrote](https://x.com/unclebobmartin/status/2098432570887217520):
 
-> I've spend the last several weeks working on a harness that tightly
-> constrains the agents to work the way that I want them to work. I set up all
-> kinds of gates, and tests, and tools, and protocols, and …
->
-> And while I was heads-down getting that to work, the agents got a LOT better.
-> So much so that when I came up for air, the need for my harness was obviated.
-> Indeed, the need for _any_ but the most liberal of harnesses may be obviated.
+> And while I was heads-down getting that to work, the agents got a LOT
+> better. So much so that when I came up for air, the need for my harness was
+> obviated.
 
-Three days later: _"Since I stopped using my harness, my token consumption has
-fallen by a huge factor. That harness was massively inefficient."_ And a week
-after that, the thesis in one line: _"the models have gotten good enough that
-strict deterministic harnesses are suboptimal."_
+Anthropic's own team says the same thing with numbers: they
+[cut ~80% of the Claude Code system prompt](https://simonwillison.net/2026/Jul/21/cat-and-thariq/),
+and now ship _a different system prompt per model_, because only the frontier
+ones can go without the training wheels.
 
-Martin Fowler
-[wrote it up](https://martinfowler.com/fragments/2026-09-16.html) on 16
-September, which is how most people saw it.
+So I made a table. Shipyard polls CI; the harness has a `Monitor` tool — tick.
+Shipyard tracks session state; the harness has `TaskCreate` — tick. Sixty-two
+ticks out of eighty scripts. 76% of the lines.
 
-I'm noting the dates because the chronology surprised me, not to claim
-anything by it. My convergence post was 22 July. His reversal was 11
-September. We were looking at the same thing from opposite ends — he built the
-harness and watched it become unnecessary; I built one, watched the industry
-rebuild it natively, and took another two months to act. Neither of us was
-early. The models were just moving faster than either of us was typing.
+I was going to write a post about deleting three quarters of my own tool.
 
-## The people who ship the models say it louder
+## Then I opened the files
 
-This is the part that should carry more weight than any of us with a side
-project.
+`gh-cached.sh`, which I'd marked replaceable by the GitHub MCP, is a TTL cache
+with explicit post-write invalidation. The MCP has no cache. Swapping them
+doesn't remove a redundancy — it adds API calls.
 
-Anthropic's Claude Code team [cut about 80% of the Claude Code system
-prompt](https://simonwillison.net/2026/Jul/21/cat-and-thariq/). Thariq
-Shihipar: _"we were over-constraining Claude… removing examples was extremely
-helpful."_ And Cat Wu, with the detail that makes it airtight:
+`session-state.sh`, marked replaceable by `TaskCreate`, writes to
+`.tmp.<pid>` and renames, so a process killed mid-update leaves the previous
+state intact instead of a corrupted file. `TaskCreate` is a todo list.
 
-> We actually have a **different system prompt per model** now, for this very
-> reason. It's only our most frontier models that have this 80% token
-> decrease — the older models still have the full system prompt.
+And my favourite. `assert-ci-green.sh` exists because
+`gh run list --commit <sha>` silently matches **zero runs** when you hand it an
+abbreviated SHA — and exits 0. So the obvious three-line version of "is this
+commit green" passes on the empty set. It reports green having looked at
+nothing. The script's stated purpose is that it "can never answer green
+without having observed at least one run."
 
-Scaffolding, versioned by model vintage, by the people who wrote it.
+Five rows fell over in an afternoon. So I stopped guessing and had all 82
+headers read properly — contract, not category.
 
-Boris Cherny, who created Claude Code, at YC Startup School: _"We unship tools
-all the time. We delete code in the harness all the time. If you look at the
-code that's in the Claude Code harness today, almost all of it is about safety
-and permissions and static analysis."_ His advice to everyone else was to
-_"every six months, delete your [CLAUDE.md], delete your skills, delete your
-hooks"_ and see what the model does without them.
+**Zero.** Not one script had a genuine first-party replacement. Seventy-three
+had none at all. The remaining nine are obsolete only if I delete the spec
+corpus, which documents the seventy-three that are staying.
 
-Han Lee has the sentence I wish I'd written: **"The model ate the harness."**
-His warning is the one I'd already walked into — that teams who don't treat
-the harness as a 90-day artifact end up _"building load-bearing scaffolding
-around a model that is about to outgrow it."_
+## Why the illusion is so convincing
 
-Browser Use published the same reversal with receipts: a January post arguing
-frameworks are the bitter lesson in miniature, then an April post that opens
-_"Turns out we were wrong"_ about their own previous conclusion, ending at
-~600 lines total. And Cognition has the cleanest single example I've seen: in
-2024, models were bad at editing code, so everyone — including them — ran a
-second "edit apply model" to turn a large model's markdown description of a
-change into an actual file edit. That entire category of scaffolding existed
-because of one weakness. Today one model does both in one action. The
-scaffolding didn't get refactored. It evaporated.
+Every one of those scripts is, at the category level, exactly what I said it
+was. A cache. A state store. A CI check. And the platform genuinely has a
+cache-shaped thing, a state-shaped thing, a CI-shaped thing.
 
-## What I actually cut, and what I kept
+What it doesn't have is _the specific property each one was written to
+guarantee_ — don't call this green unless you saw a run, don't let a killed
+process leave a half-written file, don't ask GitHub the same question four
+times in one session.
 
-Here's where I part ways with the tidy version of this story.
+Every one of those exists because something went wrong once.
 
-I did **not** delete the loop. `/do-work` is the command I use most; deleting
-it to make a cleaner narrative would have been a worse decision dressed as a
-braver one. What I deleted is the *substrate* — the implementations shipyard
-wrote before the platform had them.
+And none of them are visible from outside the file. You cannot tell a script
+that polls CI from a script that polls CI _and refuses to lie about an empty
+result_ by looking at its name, its size, or what category it belongs to. You
+have to open it.
 
-**Gone:** an entire alternate dispatch substrate (1.9 MB of spec and a
-generated orchestration script) that existed only because its primitive had no
-worktree isolation — which the `Agent` tool now provides for free. Both
-"rationale" files, 544 KB between them, with a dedicated link checker to keep
-their 205 anchors valid. The prompt-parity checkers whose only job was
-verifying that shipyard's copies of its own text still agreed with each other.
-A command built to detect context bloat in runtime-loaded markdown — i.e. to
-fight my own prompt corpus, which I'm now deleting directly. And an
-issue-refiner that classified and rewrote raw feedback in a pass before
-dispatch, which a current model now does inline while reading the issue.
+A category match tells you two things do the same kind of work. It tells you
+nothing about whether one can replace the other. I wrote a confident table
+that would have deleted about 8,800 lines on exactly that confusion.
 
-**Kept, and not reluctantly:**
+## What I'd say now
 
-- **19 auditors.** They filed 549 issues against my app over its life. They're
-  the half that produces *new information* rather than throughput, and they're
-  stateless one-shot prompts with no orchestrator underneath.
-- **Six `refuse-*` safety hooks.** Each guards an externally irreversible
-  action and each exists because something actually went wrong: a worker
-  minting a production service-account key, a `pkill -f "playwright test"`
-  that killed two in-flight CI shards on a shared host, a worker deleting a
-  Vercel production environment variable while its own fix PR was still open.
+Uncle Bob is right, and I don't want to soften it: a harness built to
+_constrain_ a model gets obviated when the model stops needing constraining. I
+removed the parts of mine that did that, and I'd remove them again.
 
-A smarter model makes that class of mistake less often. It does not make the
-mistake cost less. Unbounded downside doesn't care about your model version.
+But that's not what most of my harness turned out to be.
 
-## The number I got wrong, and why
+The rest of it is memory. Seventy-three scripts, each one a thing that went
+wrong once, compressed into a check that won't let it go wrong again. A
+smarter model doesn't make any of them less true. It just makes them easier to
+mistake for scaffolding.
 
-I said 76% of the scripts had a first-party replacement. I got that by making
-a table: shipyard polls CI, the harness has a `Monitor` tool, tick. Shipyard
-tracks session state, the harness has `TaskCreate`, tick. Sixty-two ticks.
+My July post said the plumbing converged and the judgment didn't. I'd put it
+more sharply now. The plumbing that converges is the plumbing that never had
+to be _right_ about anything in particular. The moment a script encodes a
+reason, it has stopped being plumbing — it's a decision someone made after
+being burned, wearing plumbing's clothes.
 
-Then I went to delete the first batch and actually read the file headers.
-
-`gh-cached.sh` — which I'd marked replaceable by the GitHub MCP — is a TTL
-cache with explicit post-write invalidation, written because the orchestrator
-re-fetches the same issue and PR lists at four separate phase transitions in
-one session. The MCP gives you structured access. It has no cache. Swapping
-them doesn't remove a redundancy; it adds API calls.
-
-`session-state.sh` — marked replaceable by `TaskCreate`/`TaskUpdate` — is a
-durable atomic JSON store. It writes to `.tmp.<pid>` and renames, so a process
-killed mid-update leaves the previous state intact rather than a corrupted
-file. It survives across turns and it's what a `--resume` flag would read.
-`TaskCreate` is a todo list. These are not the same object.
-
-`assert-ci-green.sh` — marked replaceable by `Monitor` — exists because
-`gh run list --commit <sha>` silently matches **zero runs** when handed an
-abbreviated SHA, and exits 0. So the obvious three-line version of "is this
-commit green" passes on the empty set: it reports green having observed
-nothing at all. The script's stated purpose is that it "can never answer green
-without having observed at least one run." `Monitor` is an event stream. It
-does not carry that property, and nothing in the harness does.
-
-Five rows fell over. About 8,800 lines I'd counted as redundant are not.
-
-Here's the part worth generalising. Every one of those scripts is, at the
-category level, exactly what I said it was — a cache, a state store, a CI
-check. The harness genuinely has a cache-adjacent thing, a state-adjacent
-thing, a CI-adjacent thing. What it doesn't have is *the specific property
-each one was written to guarantee*, and every one of those properties exists
-because something went wrong once and someone encoded the lesson.
-
-**A category match tells you two things do the same kind of work. It tells you
-nothing about whether one can replace the other.** The replaceable thing isn't
-the script that polls CI. It's the script that polls CI *and carries no
-hard-won invariant* — and you can only tell those apart by reading the header,
-not the filename.
-
-I'd made this exact mistake three times already at smaller scale while cutting
-— each time estimating how entangled something was instead of measuring it,
-each time wrong in the same direction. This was the same error one level up,
-and it was about to cost 8,800 lines of other people's — my own — accumulated
-debugging.
-
-So I don't have a target number any more. The last one was arithmetic on a bad
-table. The honest next step is to read the remaining eighty headers the way I
-read those five, and derive a new one from what the code actually promises.
-
-
-## The counter-argument, which is better than I'd like
-
-Someone pre-registered my exact hypothesis and it came out the other way.
-
-["Scaffold Effects on GAIA: A Controlled
-Comparison"](https://arxiv.org/abs/2606.08529) held tasks fixed across five
-models and three providers and varied only the scaffold. Scaffold choice moved
-measured accuracy by up to **28 percentage points** within a single model. And:
-
-> The pre-registered prediction that more capable models would be less
-> scaffold-sensitive is **rejected in direction**… the most capable Anthropic
-> model gains the most from structured scaffolds at the harder level… the
-> elicitation gap is not guaranteed to shrink as models improve.
-
-I don't think that kills the argument, but it sharpens what the argument can
-honestly be. "Structure stops mattering" is not supported. "*This particular*
-structure, written for a 2026-05 model, stopped paying for itself" is what I
-measured, and it's a much smaller claim.
-
-Addy Osmani — arguing the pro-harness side — put the reconciliation better
-than I can:
-
-> You only add constraints when you've seen a real failure. You only remove
-> them when a capable model has made them redundant.
-
-Both halves of that sentence are the job. I spent four months doing the first
-half diligently and the second half not at all.
-
-## The line that actually holds
-
-Look at what survived each of these purges.
-
-Uncle Bob kept his unit tests, his CRAP metric, his mutation testing — and
-dropped the orchestration. Boris Cherny says what's left in the Claude Code
-harness is "almost all about safety and permissions and static analysis." I
-kept auditors that find problems and hooks that refuse irreversible actions,
-and deleted the machinery that told a model what order to do things in.
-
-**Deterministic verification survives. Imperative orchestration of the model
-does not.**
-
-That isn't a compromise between the two camps. It's what both camps did when
-they actually cut something.
-
-## The part that proves it
-
-While I was deleting the orchestration layer, the verification layer caught me
-four times.
-
-I removed a section of spec that looked substrate-specific; three test suites
-failed because one sentence in it — "do not `git worktree add` again and do
-not create a new branch" — was a universal rule about resuming a stalled
-worker, not a property of the thing I was deleting. A link checker found ten
-dead references the deletion created. A reference resolver found four command
-names that no longer resolved, and its own error message told me not to widen
-it to make the failure go away. `shellcheck` found a helper function I'd
-orphaned.
-
-And the one that actually matters: I deleted a command that wrote provenance
-markers onto issues, then deleted the code that *read* those markers — and
-broke the human-review queue for every issue still carrying one. The markers
-don't disappear when the writer does. Two red CI runs told me so.
-
-Every one of those was a deterministic gate catching a judgment error, on the
-specific change whose entire thesis is that judgment has gotten good enough to
-need fewer gates. I don't think that's ironic. I think it's the finding. The
-gates weren't guarding against a dumb model. They were guarding against
-*confident, plausible, wrong* — which is exactly what better models produce
-more of, not less.
-
-## Where it landed
-
-Three stages in: 9.64 MB down to 9.00, about 11,000 lines deleted, `/do-work`
-working exactly as it did. Smaller than the deletion count sounds, because the
-bulk was never at the edges.
-
-And I no longer have a target number, because the one I published was wrong.
-
-My July post said the plumbing converged and the judgment didn't. I still
-think that's right, and I'd now put a sharper edge on it.
-
-The plumbing that converges is the plumbing that never had to be right about
-anything in particular. A worktree gets provisioned; the harness provisions
-worktrees; fine, take theirs. But the moment a script encodes *why* — refuse
-to call this green unless you actually saw a run, don't let a killed process
-leave a half-written state file, don't re-ask GitHub the same question four
-times a session — it has stopped being plumbing. It's a decision someone made
-after being burned, wearing plumbing's clothes.
-
-That's the part that doesn't converge, and it's the part I nearly deleted
-because from a distance it looked like everything else.
-
-The map was still worth having. I just needed to read the legend.
+I went looking for scaffolding to tear down and found a scar.
