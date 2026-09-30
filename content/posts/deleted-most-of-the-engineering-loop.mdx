@@ -5,9 +5,10 @@ excerpt: >-
   In June I wrote about building shipyard. In July I wrote that half of what
   I'd hand-built had quietly become native, and wondered what that was worth.
   In September I finally went and measured it: 68% of my harness was the
-  harness testing itself, and 76% of its scripts had a first-party equivalent.
-  Here's what came out, what stayed, and the one study that says I might be
-  wrong.
+  harness testing itself. Then I checked my own claim that most of the rest
+  had a first-party replacement, and found I'd been matching categories
+  instead of reading contracts. Here's what actually came out, what stayed,
+  and the one study that says I might be wrong.
 tags:
   - ai
   - claude-code
@@ -43,12 +44,13 @@ Then the part that actually settled it:
   *markdown*: that two hand-copied versions of the same dispatch prompt still
   matched, that 205 deep links into a 531 KB rationale file still resolved,
   that a phase file hadn't exceeded its token budget.
-- **62 of 80 top-level scripts — 27,722 of 36,333 lines, 76% — now have a
-  first-party equivalent.** Worktree provisioning and reaping (7,538 lines)
-  is `Agent(isolation: "worktree")`. Session state and a status dashboard
-  (4,637 lines) is `TaskCreate`/`TaskUpdate`. CI polling and a `gh` response
-  cache (4,394 lines) is `Monitor` plus the GitHub MCP. Adversarial
-  verification before auto-merge is `/code-review ultra`.
+- And — I thought — **62 of 80 top-level scripts, 76% of the lines, now had a
+  first-party equivalent.** Worktree reaping is `Agent(isolation:
+  "worktree")`. Session state is `TaskCreate`/`TaskUpdate`. CI polling and a
+  `gh` response cache are `Monitor` plus the GitHub MCP.
+
+That last bullet turned out to be wrong, and how it was wrong is the most
+useful thing in this post. I'll come back to it.
 
 And the figure that reframed the whole thing: shipyard's own repo has absorbed
 **793 issues and 1,270 commits**. It delivered 1,788 merged PRs to my app in
@@ -167,6 +169,60 @@ dispatch, which a current model now does inline while reading the issue.
 A smarter model makes that class of mistake less often. It does not make the
 mistake cost less. Unbounded downside doesn't care about your model version.
 
+## The number I got wrong, and why
+
+I said 76% of the scripts had a first-party replacement. I got that by making
+a table: shipyard polls CI, the harness has a `Monitor` tool, tick. Shipyard
+tracks session state, the harness has `TaskCreate`, tick. Sixty-two ticks.
+
+Then I went to delete the first batch and actually read the file headers.
+
+`gh-cached.sh` — which I'd marked replaceable by the GitHub MCP — is a TTL
+cache with explicit post-write invalidation, written because the orchestrator
+re-fetches the same issue and PR lists at four separate phase transitions in
+one session. The MCP gives you structured access. It has no cache. Swapping
+them doesn't remove a redundancy; it adds API calls.
+
+`session-state.sh` — marked replaceable by `TaskCreate`/`TaskUpdate` — is a
+durable atomic JSON store. It writes to `.tmp.<pid>` and renames, so a process
+killed mid-update leaves the previous state intact rather than a corrupted
+file. It survives across turns and it's what a `--resume` flag would read.
+`TaskCreate` is a todo list. These are not the same object.
+
+`assert-ci-green.sh` — marked replaceable by `Monitor` — exists because
+`gh run list --commit <sha>` silently matches **zero runs** when handed an
+abbreviated SHA, and exits 0. So the obvious three-line version of "is this
+commit green" passes on the empty set: it reports green having observed
+nothing at all. The script's stated purpose is that it "can never answer green
+without having observed at least one run." `Monitor` is an event stream. It
+does not carry that property, and nothing in the harness does.
+
+Five rows fell over. About 8,800 lines I'd counted as redundant are not.
+
+Here's the part worth generalising. Every one of those scripts is, at the
+category level, exactly what I said it was — a cache, a state store, a CI
+check. The harness genuinely has a cache-adjacent thing, a state-adjacent
+thing, a CI-adjacent thing. What it doesn't have is *the specific property
+each one was written to guarantee*, and every one of those properties exists
+because something went wrong once and someone encoded the lesson.
+
+**A category match tells you two things do the same kind of work. It tells you
+nothing about whether one can replace the other.** The replaceable thing isn't
+the script that polls CI. It's the script that polls CI *and carries no
+hard-won invariant* — and you can only tell those apart by reading the header,
+not the filename.
+
+I'd made this exact mistake three times already at smaller scale while cutting
+— each time estimating how entangled something was instead of measuring it,
+each time wrong in the same direction. This was the same error one level up,
+and it was about to cost 8,800 lines of other people's — my own — accumulated
+debugging.
+
+So I don't have a target number any more. The last one was arithmetic on a bad
+table. The honest next step is to read the remaining eighty headers the way I
+read those five, and derive a new one from what the code actually promises.
+
+
 ## The counter-argument, which is better than I'd like
 
 Someone pre-registered my exact hypothesis and it came out the other way.
@@ -239,17 +295,24 @@ more of, not less.
 
 ## Where it landed
 
-Three stages in, the picture looks like this: 9.9 MB heading for roughly 2.5,
-with `/do-work` working exactly as it did. But the honest progress number is
-small so far — about 9.9 MB down to 9.1. **92% of the remaining reduction sits
-in a single stage**: the orchestrator spec, its session-state plumbing, and the
-3 MB of self-tests that exist only to guard a prompt corpus that's shrinking.
-That one comes out as a piece or not at all, which is exactly why it's last.
+Three stages in: 9.64 MB down to 9.00, about 11,000 lines deleted, `/do-work`
+working exactly as it did. Smaller than the deletion count sounds, because the
+bulk was never at the edges.
+
+And I no longer have a target number, because the one I published was wrong.
 
 My July post said the plumbing converged and the judgment didn't. I still
-think that's right. What I'd add now is that "judgment" turned out to include
-knowing when your own scaffolding has become the thing in the way — and that
-this is a measurement, not a feeling. I had the feeling in July. It took until
-September to run the numbers, and the numbers were worse than the feeling.
+think that's right, and I'd now put a sharper edge on it.
 
-The map was still worth having. I just should have looked at it sooner.
+The plumbing that converges is the plumbing that never had to be right about
+anything in particular. A worktree gets provisioned; the harness provisions
+worktrees; fine, take theirs. But the moment a script encodes *why* — refuse
+to call this green unless you actually saw a run, don't let a killed process
+leave a half-written state file, don't re-ask GitHub the same question four
+times a session — it has stopped being plumbing. It's a decision someone made
+after being burned, wearing plumbing's clothes.
+
+That's the part that doesn't converge, and it's the part I nearly deleted
+because from a distance it looked like everything else.
+
+The map was still worth having. I just needed to read the legend.
