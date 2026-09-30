@@ -1,14 +1,13 @@
 ---
-title: 'I deleted most of the engineering loop I built'
+title: 'I tried to delete my engineering loop. Almost none of it was redundant.'
 date: '2026-09-30'
 excerpt: >-
-  In June I wrote about building shipyard. In July I wrote that half of what
-  I'd hand-built had quietly become native, and wondered what that was worth.
-  In September I finally went and measured it: 68% of my harness was the
-  harness testing itself. Then I checked my own claim that most of the rest
-  had a first-party replacement, and found I'd been matching categories
-  instead of reading contracts. Here's what actually came out, what stayed,
-  and the one study that says I might be wrong.
+  In June I wrote about building shipyard. In July I wrote that half of it had
+  quietly become native. In September I went to delete that half — and found
+  that of 82 scripts, zero had a genuine first-party replacement. Not 62, which
+  is what my own table said. Zero. Here's what I actually removed, why the
+  illusion of redundancy is so convincing, and the one study that says I might
+  still be wrong.
 tags:
   - ai
   - claude-code
@@ -141,19 +140,32 @@ Here's where I part ways with the tidy version of this story.
 
 I did **not** delete the loop. `/do-work` is the command I use most; deleting
 it to make a cleaner narrative would have been a worse decision dressed as a
-braver one. What I deleted is the *substrate* — the implementations shipyard
-wrote before the platform had them.
+braver one. And once the audit came back, the honest scope collapsed further:
+what came out is the stuff that was redundant *by construction* — duplicated,
+self-referential, or not in the runtime path at all.
 
-**Gone:** an entire alternate dispatch substrate (1.9 MB of spec and a
-generated orchestration script) that existed only because its primitive had no
-worktree isolation — which the `Agent` tool now provides for free. Both
-"rationale" files, 544 KB between them, with a dedicated link checker to keep
-their 205 anchors valid. The prompt-parity checkers whose only job was
-verifying that shipyard's copies of its own text still agreed with each other.
-A command built to detect context bloat in runtime-loaded markdown — i.e. to
-fight my own prompt corpus, which I'm now deleting directly. And an
-issue-refiner that classified and rewrote raw feedback in a pass before
-dispatch, which a current model now does inline while reading the issue.
+**Gone, across four merged changes:**
+
+- An entire alternate dispatch substrate — 1.9 MB of spec plus a generated
+  orchestration script — that existed only because its primitive had no
+  worktree isolation, which the `Agent` tool now provides for free. It had
+  also been found non-functional for file writes months earlier and was still
+  being recommended as a fallback.
+- The prompt-parity checkers whose only job was verifying that two hand-copied
+  versions of the same text still agreed.
+- A command built to detect context bloat in runtime-loaded markdown — i.e. to
+  fight my own prompt corpus.
+- An issue-refiner that classified and rewrote raw feedback in a pass before
+  dispatch, which a model now does inline while reading the issue. And an
+  automated epic-decomposer, same reasoning.
+- 519 KB of design rationale, **moved not deleted** — out of the directory the
+  orchestrator reads specs from, into `docs/`. Its own header said the
+  orchestrator never needs to read it. Its only cost was being one over-eager
+  file read away from eating a context window.
+
+Notice what that list has in common. Every item was redundant *with something
+else in the repo*, or wasn't in the execution path at all. **Not one of them
+was replaced by a platform feature.**
 
 **Kept, and not reluctantly:**
 
@@ -197,7 +209,21 @@ nothing at all. The script's stated purpose is that it "can never answer green
 without having observed at least one run." `Monitor` is an event stream. It
 does not carry that property, and nothing in the harness does.
 
-Five rows fell over. About 8,800 lines I'd counted as redundant are not.
+Five rows fell over in an afternoon. So I stopped guessing and had every one
+of the 82 script headers read — contract, not category, with instructions to
+default to "no equivalent" unless you can name the native facility *and*
+explain how the correctness property survives the swap.
+
+**Zero.** Of 82 scripts, zero had a genuine first-party replacement. 73 had
+none at all; the other 9 are obsolete only if I delete the markdown spec
+corpus — which documents the 73 that are staying. There's no thread to pull.
+
+The audit's own summary of why is the part I keep thinking about: it couldn't
+classify a single script as "unclear," because every header in that tree
+states its own failure mode, the incident that produced it, and which
+direction it fails in. **The headers aren't documentation. They're the
+specification.** A pass that doesn't read them is wrong about nine times in
+ten, which is exactly how wrong mine was.
 
 Here's the part worth generalising. Every one of those scripts is, at the
 category level, exactly what I said it was — a cache, a state store, a CI
@@ -295,11 +321,14 @@ more of, not less.
 
 ## Where it landed
 
-Three stages in: 9.64 MB down to 9.00, about 11,000 lines deleted, `/do-work`
-working exactly as it did. Smaller than the deletion count sounds, because the
-bulk was never at the edges.
+9.64 MB down to about 8.5. Roughly 11,000 lines deleted and another 519 KB
+relocated, with `/do-work` working exactly as it did. I had projected 75%.
 
-And I no longer have a target number, because the one I published was wrong.
+I'm leaving that gap in rather than quietly restating the goal, because the
+gap *is* the result. The 75% was arithmetic on a table I built by matching
+categories, and the measurement that replaced it says the real number is close
+to what four careful passes found by hand: the genuinely-redundant parts, and
+nothing else.
 
 My July post said the plumbing converged and the judgment didn't. I still
 think that's right, and I'd now put a sharper edge on it.
@@ -312,7 +341,16 @@ leave a half-written state file, don't re-ask GitHub the same question four
 times a session — it has stopped being plumbing. It's a decision someone made
 after being burned, wearing plumbing's clothes.
 
-That's the part that doesn't converge, and it's the part I nearly deleted
-because from a distance it looked like everything else.
+That's the part that doesn't converge. It's also the part that is completely
+invisible from outside the file, which is why I was able to write a confident
+table that would have deleted 8,800 lines of it.
+
+So here's the version of this post I didn't expect to write. Uncle Bob is
+right that the models got good enough to obviate a harness that exists to
+*constrain* them — I think that's plainly true, and I removed the parts of
+mine that did that. But the harness I was left with isn't constraint. It's
+memory. Every one of those 73 scripts is a thing that went wrong once,
+compressed into a check that won't let it go wrong again, and a better model
+doesn't make any of them less true.
 
 The map was still worth having. I just needed to read the legend.
