@@ -1,0 +1,255 @@
+---
+title: 'I deleted most of the engineering loop I built'
+date: '2026-09-30'
+excerpt: >-
+  In June I wrote about building shipyard. In July I wrote that half of what
+  I'd hand-built had quietly become native, and wondered what that was worth.
+  In September I finally went and measured it: 68% of my harness was the
+  harness testing itself, and 76% of its scripts had a first-party equivalent.
+  Here's what came out, what stayed, and the one study that says I might be
+  wrong.
+tags:
+  - ai
+  - claude-code
+  - tooling
+---
+
+I've written about this loop twice already.
+
+In [June](/blog/shipyard-and-lightwork) I wrote about building shipyard — an
+autonomous engineering loop on Claude Code — and what it felt like to wake up
+to 116 merged pull requests. In [July](/blog/everyone-built-the-same-loop) I
+wrote that the industry had converged on the same architecture and that "a
+meaningful chunk of shipyard's plumbing quietly became a native feature I no
+longer needed." I ended that post saying the trick is to keep asking the
+machine what it's missing.
+
+So I asked again. This time the answer was: _most of me._
+
+## The number I didn't want
+
+I pointed a session at my own repo and asked it to measure, not estimate.
+
+shipyard was 9.9 MB across 43 agents, 73 command files, 31 skills and 258
+scripts — about 137,000 lines. The prompt corpus alone came to roughly 700,000
+tokens.
+
+Then the part that actually settled it:
+
+- **176 of 258 scripts — 68% — were tests of shipyard itself.** 66,784 lines of
+  self-test against 36,333 lines of tool. **1.8 lines of test per line of
+  thing-being-tested.**
+- **119 of those tests had no executable at all.** They asserted on prompt
+  *markdown*: that two hand-copied versions of the same dispatch prompt still
+  matched, that 205 deep links into a 531 KB rationale file still resolved,
+  that a phase file hadn't exceeded its token budget.
+- **62 of 80 top-level scripts — 27,722 of 36,333 lines, 76% — now have a
+  first-party equivalent.** Worktree provisioning and reaping (7,538 lines)
+  is `Agent(isolation: "worktree")`. Session state and a status dashboard
+  (4,637 lines) is `TaskCreate`/`TaskUpdate`. CI polling and a `gh` response
+  cache (4,394 lines) is `Monitor` plus the GitHub MCP. Adversarial
+  verification before auto-merge is `/code-review ultra`.
+
+And the figure that reframed the whole thing: shipyard's own repo has absorbed
+**793 issues and 1,270 commits**. It delivered 1,788 merged PRs to my app in
+that time — so I filed roughly **0.44 shipyard issues per pull request
+shipped**. Nearly half a unit of harness maintenance for every unit of work.
+
+That ratio was fine when the harness was the only way to get the work done. It
+stopped being fine the moment it wasn't.
+
+## Uncle Bob got there five weeks after I wrote about it
+
+On **4 August 2026**, Robert C. Martin
+[described](https://x.com/unclebobmartin/status/2084638878548304046) building
+an orchestration harness for "a squad of agents" — analysts, reviewers,
+gherkin authors, QA authors, implementers, cleaners, code reviewers, hardeners,
+architects — driven by a static finite state machine, with a simulator and
+Monte Carlo testing over it. He ended the post: _"Don't tell me software
+engineering is dead."_
+
+On **11 September**, five weeks later, he
+[posted this](https://x.com/unclebobmartin/status/2098432570887217520):
+
+> I've spend the last several weeks working on a harness that tightly
+> constrains the agents to work the way that I want them to work. I set up all
+> kinds of gates, and tests, and tools, and protocols, and …
+>
+> And while I was heads-down getting that to work, the agents got a LOT better.
+> So much so that when I came up for air, the need for my harness was obviated.
+> Indeed, the need for _any_ but the most liberal of harnesses may be obviated.
+
+Three days later: _"Since I stopped using my harness, my token consumption has
+fallen by a huge factor. That harness was massively inefficient."_ And a week
+after that, the thesis in one line: _"the models have gotten good enough that
+strict deterministic harnesses are suboptimal."_
+
+Martin Fowler
+[wrote it up](https://martinfowler.com/fragments/2026-09-16.html) on 16
+September, which is how most people saw it.
+
+I'm noting the dates because the chronology surprised me, not to claim
+anything by it. My convergence post was 22 July. His reversal was 11
+September. We were looking at the same thing from opposite ends — he built the
+harness and watched it become unnecessary; I built one, watched the industry
+rebuild it natively, and took another two months to act. Neither of us was
+early. The models were just moving faster than either of us was typing.
+
+## The people who ship the models say it louder
+
+This is the part that should carry more weight than any of us with a side
+project.
+
+Anthropic's Claude Code team [cut about 80% of the Claude Code system
+prompt](https://simonwillison.net/2026/Jul/21/cat-and-thariq/). Thariq
+Shihipar: _"we were over-constraining Claude… removing examples was extremely
+helpful."_ And Cat Wu, with the detail that makes it airtight:
+
+> We actually have a **different system prompt per model** now, for this very
+> reason. It's only our most frontier models that have this 80% token
+> decrease — the older models still have the full system prompt.
+
+Scaffolding, versioned by model vintage, by the people who wrote it.
+
+Boris Cherny, who created Claude Code, at YC Startup School: _"We unship tools
+all the time. We delete code in the harness all the time. If you look at the
+code that's in the Claude Code harness today, almost all of it is about safety
+and permissions and static analysis."_ His advice to everyone else was to
+_"every six months, delete your [CLAUDE.md], delete your skills, delete your
+hooks"_ and see what the model does without them.
+
+Han Lee has the sentence I wish I'd written: **"The model ate the harness."**
+His warning is the one I'd already walked into — that teams who don't treat
+the harness as a 90-day artifact end up _"building load-bearing scaffolding
+around a model that is about to outgrow it."_
+
+Browser Use published the same reversal with receipts: a January post arguing
+frameworks are the bitter lesson in miniature, then an April post that opens
+_"Turns out we were wrong"_ about their own previous conclusion, ending at
+~600 lines total. And Cognition has the cleanest single example I've seen: in
+2024, models were bad at editing code, so everyone — including them — ran a
+second "edit apply model" to turn a large model's markdown description of a
+change into an actual file edit. That entire category of scaffolding existed
+because of one weakness. Today one model does both in one action. The
+scaffolding didn't get refactored. It evaporated.
+
+## What I actually cut, and what I kept
+
+Here's where I part ways with the tidy version of this story.
+
+I did **not** delete the loop. `/do-work` is the command I use most; deleting
+it to make a cleaner narrative would have been a worse decision dressed as a
+braver one. What I deleted is the *substrate* — the implementations shipyard
+wrote before the platform had them.
+
+**Gone:** an entire alternate dispatch substrate (1.9 MB of spec and a
+generated orchestration script) that existed only because its primitive had no
+worktree isolation — which the `Agent` tool now provides for free. Both
+"rationale" files, 544 KB between them, with a dedicated link checker to keep
+their 205 anchors valid. The prompt-parity checkers whose only job was
+verifying that shipyard's copies of its own text still agreed with each other.
+A command built to detect context bloat in runtime-loaded markdown — i.e. to
+fight my own prompt corpus, which I'm now deleting directly. And an
+issue-refiner that classified and rewrote raw feedback in a pass before
+dispatch, which a current model now does inline while reading the issue.
+
+**Kept, and not reluctantly:**
+
+- **19 auditors.** They filed 549 issues against my app over its life. They're
+  the half that produces *new information* rather than throughput, and they're
+  stateless one-shot prompts with no orchestrator underneath.
+- **Six `refuse-*` safety hooks.** Each guards an externally irreversible
+  action and each exists because something actually went wrong: a worker
+  minting a production service-account key, a `pkill -f "playwright test"`
+  that killed two in-flight CI shards on a shared host, a worker deleting a
+  Vercel production environment variable while its own fix PR was still open.
+
+A smarter model makes that class of mistake less often. It does not make the
+mistake cost less. Unbounded downside doesn't care about your model version.
+
+## The counter-argument, which is better than I'd like
+
+Someone pre-registered my exact hypothesis and it came out the other way.
+
+["Scaffold Effects on GAIA: A Controlled
+Comparison"](https://arxiv.org/abs/2606.08529) held tasks fixed across five
+models and three providers and varied only the scaffold. Scaffold choice moved
+measured accuracy by up to **28 percentage points** within a single model. And:
+
+> The pre-registered prediction that more capable models would be less
+> scaffold-sensitive is **rejected in direction**… the most capable Anthropic
+> model gains the most from structured scaffolds at the harder level… the
+> elicitation gap is not guaranteed to shrink as models improve.
+
+I don't think that kills the argument, but it sharpens what the argument can
+honestly be. "Structure stops mattering" is not supported. "*This particular*
+structure, written for a 2026-05 model, stopped paying for itself" is what I
+measured, and it's a much smaller claim.
+
+Addy Osmani — arguing the pro-harness side — put the reconciliation better
+than I can:
+
+> You only add constraints when you've seen a real failure. You only remove
+> them when a capable model has made them redundant.
+
+Both halves of that sentence are the job. I spent four months doing the first
+half diligently and the second half not at all.
+
+## The line that actually holds
+
+Look at what survived each of these purges.
+
+Uncle Bob kept his unit tests, his CRAP metric, his mutation testing — and
+dropped the orchestration. Boris Cherny says what's left in the Claude Code
+harness is "almost all about safety and permissions and static analysis." I
+kept auditors that find problems and hooks that refuse irreversible actions,
+and deleted the machinery that told a model what order to do things in.
+
+**Deterministic verification survives. Imperative orchestration of the model
+does not.**
+
+That isn't a compromise between the two camps. It's what both camps did when
+they actually cut something.
+
+## The part that proves it
+
+While I was deleting the orchestration layer, the verification layer caught me
+four times.
+
+I removed a section of spec that looked substrate-specific; three test suites
+failed because one sentence in it — "do not `git worktree add` again and do
+not create a new branch" — was a universal rule about resuming a stalled
+worker, not a property of the thing I was deleting. A link checker found ten
+dead references the deletion created. A reference resolver found four command
+names that no longer resolved, and its own error message told me not to widen
+it to make the failure go away. `shellcheck` found a helper function I'd
+orphaned.
+
+And the one that actually matters: I deleted a command that wrote provenance
+markers onto issues, then deleted the code that *read* those markers — and
+broke the human-review queue for every issue still carrying one. The markers
+don't disappear when the writer does. Two red CI runs told me so.
+
+Every one of those was a deterministic gate catching a judgment error, on the
+specific change whose entire thesis is that judgment has gotten good enough to
+need fewer gates. I don't think that's ironic. I think it's the finding. The
+gates weren't guarding against a dumb model. They were guarding against
+*confident, plausible, wrong* — which is exactly what better models produce
+more of, not less.
+
+## Where it landed
+
+Three stages in, the picture looks like this: 9.9 MB heading for roughly 2.5,
+with `/do-work` working exactly as it did. But the honest progress number is
+small so far — about 9.9 MB down to 9.1. **92% of the remaining reduction sits
+in a single stage**: the orchestrator spec, its session-state plumbing, and the
+3 MB of self-tests that exist only to guard a prompt corpus that's shrinking.
+That one comes out as a piece or not at all, which is exactly why it's last.
+
+My July post said the plumbing converged and the judgment didn't. I still
+think that's right. What I'd add now is that "judgment" turned out to include
+knowing when your own scaffolding has become the thing in the way — and that
+this is a measurement, not a feeling. I had the feeling in July. It took until
+September to run the numbers, and the numbers were worse than the feeling.
+
+The map was still worth having. I just should have looked at it sooner.
