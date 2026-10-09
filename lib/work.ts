@@ -2,7 +2,6 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import matter from 'gray-matter';
-import sharp from 'sharp';
 
 import { reportError } from './logger';
 
@@ -98,7 +97,10 @@ async function readProjectFile(filename: string): Promise<Project | null> {
       // Measure intrinsic dimensions so the hero can render at the image's
       // natural aspect ratio. Best-effort: a measurement failure leaves
       // `imageDimensions` undefined and the UI falls back to the fixed box.
+      // Sharp is dynamically imported to avoid top-level native module loading
+      // issues on serverless platforms (see #work-500-fix).
       try {
+        const sharp = (await import('sharp')).default;
         const { width, height } = await sharp(onDisk).metadata();
         if (width && height) imageDimensions = { width, height };
       } catch (err) {
